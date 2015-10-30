@@ -28,6 +28,7 @@ THE SOFTWARE.
 
 #include "2d/CCLabel.h"
 #include "base/CCIMEDelegate.h"
+#include "2d/CCDrawNode.h"
 
 /**
  * @addtogroup ui
@@ -36,6 +37,7 @@ THE SOFTWARE.
 NS_CC_BEGIN
 
 class TextFieldTTF;
+class Event;
 
 
 /**
@@ -88,7 +90,18 @@ public:
         CC_UNUSED_PARAM(delText);
         CC_UNUSED_PARAM(nLen);
         return false;
-    }
+	} 
+	
+	/**
+	  @brief    If the sender doesn't want to delete the delText, return true;
+	  */
+	virtual bool onTextFieldDeleteForward(TextFieldTTF * sender, const char * delText, size_t nLen)
+	{
+		CC_UNUSED_PARAM(sender);
+		CC_UNUSED_PARAM(delText);
+		CC_UNUSED_PARAM(nLen);
+		return false;
+	}
 
     /**
      *@brief    If the sender doesn't want to draw, return true.
@@ -228,9 +241,21 @@ public:
      */
     virtual bool isSecureTextEntry();
 
+	virtual void updateContent() override;
+
     virtual void visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags) override;
 
+	virtual void handleMouseDown(Event *unusedEvent);
+	virtual void handleMouseMove(Event *unusedEvent);
+	virtual void handleMouseDblClk(Event *unusedEvent);
+	virtual void handleMouseLeave(Event *unusedEvent);
+
+	void setSelectedText(int blockStart, int blockEnd);
+	int pointToCursor(Vec2& pt);
+
 protected:
+	virtual void _setString(const std::string& text);
+
     //////////////////////////////////////////////////////////////////////////
     // IMEDelegate interface
     //////////////////////////////////////////////////////////////////////////
@@ -239,7 +264,14 @@ protected:
     virtual bool canDetachWithIME() override;
     virtual void insertText(const char * text, size_t len) override;
     virtual void deleteBackward() override;
+	virtual void deleteForward() override;
+	virtual void moveCursorBackward(bool wordbreak, bool selectText) override;
+	virtual void moveCursorForward(bool wordbreak, bool selectText) override;
+	virtual void moveCursorEnd(bool selectText) override;
+	virtual void moveCursorHome(bool selectText) override;
     virtual const std::string& getContentText() override;
+	virtual void selectAllText() override;
+	virtual std::string getSelectedText() override;
 
     TextFieldDelegate * _delegate;
     int _charCount;
@@ -251,6 +283,17 @@ protected:
     Color4B _colorText;
 
     bool _secureTextEntry;
+
+	DrawNode* _blockNode;
+	Sprite* _blockTextSprite;
+	Sprite* _cursorSprite;
+
+	int _blockStart;
+	int _blockEnd;
+	int _cursorPos;
+	Point _textOffset;
+
+	Action* _cursorAction;
 
 private:
     class LengthStack;

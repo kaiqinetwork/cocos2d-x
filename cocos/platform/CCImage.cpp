@@ -59,6 +59,8 @@ extern "C"
 #include "png.h"
 #endif //CC_USE_PNG
 
+#include "gif/gif_lib.h"
+    
 #if CC_USE_TIFF
 #include "tiffio.h"
 #endif //CC_USE_TIFF
@@ -429,6 +431,19 @@ namespace
         }
     }
 #endif //CC_USE_PNG
+	static int gifReadCallback(GifFileType* gifFile, GifByteType* data, int length)
+	{
+		tImageSource* isource = (tImageSource*)gifFile->UserData;
+
+		int readLength = 0;
+		if ((int)(isource->offset + length) <= isource->size)
+		{
+			memcpy(data, isource->data + isource->offset, length);
+			isource->offset += length;
+			readLength = length;
+		}
+		return readLength;
+	}
 }
 
 Texture2D::PixelFormat getDevicePixelFormat(Texture2D::PixelFormat format)
@@ -565,6 +580,9 @@ bool Image::initWithImageData(const unsigned char * data, ssize_t dataLen)
         case Format::ATITC:
             ret = initWithATITCData(unpackedData, unpackedLen);
             break;
+		case Format::GIF:
+			ret = initWithGifData(unpackedData, unpackedLen);
+			break;
         default:
             {
                 // load and detect image format
@@ -722,6 +740,10 @@ Image::Format Image::detectFormat(const unsigned char * data, ssize_t dataLen)
     {
         return Format::ATITC;
     }
+	else if (isGif(data, dataLen))
+	{
+		return Format::GIF;
+	}
     else
     {
         CCLOG("cocos2d: can't detect image format");
@@ -2465,6 +2487,149 @@ void Image::premultipliedAlpha()
 void Image::setPVRImagesHavePremultipliedAlpha(bool haveAlphaPremultiplied)
 {
     _PVRHaveAlphaPremultiplied = haveAlphaPremultiplied;
+}
+
+bool Image::isGif(const unsigned char *data, ssize_t dataLen)
+{
+	if (dataLen <= 4)
+	{
+		return false;
+	}
+
+	static const unsigned char GIF_SIGNATURE[] = { 0x47, 0x49, 0x46, 0x38 };
+
+	return memcmp(GIF_SIGNATURE, data, sizeof(GIF_SIGNATURE)) == 0;
+}
+
+//
+//  Appendix E. Interlaced Images.
+//
+//  The rows of an Interlaced images are arranged in the following order:
+//  
+//        Group 1 : Every 8th. row, starting with row 0.              (Pass 1)
+//        Group 2 : Every 8th. row, starting with row 4.              (Pass 2)
+//        Group 3 : Every 4th. row, starting with row 2.              (Pass 3)
+//        Group 4 : Every 2nd. row, starting with row 1.              (Pass 4)
+//  
+const int InterlacedOffset[] = { 0, 4, 2, 1 }; /* The way Interlaced image should. */
+const int InterlacedJumps[] = { 8, 8, 4, 2 };    /* be read - offsets and jumps... */
+
+// Copy bytes from source to destination  skipping transparent bytes
+void CopyGIF(uint8_t* pDst, uint8_t* pSrc, int width, const int transparent, GifColorType* pColorTable)
+{
+	if (width)
+	{
+		do
+		{
+			uint8_t b = *pSrc++;
+			if (b != transparent)
+			{
+				// Translate to 24-bit RGB value if not transparent
+				const GifColorType* pColor = pColorTable + b;
+				pDst[0] = pColor->Red;
+				pDst[1] = pColor->Green;
+				pDst[2] = pColor->Blue;
+			}
+			// Skip to next pixel
+			pDst += 3;
+		} while (--width);
+	}
+}
+
+// Fix pixels in 24-bit GIF buffer
+void FillGIF(uint8_t* pDst, GifColorType* transparentColor, int width)
+{
+	if (width)
+	{
+		do
+		{
+			pDst[0] = transparentColor->Red;
+			pDst[1] = transparentColor->Green;
+			pDst[2] = transparentColor->Blue;
+			pDst += 3;
+		} while (--width);
+	}
+}
+
+bool Image::initWithGifData(const unsigned char *data, ssize_t dataLen)
+{
+	tImageSource imageSource;
+	imageSource.data = (unsigned char*)data;
+	imageSource.size = dataLen;
+	imageSource.offset = 0;
+	
+	bool ret = false;
+	int errCode;
+	GifFileType* gifFile = nullptr;
+	do 
+	{
+		
+		gifFile = DGifOpen(&imageSource, gifReadCallback, &errCode);
+		CC_BREAK_IF(gifFile == NULL);
+
+		CC_BREAK_IF(DGifSlurp(gifFile) == GIF_ERROR);
+		CC_BREAK_IF(gifFile->ImageCount == 0);
+		
+		_width = gifFile->SavedImages[0].ImageDesc.Width;
+		_height = gifFile->SavedImages[0].ImageDesc.Height;
+
+		_renderFormat = Texture2D::PixelFormat::RGB888;
+
+		const uint32_t rowBytes = _width * 3;
+#define XYOFFSET(x,y)	((y) * rowBytes + (x) * 3)
+
+		_hasPremultipliedAlpha = false;
+		_dataLen = rowBytes * _height;
+		_data = static_cast<unsigned char*>(malloc(_dataLen * sizeof(unsigned char)));
+		CC_BREAK_IF(!_data);
+
+		GifColorType* pColorTable;
+		if (gifFile->SavedImages[0].ImageDesc.ColorMap == NULL)
+		{
+			pColorTable = gifFile->SColorMap->Colors;
+		}
+		else
+		{
+			pColorTable = gifFile->SavedImages[0].ImageDesc.ColorMap->Colors;
+		}
+
+		const int x = gifFile->SavedImages[0].ImageDesc.Left;
+		const int y = gifFile->SavedImages[0].ImageDesc.Top;
+		GifPixelType *pLine = gifFile->SavedImages[0].RasterBits;
+		int transparentColor = -1;
+
+		for (int i = 0; i < gifFile->SavedImages[0].ExtensionBlockCount; i++)
+		{
+			ExtensionBlock* extBlock = gifFile->SavedImages[0].ExtensionBlocks + i;
+			if (extBlock->Function == GRAPHICS_EXT_FUNC_CODE)
+			{
+				GraphicsControlBlock gcb;
+				if (DGifExtensionToGCB(extBlock->ByteCount, extBlock->Bytes, &gcb) == GIF_OK)
+				{
+					transparentColor = gcb.TransparentColor;
+				}
+			}
+		}
+		
+		for (int i = 0; i < _height; i++)
+		{
+			if (transparentColor != -1)
+			{
+				FillGIF(_data + XYOFFSET(x, y + i), pColorTable + transparentColor, _width);
+			}
+			
+			CopyGIF(_data + XYOFFSET(x, y + i), pLine, _width, transparentColor, pColorTable);
+			pLine += _width;
+		}
+		ret = true;
+	} while (0);
+
+	if (gifFile)
+	{
+		DGifCloseFile(gifFile, &errCode);
+	}
+
+	return ret;
 }
 
 NS_CC_END

@@ -66,11 +66,25 @@ public:
      */
     void dispatchDeleteBackward();
 
+	void dispatchDeleteForward();
+
+	void dispatchMoveCursorBackward(bool wordbreak, bool selectText);
+
+	void dispatchMoveCursorForward(bool wordbreak, bool selectText);
+
+	void dispatchMoveCursorHome(bool selectText);
+
+	void dispatchMoveCursorEnd(bool selectText);
+
+	void dispatchSelectAllText();
+
     /**
      * @brief Get the content text from IMEDelegate, retrieved previously from IME.
      * @lua NA
      */
     const std::string& getContentText();
+
+	std::string getSelectedText();
 
     //////////////////////////////////////////////////////////////////////////
     // dispatch keyboard notification

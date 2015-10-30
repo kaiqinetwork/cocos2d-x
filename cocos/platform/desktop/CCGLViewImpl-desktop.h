@@ -29,7 +29,7 @@ THE SOFTWARE.
 #include "base/CCRef.h"
 #include "platform/CCCommon.h"
 #include "platform/CCGLView.h"
-#include "glfw3.h"
+#include "glfw3/glfw3.h"
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #ifndef GLFW_EXPOSE_NATIVE_WIN32
@@ -38,7 +38,7 @@ THE SOFTWARE.
 #ifndef GLFW_EXPOSE_NATIVE_WGL
 #define GLFW_EXPOSE_NATIVE_WGL
 #endif
-#include "glfw3native.h"
+#include "glfw3/glfw3native.h"
 #endif /* (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) */
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
@@ -68,7 +68,7 @@ public:
     //void resize(int width, int height);
 
     float getFrameZoomFactor() const override;
-    //void centerWindow();
+    void centerWindow();
 
     virtual void setViewPortInPoints(float x , float y , float w , float h) override;
     virtual void setScissorInPoints(float x , float y , float w , float h) override;
@@ -105,6 +105,10 @@ public:
     
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
     HWND getWin32Window() { return glfwGetWin32Window(_mainWindow); }
+
+	int popupMenu(unsigned int nIDResource);
+	int popupMenu(HMENU hMenu);
+
 #endif /* (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) */
     
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
@@ -134,6 +138,8 @@ protected:
     void onGLFWframebuffersize(GLFWwindow* window, int w, int h);
     void onGLFWWindowSizeFunCallback(GLFWwindow *window, int width, int height);
     void onGLFWWindowIconifyCallback(GLFWwindow* window, int iconified);
+	void onGLFWWindowCloseCallback(GLFWwindow* window);
+	void onGLFWCursorEnterCallBack(GLFWwindow* window, int enter);
 
     bool _captured;
     bool _supportTouch;
@@ -148,6 +154,9 @@ protected:
 
     float _mouseX;
     float _mouseY;
+	float _lastReleaseMouseX;
+	float _lastReleaseMouseY;
+	long _lastReleaseTime;
 
     friend class GLFWEventHandler;
 

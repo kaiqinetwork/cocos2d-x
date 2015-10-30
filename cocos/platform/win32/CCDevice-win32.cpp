@@ -162,7 +162,7 @@ public:
                 wchar_t * pwszBuffer = utf8ToUtf16(_curFontPath);
                 if (pwszBuffer)
                 {
-                    if(AddFontResource(pwszBuffer))
+                    if(AddFontResourceW(pwszBuffer))
                     {
                         SendMessage( _wnd, WM_FONTCHANGE, 0, 0);
                     }
@@ -415,7 +415,7 @@ private:
             wchar_t * pwszBuffer = utf8ToUtf16(_curFontPath);
             if (pwszBuffer)
             {
-                RemoveFontResource(pwszBuffer);
+                RemoveFontResourceW(pwszBuffer);
                 SendMessage( _wnd, WM_FONTCHANGE, 0, 0);
                 delete [] pwszBuffer;
                 pwszBuffer = nullptr;
@@ -499,6 +499,56 @@ void Device::setKeepScreenOn(bool value)
 void Device::vibrate(float duration)
 {
     CC_UNUSED_PARAM(duration);
+}
+
+Size Device::getSizeWithText(const char * text, const FontDefinition& textDefinition)
+{
+	Size textSize;
+	wchar_t * pwszBuffer = 0;
+	do
+	{
+		BitmapDC& dc = sharedBitmapDC();
+
+		if (!dc.setFont(textDefinition._fontName.c_str(), textDefinition._fontSize))
+		{
+			log("Can't found font(%s), use system default", textDefinition._fontName.c_str());
+		}
+
+		int nLen = strlen(text);
+		// utf-8 to utf-16
+		int nBufLen = nLen + 1;
+		pwszBuffer = new wchar_t[nBufLen];
+		CC_BREAK_IF(!pwszBuffer);
+
+		memset(pwszBuffer, 0, sizeof(wchar_t)*nBufLen);
+		nLen = MultiByteToWideChar(CP_UTF8, 0, text, nLen, pwszBuffer, nBufLen);
+
+		SIZE newSize = dc.sizeWithText(pwszBuffer, nLen, 0, 0);
+		textSize.setSize(newSize.cx, newSize.cy);
+	} while (0);
+	CC_SAFE_DELETE_ARRAY(pwszBuffer);
+
+	return textSize;
+}
+
+Size Device::getSizeWithText(const char16_t* text, const FontDefinition& textDefinition)
+{
+	Size textSize;
+	do
+	{
+		BitmapDC& dc = sharedBitmapDC();
+
+		if (!dc.setFont(textDefinition._fontName.c_str(), textDefinition._fontSize))
+		{
+			log("Can't found font(%s), use system default", textDefinition._fontName.c_str());
+		}
+		
+		int nLen = wcslen((const wchar_t*)text);
+		SIZE newSize = dc.sizeWithText((const wchar_t*)text, nLen, 0, 0);
+		textSize.setSize(newSize.cx, newSize.cy);
+	} while (0);
+
+	return textSize;
 }
 
 NS_CC_END

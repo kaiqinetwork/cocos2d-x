@@ -37,6 +37,7 @@ THE SOFTWARE.
  */
 NS_CC_BEGIN
 
+class EventListenerMouse;
 class EventListenerTouchOneByOne;
 class Camera;
 
@@ -116,6 +117,12 @@ public:
         ENDED,
         CANCELED
     };
+
+	enum class MouseEventType
+	{
+		LEAVE,
+		ENTER,
+	};
     
     /**
      * Texture resource type.
@@ -135,7 +142,8 @@ public:
     {
         NONE = -1,
         NORMAL,
-        HIGHLIGHT
+        HIGHLIGHT,
+		HOVER
     };
 
     
@@ -152,6 +160,7 @@ public:
      * It is mainly used together with Cocos Studio.
      */
     typedef std::function<void(Ref*, int)> ccWidgetEventCallback;
+	typedef std::function<void(Ref*, Widget::MouseEventType)> ccWidgetMouseCallback;
     /**
      * Default constructor
      * @js ctor
@@ -215,6 +224,8 @@ public:
      */
     virtual void setTouchEnabled(bool enabled);
 
+	virtual void setMouseEnabled(bool enabled);
+
     /**
      * To set the bright style of widget.
      *
@@ -231,6 +242,8 @@ public:
      */
     bool isTouchEnabled() const;
 
+	bool isMouseEnabled() const;
+
     /**
      * Determines if the widget is highlighted
      *
@@ -246,6 +259,10 @@ public:
      * @param hilight   true if the widget is hilighted, false if the widget is not hilighted.
      */
     void setHighlighted(bool hilight);
+
+	bool isHovered() const;
+
+	void setHovered(bool hover);
 
     /**
      * Gets the left boundary position of this widget in parent's coordination system.
@@ -323,6 +340,8 @@ public:
      */
     virtual void addCCSEventListener(const ccWidgetEventCallback& callback);
     /**/
+
+	void addMouseEventListener(const ccWidgetMouseCallback& callback);
 
     /**
      * Changes the position (x,y) of the widget in OpenGL coordinates
@@ -579,6 +598,12 @@ public:
      */
     virtual void onTouchCancelled(Touch *touch, Event *unusedEvent);
 
+	virtual void onMouseDown(Event *unusedEvent);
+	virtual void onMouseUp(Event *unusedEvent);
+	virtual void onMouseMove(Event *unusedEvent);
+	virtual void onMouseScroll(Event *unusedEvent);
+	virtual void onMouseDblClk(Event *unusedEvent);
+
     /**
      * Sets a LayoutParameter to widget.
      *
@@ -688,6 +713,13 @@ public:
      *@return Action tag.
      */
     int getActionTag()const;
+
+	std::string getGroupName() const;
+	void setGroupName(const std::string& groupName);
+	bool isSelectedInGroup() const;
+	void setSelectedInGroup(bool selected);
+	Widget* getGroupSelectedWidget();
+	Vector<Widget*> getChildGroup(const std::string& groupName);
     
     /**
      * @brief Allow widget touch events to propagate to its parents. Set false will disable propagation
@@ -904,6 +936,7 @@ protected:
 
     //call back function called widget's state changed to normal.
     virtual void onPressStateChangedToNormal();
+	virtual void onPressStateChangedToHot();
     //call back function called widget's state changed to selected.
     virtual void onPressStateChangedToPressed();
     //call back function called widget's state changed to dark.
@@ -915,7 +948,9 @@ protected:
     virtual void releaseUpEvent();
     virtual void cancelUpEvent();
 
-    
+	virtual void hoverEnterEvent();
+	virtual void hoverLeftEvent();
+
     virtual void adaptRenderers(){};
     void updateChildrenDisplayedRGBA();
     
@@ -940,7 +975,9 @@ protected:
     bool _enabled;
     bool _bright;
     bool _touchEnabled;
+	bool _mouseEnabled;
     bool _highlight;
+	bool _hover;
     bool _affectByClipping;
     bool _ignoreSize;
     bool _propagateTouchEvents;
@@ -952,6 +989,9 @@ protected:
     //used for search widget by action tag in UIHelper class
     int _actionTag;
 
+	std::string _groupName;
+	bool _selecteInGroup;
+
     Size _customSize;
 
     Vec2 _sizePercent;
@@ -961,6 +1001,7 @@ protected:
     // weak reference of the camera which made the widget passed the hit test when response touch begin event
     // it's useful in the next touch move/end events
     const Camera *_hittedByCamera;
+	EventListenerMouse* _mouseListener;
     EventListenerTouchOneByOne* _touchListener;
     Vec2 _touchBeganPosition;
     Vec2 _touchMovePosition;
@@ -996,6 +1037,7 @@ protected:
     ccWidgetTouchCallback _touchEventCallback;
     ccWidgetClickCallback _clickEventListener;
     ccWidgetEventCallback _ccEventCallback;
+	ccWidgetMouseCallback _mouseEventCallback;
     
     std::string _callbackType;
     std::string _callbackName;

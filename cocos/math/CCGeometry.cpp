@@ -283,6 +283,28 @@ Rect Rect::unionWithRect(const Rect & rect) const
     return Rect(combinedLeftX, combinedBottomY, combinedRightX - combinedLeftX, combinedTopY - combinedBottomY);
 }
 
+void Rect::intersect(const Rect& rect)
+{
+	float top1 = getMaxY();
+	float left1 = getMinX();
+	float right1 = getMaxX();
+	float bottom1 = getMinY();
+
+	float top2 = rect.getMaxY();
+	float left2 = rect.getMinX();
+	float right2 = rect.getMaxX();
+	float bottom2 = rect.getMinY();
+	origin.x = std::max(left1, left2);
+	origin.y = std::max(bottom1, bottom2);
+	size.width = std::min(right1, right2) - origin.x;
+	size.height = std::min(top1, top2) - origin.y;
+	
+	if (size.width < 0 || size.height < 0)
+	{
+		setRect(0, 0, 0, 0);
+	}	
+}
+
 const Rect Rect::ZERO = Rect(0, 0, 0, 0);
 
 NS_CC_END

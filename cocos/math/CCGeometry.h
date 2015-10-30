@@ -214,6 +214,8 @@ public:
     /**Compute the min rect which can contain this and rect, assign it to this.*/
     void merge(const Rect& rect);
     /**An empty Rect.*/
+	void intersect(const Rect& rect);
+    
     static const Rect ZERO;
 };
 

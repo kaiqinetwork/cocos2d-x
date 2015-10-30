@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "ui/UIHelper.h"
 #include "base/CCEventListenerTouch.h"
 #include "base/CCEventListenerKeyboard.h"
+#include "base/CCEventListenerMouse.h"
 #include "base/CCDirector.h"
 #include "base/CCEventFocus.h"
 #include "base/CCEventDispatcher.h"
@@ -145,7 +146,9 @@ _unifySize(false),
 _enabled(true),
 _bright(true),
 _touchEnabled(false),
+_mouseEnabled(false),
 _highlight(false),
+_hover(false),
 _affectByClipping(false),
 _ignoreSize(false),
 _propagateTouchEvents(true),
@@ -154,9 +157,15 @@ _sizeType(SizeType::ABSOLUTE),
 _positionType(PositionType::ABSOLUTE),
 _actionTag(0),
 _customSize(Size::ZERO),
+_sizePercent(Vec2::ZERO),
+_positionPercent(Vec2::ZERO),
 _hitted(false),
 _hittedByCamera(nullptr),
+_mouseListener(nullptr),
 _touchListener(nullptr),
+_touchBeganPosition(Vec2::ZERO),
+_touchMovePosition(Vec2::ZERO),
+_touchEndPosition(Vec2::ZERO),
 _flippedX(false),
 _flippedY(false),
 _layoutParameterType(LayoutParameter::Type::NONE),
@@ -597,6 +606,31 @@ bool Widget::isTouchEnabled() const
     return _touchEnabled;
 }
 
+void Widget::setMouseEnabled(bool enable)
+{
+	if (enable == _mouseEnabled)
+	{
+		return;
+	}
+	_mouseEnabled = enable;
+	if (_mouseEnabled)
+	{
+		_mouseListener = EventListenerMouse::create();
+		CC_SAFE_RETAIN(_mouseListener);
+		_mouseListener->onMouseDown = CC_CALLBACK_1(Widget::onMouseDown, this);
+		_mouseListener->onMouseUp = CC_CALLBACK_1(Widget::onMouseUp, this);
+		_mouseListener->onMouseMove = CC_CALLBACK_1(Widget::onMouseMove, this);
+		_mouseListener->onMouseScroll = CC_CALLBACK_1(Widget::onMouseScroll, this);
+		_mouseListener->onMouseDblClk = CC_CALLBACK_1(Widget::onMouseDblClk, this);
+		_eventDispatcher->addEventListenerWithSceneGraphPriority(_mouseListener, this);
+	}
+	else
+	{
+		_eventDispatcher->removeEventListener(_mouseListener);
+		CC_SAFE_RELEASE_NULL(_mouseListener);
+	}
+}
+
 bool Widget::isHighlighted() const
 {
     return _highlight;
@@ -604,6 +638,10 @@ bool Widget::isHighlighted() const
 
 void Widget::setHighlighted(bool hilight)
 {
+    if (hilight == _highlight)
+    {
+        return;
+    }
     _highlight = hilight;
     if (_bright)
     {
@@ -620,6 +658,35 @@ void Widget::setHighlighted(bool hilight)
     {
         onPressStateChangedToDisabled();
     }
+}
+
+bool Widget::isHovered() const
+{
+	return _hover;
+}
+
+void Widget::setHovered(bool hover)
+{
+	if (hover == _hover)
+	{
+		return;
+	}
+	_hover = hover;
+	if (_bright)
+	{
+		if (_hover)
+		{
+			setBrightStyle(BrightStyle::HOVER);
+		}
+		else if (!_highlight)
+		{
+			setBrightStyle(BrightStyle::NORMAL);
+		}
+	}
+	else
+	{
+		onPressStateChangedToDisabled();
+	}
 }
 
 void Widget::setBright(bool bright)
@@ -651,6 +718,9 @@ void Widget::setBrightStyle(BrightStyle style)
         case BrightStyle::HIGHLIGHT:
             onPressStateChangedToPressed();
             break;
+		case BrightStyle::HOVER:
+			onPressStateChangedToHot();
+			break;
         default:
             break;
     }
@@ -790,7 +860,7 @@ bool Widget::onTouchBegan(Touch *touch, Event *unusedEvent)
     pushDownEvent();
     return true;
 }
-
+    
 void Widget::propagateTouchEvent(cocos2d::ui::Widget::TouchEventType event, cocos2d::ui::Widget *sender, cocos2d::Touch *touch)
 {
     Widget* widgetParent = getWidgetParent();
@@ -914,6 +984,62 @@ void Widget::cancelUpEvent()
     this->release();
 }
 
+void Widget::onMouseDown(Event *unusedEvent)
+{
+	
+}
+
+void Widget::onMouseUp(Event *unusedEvent)
+{
+
+}
+
+void Widget::onMouseMove(Event *unusedEvent)
+{
+	bool hover = false;
+	if (isVisible() && isEnabled() && isAncestorsEnabled() && isAncestorsVisible(this) && !isHighlighted())
+	{
+		EventMouse* mouseEvent = static_cast<EventMouse*>(unusedEvent);
+		Vec2 mousePosition;
+		mousePosition.x = mouseEvent->getCursorX();
+		mousePosition.y = mouseEvent->getCursorY();
+		auto camera = Camera::getVisitingCamera();
+		if (hitTest(mousePosition, camera, nullptr) && isClippingParentContainsPoint(mousePosition))
+		{
+			hover = true;
+		}
+	}
+	if (hover == _hover)
+		return;
+
+	if (_mouseEventCallback)
+	{
+		_mouseEventCallback(this, hover ? MouseEventType::ENTER : MouseEventType::LEAVE);
+	}
+
+	setHovered(hover);
+}
+
+void Widget::onMouseScroll(Event *unusedEvent)
+{
+
+}
+
+void Widget::onMouseDblClk(Event *unusedEvent)
+{
+
+}
+
+void Widget::hoverEnterEvent()
+{
+	
+}
+
+void Widget::hoverLeftEvent()
+{
+	
+}
+
 void Widget::addTouchEventListener(Ref *target, SEL_TouchEvent selector)
 {
     _touchEventListener = target;
@@ -933,6 +1059,11 @@ void Widget::addClickEventListener(const ccWidgetClickCallback &callback)
 void Widget::addCCSEventListener(const ccWidgetEventCallback &callback)
 {
     this->_ccEventCallback = callback;
+}
+
+void Widget::addMouseEventListener(const ccWidgetMouseCallback& callback)
+{
+	this->_mouseEventCallback = callback;
 }
 
 bool Widget::hitTest(const Vec2 &pt, const Camera* camera, Vec3 *p) const
@@ -1202,6 +1333,7 @@ void Widget::copyProperties(Widget *widget)
     setVisible(widget->isVisible());
     setBright(widget->isBright());
     setTouchEnabled(widget->isTouchEnabled());
+	setMouseEnabled(widget->isMouseEnabled());
     setLocalZOrder(widget->getLocalZOrder());
     setTag(widget->getTag());
     setName(widget->getName());
@@ -1228,6 +1360,7 @@ void Widget::copyProperties(Widget *widget)
     _touchEventListener = widget->_touchEventListener;
     _touchEventSelector = widget->_touchEventSelector;
     _clickEventListener = widget->_clickEventListener;
+	_mouseEventCallback = widget->_mouseEventCallback;
     _focused = widget->_focused;
     _focusEnabled = widget->_focusEnabled;
     _propagateTouchEvents = widget->_propagateTouchEvents;
@@ -1482,7 +1615,6 @@ void Widget::setUnifySizeEnabled(bool enable)
     _unifySize = enable;
 }
 
-
 void Widget::setLayoutComponentEnabled(bool enable)
 {
     _usingLayoutComponent = enable;
@@ -1493,7 +1625,69 @@ bool Widget::isLayoutComponentEnabled()const
     return _usingLayoutComponent;
 }
 
-
+void Widget::onPressStateChangedToHot()
+{
 
 }
+
+bool Widget::isMouseEnabled() const
+{
+	return _mouseEnabled;
+}
+
+bool Widget::isSelectedInGroup() const
+{
+	return _selecteInGroup;
+}
+
+void Widget::setSelectedInGroup(bool selected)
+{
+	_selecteInGroup = selected;
+}
+
+Widget* Widget::getGroupSelectedWidget()
+{
+	Widget* parent = getWidgetParent();
+	
+	if (parent)
+	{
+		Vector<Widget*> group = parent->getChildGroup(getGroupName());
+		for (auto& widget : group)
+		{
+			if (widget->isSelectedInGroup())
+			{
+				return widget;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+Vector<Widget*> Widget::getChildGroup(const std::string& groupName)
+{
+	Vector<Widget*> group;
+	for (auto& child : getChildren())
+	{
+		Widget* widgetChild = dynamic_cast<Widget*>(child);
+		if (widgetChild && widgetChild->getGroupName() == groupName)
+		{
+			group.pushBack(widgetChild);
+		}
+	}
+	return group;
+}
+
+std::string Widget::getGroupName() const
+{
+	return _groupName;
+}
+
+void Widget::setGroupName(const std::string& groupName)
+{
+	_groupName = groupName;
+}
+
+}
+
 NS_CC_END

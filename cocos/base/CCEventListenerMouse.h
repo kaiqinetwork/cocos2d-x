@@ -61,6 +61,7 @@ public:
     std::function<void(EventMouse* event)> onMouseUp;
     std::function<void(EventMouse* event)> onMouseMove;
     std::function<void(EventMouse* event)> onMouseScroll;
+	std::function<void(EventMouse* event)> onMouseDblClk;
 
 CC_CONSTRUCTOR_ACCESS:
     EventListenerMouse();

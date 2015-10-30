@@ -34,6 +34,7 @@ THE SOFTWARE.
 #include "2d/CCDrawingPrimitives.h"
 #include "2d/CCSpriteFrameCache.h"
 #include "platform/CCFileUtils.h"
+#include "platform/CCInput.h"
 
 #include "2d/CCActionManager.h"
 #include "2d/CCFontFNT.h"
@@ -973,6 +974,7 @@ void Director::reset()
     GLProgramStateCache::destroyInstance();
     FileUtils::destroyInstance();
     AsyncTaskPool::destoryInstance();
+	Input::destroyInstance();
     
     // cocos2d-x specific data structures
     UserDefault::destroyInstance();

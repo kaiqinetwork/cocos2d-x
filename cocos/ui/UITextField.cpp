@@ -27,6 +27,10 @@ THE SOFTWARE.
 #include "ui/UIHelper.h"
 #include "base/ccUTF8.h"
 #include "2d/CCCamera.h"
+#include "platform/CCInput.h"
+#include "2d/CCSprite.h"
+#include "platform/CCDevice.h"
+#include "base/CCEventMouse.h"
 
 NS_CC_BEGIN
 
@@ -41,6 +45,7 @@ UICCTextField::UICCTextField()
 , _detachWithIME(false)
 , _insertText(false)
 , _deleteBackward(false)
+, _deleteForward(false)
 {
 }
 
@@ -68,7 +73,8 @@ UICCTextField * UICCTextField::create(const std::string& placeholder, const std:
 
 void UICCTextField::onEnter()
 {
-    TextFieldTTF::setDelegate(this);
+	TextFieldTTF::setDelegate(this);
+	TextFieldTTF::onEnter();
 }
 
 
@@ -100,6 +106,12 @@ bool UICCTextField::onTextFieldDeleteBackward(TextFieldTTF *pSender, const char 
 {
     setDeleteBackward(true);
     return false;
+}
+
+bool UICCTextField::onTextFieldDeleteForward(TextFieldTTF * pSender, const char * delText, size_t nLen)
+{
+	setDeleteForward(true);
+	return false;
 }
 
 bool UICCTextField::onTextFieldDetachWithIME(TextFieldTTF *pSender)
@@ -286,6 +298,18 @@ bool UICCTextField::getDeleteBackward()const
     return _deleteBackward;
 }
 
+void UICCTextField::setDeleteForward(bool deleteForward)
+{
+	_deleteForward = deleteForward;
+}
+
+bool UICCTextField::getDeleteForward() const
+{
+	return _deleteForward;
+}
+
+
+static const int SELECT_TEXT_RENDERER_Z = (-2);
 static const int TEXTFIELD_RENDERER_Z = (-1);
 
 IMPLEMENT_CLASS_GUI_INFO(TextField)
@@ -345,6 +369,7 @@ bool TextField::init()
     if (Widget::init())
     {
         setTouchEnabled(true);
+		setMouseEnabled(true);
         return true;
     }
     return false;
@@ -622,6 +647,14 @@ void TextField::update(float dt)
         insertTextEvent();
         setInsertText(false);
     }
+	if (getDeleteForward())
+	{
+		deleteForwardEvent();
+		setDeleteForward(false);
+
+		_textFieldRendererAdaptDirty = true;
+		updateContentSizeWithTextureSize(_textFieldRenderer->getContentSize());
+	}
 }
 
 bool TextField::getAttachWithIME()const
@@ -662,6 +695,16 @@ bool TextField::getDeleteBackward()const
 void TextField::setDeleteBackward(bool deleteBackward)
 {
     _textFieldRenderer->setDeleteBackward(deleteBackward);
+}
+
+bool TextField::getDeleteForward() const
+{
+	return _textFieldRenderer->getDeleteForward();
+}
+
+void TextField::setDeleteForward(bool deleteForward)
+{
+	_textFieldRenderer->setDeleteForward(deleteForward);
 }
 
 void TextField::attachWithIMEEvent()
@@ -733,6 +776,23 @@ void TextField::deleteBackwardEvent()
         _ccEventCallback(this, static_cast<int>(EventType::DELETE_BACKWARD));
     }
     this->release();
+}
+
+void TextField::deleteForwardEvent()
+{
+	this->retain();
+	if (_textFieldEventListener && _textFieldEventSelector)
+	{
+		(_textFieldEventListener->*_textFieldEventSelector)(this, TEXTFIELD_EVENT_DELETE_FORWARD);
+	}
+	if (_eventCallback) {
+		_eventCallback(this, EventType::DELETE_FORWARD);
+	}
+	if (_ccEventCallback)
+	{
+		_ccEventCallback(this, static_cast<int>(EventType::DELETE_FORWARD));
+	}
+	this->release();
 }
 
 void TextField::addEventListenerTextField(Ref *target, SEL_TextFieldEvent selecor)
@@ -855,6 +915,59 @@ void TextField::setTextVerticalAlignment(TextVAlignment alignment)
 TextVAlignment TextField::getTextVerticalAlignment() const
 {
     return _textFieldRenderer->getVerticalAlignment();
+}
+
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+
+void TextField::onPressStateChangedToHot()
+{
+ 	//if (isHovered())
+ 	//	Input::sharedInput()->pushCursor(Input::CURSOR_IBEAM);
+}
+
+void TextField::onPressStateChangedToNormal()
+{
+// 	if (!isHovered())
+// 	{
+// 		Input::sharedInput()->popCursor();
+// 	}
+}
+
+#endif
+
+void TextField::onMouseDown(Event *unusedEvent)
+{
+	if (_textFieldRenderer)
+	{
+		if (_hitted)
+			_textFieldRenderer->handleMouseDown(unusedEvent);
+		else
+			_textFieldRenderer->handleMouseLeave(unusedEvent);
+	}
+}
+
+void TextField::onMouseMove(Event *unusedEvent)
+{
+	Widget::onMouseMove(unusedEvent);
+
+	if (_textFieldRenderer && _hitted)
+	{
+		_textFieldRenderer->handleMouseMove(unusedEvent);
+	}
+}
+
+void TextField::onMouseDblClk(Event *unusedEvent)
+{
+	if (_textFieldRenderer && _hitted)
+	{
+		_textFieldRenderer->handleMouseDblClk(unusedEvent);
+	}
+}
+
+void TextField::setFocus()
+{
+	if (_textFieldRenderer)
+		_textFieldRenderer->attachWithIME();
 }
 
 }

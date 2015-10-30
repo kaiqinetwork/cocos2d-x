@@ -37,6 +37,7 @@ THE SOFTWARE.
 #include "base/ccUtils.h"
 #include "base/ccUTF8.h"
 #include "2d/CCCamera.h"
+#include "platform/CCInput.h"
 
 NS_CC_BEGIN
 
@@ -111,6 +112,22 @@ public:
             _view->onGLFWWindowIconifyCallback(window, iconified);
         }
     }
+
+	static void onGLFWWindowCloseCallback(GLFWwindow* window)
+	{
+		if (_view)
+		{
+			_view->onGLFWWindowCloseCallback(window);
+		}
+	}
+
+	static void onGLFWCursorEnterCallBack(GLFWwindow* window, int enter)
+	{
+		if (_view)
+		{
+			_view->onGLFWCursorEnterCallBack(window, enter);
+		}
+	}
 
 private:
     static GLViewImpl* _view;
@@ -274,6 +291,9 @@ GLViewImpl::GLViewImpl()
 , _monitor(nullptr)
 , _mouseX(0.0f)
 , _mouseY(0.0f)
+, _lastReleaseMouseX(0.0f)
+, _lastReleaseMouseY(0.0f)
+, _lastReleaseTime(0)
 {
     _viewName = "cocos2dx";
     g_keyCodeMap.clear();
@@ -345,6 +365,7 @@ bool GLViewImpl::initWithRect(const std::string& viewName, Rect rect, float fram
 
     _frameZoomFactor = frameZoomFactor;
 
+	glfwWindowHint(GLFW_DECORATED,GL_FALSE);
     glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
     glfwWindowHint(GLFW_RED_BITS,_glContextAttrs.redBits);
     glfwWindowHint(GLFW_GREEN_BITS,_glContextAttrs.greenBits);
@@ -357,6 +378,11 @@ bool GLViewImpl::initWithRect(const std::string& viewName, Rect rect, float fram
     int neeHeight = rect.size.height * _frameZoomFactor;
 
     _mainWindow = glfwCreateWindow(needWidth, neeHeight, _viewName.c_str(), _monitor, nullptr);
+	if (!_mainWindow)
+	{
+		MessageBox("Window creation will fail if the Microsoft GDI software OpenGL implementation is the only one available.", "Create Window failed");
+		return false;
+	}
 
     /*
     *  Note that the created window and context may differ from what you requested,
@@ -390,6 +416,8 @@ bool GLViewImpl::initWithRect(const std::string& viewName, Rect rect, float fram
     glfwSetFramebufferSizeCallback(_mainWindow, GLFWEventHandler::onGLFWframebuffersize);
     glfwSetWindowSizeCallback(_mainWindow, GLFWEventHandler::onGLFWWindowSizeFunCallback);
     glfwSetWindowIconifyCallback(_mainWindow, GLFWEventHandler::onGLFWWindowIconifyCallback);
+	glfwSetWindowCloseCallback(_mainWindow, GLFWEventHandler::onGLFWWindowCloseCallback);
+	glfwSetCursorEnterCallback(_mainWindow, GLFWEventHandler::onGLFWCursorEnterCallBack);
 
     setFrameSize(rect.size.width, rect.size.height);
 
@@ -636,6 +664,7 @@ void GLViewImpl::onGLFWMouseCallBack(GLFWwindow* window, int button, int action,
         EventMouse event(EventMouse::MouseEventType::MOUSE_DOWN);
         event.setCursorPosition(cursorX, cursorY);
         event.setMouseButton(button);
+		event.setMods(modify);
         Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
     }
     else if(GLFW_RELEASE == action)
@@ -643,12 +672,36 @@ void GLViewImpl::onGLFWMouseCallBack(GLFWwindow* window, int button, int action,
         EventMouse event(EventMouse::MouseEventType::MOUSE_UP);
         event.setCursorPosition(cursorX, cursorY);
         event.setMouseButton(button);
+		event.setMods(modify);
         Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
+
+		timeval now;
+		long currReleaseTime = 0;
+		if (gettimeofday(&now, nullptr) == 0)
+			currReleaseTime = now.tv_sec * 1000 + now.tv_usec / 1000;
+
+		if (abs(_mouseX - _lastReleaseMouseX) < 5 && 
+			abs(_mouseY - _lastReleaseMouseY) < 5 && 
+			(currReleaseTime - _lastReleaseTime) < 300)
+		{
+			EventMouse event1(EventMouse::MouseEventType::MOUSE_DBLCLK);
+			event1.setCursorPosition(cursorX, cursorY);
+			event1.setMouseButton(button);
+			event1.setMods(modify);
+			Director::getInstance()->getEventDispatcher()->dispatchEvent(&event1);
+		}
+		
+
+		_lastReleaseMouseX = _mouseX;
+		_lastReleaseMouseY = _mouseY;
+		_lastReleaseTime = currReleaseTime;
     }
 }
 
 void GLViewImpl::onGLFWMouseMoveCallBack(GLFWwindow* window, double x, double y)
 {
+	Input::sharedInput()->refreshCursor();
+
     _mouseX = (float)x;
     _mouseY = (float)y;
 
@@ -711,10 +764,72 @@ void GLViewImpl::onGLFWKeyCallback(GLFWwindow *window, int key, int scancode, in
         auto dispatcher = Director::getInstance()->getEventDispatcher();
         dispatcher->dispatchEvent(&event);
     }
-    
-    if (GLFW_RELEASE != action && g_keyCodeMap[key] == EventKeyboard::KeyCode::KEY_BACKSPACE)
+    if (GLFW_RELEASE != action)
     {
-        IMEDispatcher::sharedDispatcher()->dispatchDeleteBackward();
+		switch (g_keyCodeMap[key])
+		{
+		case EventKeyboard::KeyCode::KEY_BACKSPACE:
+			IMEDispatcher::sharedDispatcher()->dispatchDeleteBackward();
+			break;
+		case EventKeyboard::KeyCode::KEY_DELETE:
+			IMEDispatcher::sharedDispatcher()->dispatchDeleteForward();
+			break;
+		case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+			IMEDispatcher::sharedDispatcher()->dispatchMoveCursorBackward((mods & GLFW_MOD_CONTROL) != 0, (mods & GLFW_MOD_SHIFT) != 0);
+			break;
+		case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+			IMEDispatcher::sharedDispatcher()->dispatchMoveCursorForward((mods & GLFW_MOD_CONTROL) != 0, (mods & GLFW_MOD_SHIFT) != 0);
+			break;
+		case EventKeyboard::KeyCode::KEY_HOME:
+			IMEDispatcher::sharedDispatcher()->dispatchMoveCursorHome((mods & GLFW_MOD_SHIFT) != 0);
+			break;
+		case EventKeyboard::KeyCode::KEY_END:
+			IMEDispatcher::sharedDispatcher()->dispatchMoveCursorEnd((mods & GLFW_MOD_SHIFT) != 0);
+			break;
+		case EventKeyboard::KeyCode::KEY_CAPITAL_A:
+		case EventKeyboard::KeyCode::KEY_A:
+			if ((mods & GLFW_MOD_CONTROL) != 0)
+			{
+				IMEDispatcher::sharedDispatcher()->dispatchSelectAllText();
+			}
+			break;
+		case EventKeyboard::KeyCode::KEY_CAPITAL_C:
+		case EventKeyboard::KeyCode::KEY_C:
+			if ((mods & GLFW_MOD_CONTROL) != 0)
+			{
+				std::string text = IMEDispatcher::sharedDispatcher()->getSelectedText();
+				if (!text.empty())
+				{
+					glfwSetClipboardString(window, text.c_str());
+				}
+			}
+			break;
+		case EventKeyboard::KeyCode::KEY_CAPITAL_X:
+		case EventKeyboard::KeyCode::KEY_X:
+			if ((mods & GLFW_MOD_CONTROL) != 0)
+			{
+				std::string text = IMEDispatcher::sharedDispatcher()->getSelectedText();
+				if (!text.empty())
+				{
+					glfwSetClipboardString(window, text.c_str());
+					IMEDispatcher::sharedDispatcher()->dispatchDeleteForward();
+				}
+			}
+			break;
+		case EventKeyboard::KeyCode::KEY_CAPITAL_V:
+		case EventKeyboard::KeyCode::KEY_V:
+			if ((mods & GLFW_MOD_CONTROL) != 0)
+			{
+				const char* text = glfwGetClipboardString(window);
+				if (text)
+				{
+					IMEDispatcher::sharedDispatcher()->dispatchInsertText(text, strlen(text));
+				}
+			}
+			break;
+		default:
+			break;
+		}
     }
 }
 
@@ -781,6 +896,20 @@ void GLViewImpl::onGLFWWindowIconifyCallback(GLFWwindow* window, int iconified)
         Application::getInstance()->applicationWillEnterForeground();
     }
 }
+
+void GLViewImpl::onGLFWWindowCloseCallback(GLFWwindow* window)
+{
+	glfwSetWindowShouldClose(window, 0);
+	Application::getInstance()->applicationWillClose();
+}
+
+void GLViewImpl::onGLFWCursorEnterCallBack(GLFWwindow* window, int enter)
+{
+	if (GL_TRUE != enter)
+		onGLFWMouseMoveCallBack(window, -1, -1);
+}
+
+
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 static bool glew_dynamic_binding()
@@ -887,5 +1016,61 @@ bool GLViewImpl::initGlew()
 
     return true;
 }
+
+void GLViewImpl::centerWindow()
+{
+	_monitor = glfwGetPrimaryMonitor();
+	if (nullptr == _monitor)
+		return;
+
+	int width, height;
+	const GLFWvidmode* videoMode = glfwGetVideoMode(_monitor);
+	if (nullptr == videoMode)
+		return;
+
+	glfwGetFramebufferSize(_mainWindow, &width, &height);
+	glfwSetWindowPos(_mainWindow, (videoMode->width - width) / 2, (videoMode->height - height) / 2);
+}
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+
+int GLViewImpl::popupMenu(unsigned int nIDResource)
+{
+	HINSTANCE hInstance = GetModuleHandle(NULL);
+	HWND hWnd = getWin32Window();
+	if (hInstance && hWnd)
+	{
+		HMENU hMenu = LoadMenu(hInstance, MAKEINTRESOURCE(nIDResource));
+		if (hMenu)
+		{
+			HMENU hSubMenu = GetSubMenu(hMenu, 0);
+			if (hSubMenu)
+			{
+				return TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_TOPALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD,
+					_mouseX, _mouseY, 0, hWnd, 0);
+			}
+		}
+	}
+
+	return -1;
+}
+
+int GLViewImpl::popupMenu(HMENU hMenu)
+{
+	HWND hWnd = getWin32Window();
+	if (hWnd && hMenu)
+	{
+		HMENU hSubMenu = GetSubMenu(hMenu, 0);
+		if (hSubMenu)
+		{
+			CCLOG("x=%f,y=%f\n", _mouseX, _mouseY);
+			return TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_TOPALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD,
+				_mouseX, _mouseY, 0, hWnd, 0);
+		}
+	}
+	return -1;
+}
+
+#endif /* (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) */
 
 NS_CC_END // end of namespace cocos2d;

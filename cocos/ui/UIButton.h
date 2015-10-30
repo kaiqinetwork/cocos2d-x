@@ -119,6 +119,14 @@ public:
      */
     void loadTextureDisabled(const std::string& disabled, TextureResType texType = TextureResType::LOCAL);
 
+	/**
+	* Load hot state texture for button.
+	*
+	* @param hot    dark state texture.
+	* @param texType    @see `TextureResType`
+	*/
+	void loadTextureHot(const std::string& hot, TextureResType texType = TextureResType::LOCAL);
+
     /**
      * Sets capInsets for button.
      * The capInset affects  all button scale9 renderer only if `setScale9Enabled(true)` is called
@@ -165,6 +173,19 @@ public:
      *@return The disabled scale9 renderer capInsets.
      */
     const Rect& getCapInsetsDisabledRenderer()const;
+
+	/**
+	* Sets capInsets for button, only the hot state scale9 renderer will be affected.
+	*
+	* @param capInsets  capInsets in Rect.
+	*/
+	void setCapInsetsHotRenderer(const Rect &capInsets);
+
+	/**
+	* Return the capInsets of hot state scale9sprite.
+	*@return The hot scale9 renderer capInsets.
+	*/
+	const Rect& getCapInsetsHotRenderer()const;
 
     /**
      * Enable scale9 renderer.
@@ -289,6 +310,7 @@ protected:
     virtual void onPressStateChangedToNormal() override;
     virtual void onPressStateChangedToPressed() override;
     virtual void onPressStateChangedToDisabled() override;
+	virtual void onPressStateChangedToHot() override;
     virtual void onSizeChanged() override;
 
     void loadTextureNormal(SpriteFrame* normalSpriteFrame);
@@ -297,11 +319,14 @@ protected:
     void setupPressedTexture();
     void loadTextureDisabled(SpriteFrame* disabledSpriteFrame);
     void setupDisabledTexture();
+	void loadTextureHot(SpriteFrame* hotSpriteFrame);
+	void setupHotTexture();
 
     void normalTextureScaleChangedWithSize();
     void pressedTextureScaleChangedWithSize();
     void disabledTextureScaleChangedWithSize();
-
+	void hotTextureScaleChangedWithSize();
+    
     virtual void adaptRenderers() override;
     void updateTitleLocation();
     void updateContentSize();
@@ -315,6 +340,7 @@ protected:
     Scale9Sprite* _buttonNormalRenderer;
     Scale9Sprite* _buttonClickedRenderer;
     Scale9Sprite* _buttonDisableRenderer;
+	Scale9Sprite* _buttonHotRenderer;
     Label* _titleRenderer;
 
     float _zoomScale;
@@ -325,11 +351,11 @@ protected:
     Rect _capInsetsNormal;
     Rect _capInsetsPressed;
     Rect _capInsetsDisabled;
-
+	Rect _capInsetsHot;
     Size _normalTextureSize;
     Size _pressedTextureSize;
     Size _disabledTextureSize;
-
+	Size _hotTextureSize;
     float _normalTextureScaleXInSize;
     float _normalTextureScaleYInSize;
     float _pressedTextureScaleXInSize;
@@ -338,9 +364,11 @@ protected:
     bool _normalTextureLoaded;
     bool _pressedTextureLoaded;
     bool _disabledTextureLoaded;
+	bool _hotTextureLoaded;
     bool _normalTextureAdaptDirty;
     bool _pressedTextureAdaptDirty;
     bool _disabledTextureAdaptDirty;
+	bool _hotTextureAdaptDirty;
 
 private:
     enum class FontType

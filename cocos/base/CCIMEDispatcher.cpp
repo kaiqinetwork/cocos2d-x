@@ -240,6 +240,72 @@ void IMEDispatcher::dispatchDeleteBackward()
     } while (0);
 }
 
+void IMEDispatcher::dispatchDeleteForward()
+{
+	do
+	{
+		CC_BREAK_IF(!_impl);
+
+		// there is no delegate attached to IME
+		CC_BREAK_IF(!_impl->_delegateWithIme);
+
+		_impl->_delegateWithIme->deleteForward();
+	} while (0);
+}
+
+void IMEDispatcher::dispatchMoveCursorBackward(bool wordbreak, bool selectText)
+{
+	do
+	{
+		CC_BREAK_IF(!_impl);
+
+		// there is no delegate attached to IME
+		CC_BREAK_IF(!_impl->_delegateWithIme);
+
+		_impl->_delegateWithIme->moveCursorBackward(wordbreak, selectText);
+	} while (0);
+}
+
+void IMEDispatcher::dispatchMoveCursorForward(bool wordbreak, bool selectText)
+{
+	do
+	{
+		CC_BREAK_IF(!_impl);
+
+		// there is no delegate attached to IME
+		CC_BREAK_IF(!_impl->_delegateWithIme);
+
+		_impl->_delegateWithIme->moveCursorForward(wordbreak, selectText);
+	} while (0);
+}
+
+void IMEDispatcher::dispatchMoveCursorHome(bool selectText)
+{
+	do
+	{
+		CC_BREAK_IF(!_impl);
+
+		// there is no delegate attached to IME
+		CC_BREAK_IF(!_impl->_delegateWithIme);
+
+		_impl->_delegateWithIme->moveCursorHome(selectText);
+	} while (0);
+}
+
+
+void IMEDispatcher::dispatchMoveCursorEnd(bool selectText)
+{
+	do
+	{
+		CC_BREAK_IF(!_impl);
+
+		// there is no delegate attached to IME
+		CC_BREAK_IF(!_impl->_delegateWithIme);
+
+		_impl->_delegateWithIme->moveCursorEnd(selectText);
+	} while (0);
+}
+
 const std::string& IMEDispatcher::getContentText()
 {
     if (_impl && _impl->_delegateWithIme)
@@ -248,6 +314,29 @@ const std::string& IMEDispatcher::getContentText()
     }
     return STD_STRING_EMPTY;
 }
+
+std::string IMEDispatcher::getSelectedText()
+{
+	if (_impl && _impl->_delegateWithIme)
+	{
+		return _impl->_delegateWithIme->getSelectedText();
+	}
+	return STD_STRING_EMPTY;
+}
+
+void IMEDispatcher::dispatchSelectAllText()
+{
+	do
+	{
+		CC_BREAK_IF(!_impl);
+
+		// there is no delegate attached to IME
+		CC_BREAK_IF(!_impl->_delegateWithIme);
+
+		_impl->_delegateWithIme->selectAllText();
+	} while (0);
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // dispatch keyboard message

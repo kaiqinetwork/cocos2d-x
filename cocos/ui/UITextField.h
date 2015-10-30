@@ -29,6 +29,10 @@ THE SOFTWARE.
 #include "2d/CCTextFieldTTF.h"
 #include "ui/GUIExport.h"
 
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+#include "2d/CCDrawNode.h"
+#endif
+
 NS_CC_BEGIN
 /**
  * @addtogroup ui
@@ -78,6 +82,9 @@ public:
     virtual bool onTextFieldDeleteBackward(TextFieldTTF * pSender,
                                            const char * delText,
                                            size_t nLen) override;
+	virtual bool onTextFieldDeleteForward(TextFieldTTF * pSender,
+											const char * delText, 
+											size_t nLen) override;
     void insertText(const char* text, size_t len) override;
     void deleteBackward() override;
     
@@ -206,6 +213,10 @@ public:
      * @return True if delete backward is enabled, false otherwise.
      */
     bool getDeleteBackward()const;
+
+	void setDeleteForward(bool deleteForward);
+	bool getDeleteForward()const;
+
 protected:
     bool _maxLengthEnabled;
     int _maxLength;
@@ -215,6 +226,7 @@ protected:
     bool _detachWithIME;
     bool _insertText;
     bool _deleteBackward;
+	bool _deleteForward;
 };
 
 /**
@@ -227,6 +239,7 @@ typedef enum
     TEXTFIELD_EVENT_DETACH_WITH_IME,
     TEXTFIELD_EVENT_INSERT_TEXT,
     TEXTFIELD_EVENT_DELETE_BACKWARD,
+	TEXTFIELD_EVENT_DELETE_FORWARD,
 }TextFiledEventType;
 
 /**
@@ -258,6 +271,7 @@ public:
         DETACH_WITH_IME,
         INSERT_TEXT,
         DELETE_BACKWARD,
+		DELETE_FORWARD,
     };
     /**
      * A callback which would be called when a TextField event happens.
@@ -429,6 +443,7 @@ public:
     const std::string& getString()const;
     
     virtual bool onTouchBegan(Touch *touch, Event *unusedEvent) override;
+	void setFocus();
     
     
     /**
@@ -552,6 +567,9 @@ public:
      * @param deleteBackward True is delete backward is enabled, false otherwise.
      */
     void setDeleteBackward(bool deleteBackward);
+
+	bool getDeleteForward()const;
+	void setDeleteForward(bool deleteForward);
     
     /**
      * Add a event listener to TextField, when some predefined event happens, the callback will be called.
@@ -616,6 +634,10 @@ public:
      */
     void setTextVerticalAlignment(TextVAlignment alignment);
 
+	virtual void onMouseDown(Event *unusedEvent);
+	virtual void onMouseMove(Event *unusedEvent);
+	virtual void onMouseDblClk(Event *unusedEvent);
+    
     /**
      * @brief Inquire the horizontal alignment
      *
@@ -632,7 +654,13 @@ protected:
     void detachWithIMEEvent();
     void insertTextEvent();
     void deleteBackwardEvent();
+	void deleteForwardEvent();
     virtual void onSizeChanged() override;
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
+	virtual void onPressStateChangedToNormal() override;
+	virtual void onPressStateChangedToHot() override;
+#endif
   
     void textfieldRendererScaleChangedWithSize();
     

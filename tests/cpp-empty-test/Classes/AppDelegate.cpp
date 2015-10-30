@@ -29,8 +29,15 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::create("Cpp Empty Test");
-        director->setOpenGLView(glview);
+//         glview = GLViewImpl::create("Cpp Empty Test");
+//         director->setOpenGLView(glview);
+		glview = GLViewImpl::createWithRect("µÂÖÝÆË¿Ë", Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+
+		if (!glview)
+			return false;
+
+		director->setOpenGLView(glview);
+		((GLViewImpl*)glview)->centerWindow();
     }
 
     director->setOpenGLView(glview);
@@ -101,4 +108,9 @@ void AppDelegate::applicationWillEnterForeground() {
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+}
+
+void AppDelegate::applicationWillClose()
+{
+
 }

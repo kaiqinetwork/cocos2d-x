@@ -1940,6 +1940,14 @@
     <ClCompile Include="..\renderer\CCTextureCube.cpp">
       <Filter>renderer</Filter>
     </ClCompile>
+    <ClCompile Include="..\ui\UIWebViewImpl-win.cpp" />
+    <ClCompile Include="..\ui\UIWindow.cpp" />
+    <ClCompile Include="..\platform\win32\CCInput-win32.cpp">
+      <Filter>platform\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\platform\CCInput.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\physics\CCComponentPhysics2d.h">
@@ -3782,6 +3790,16 @@
     </ClInclude>
     <ClInclude Include="..\renderer\CCTextureCube.h">
       <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\UIRadioButton.h" />
+    <ClInclude Include="..\ui\UIScrollBar.h" />
+    <ClInclude Include="..\ui\UIWebViewImpl-win.h" />
+    <ClInclude Include="..\ui\UIWindow.h" />
+    <ClInclude Include="..\platform\win32\CCInput-win32.h">
+      <Filter>platform\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\CCInput.h">
+      <Filter>platform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

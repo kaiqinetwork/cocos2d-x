@@ -410,6 +410,8 @@ public:
 public:
     /** Get pixel info map, the key-value pairs is PixelFormat and PixelFormatInfo.*/
     static const PixelFormatInfoMap& getPixelFormatInfoMap();
+	static Size getContentSizeWithString(const char* text, const FontDefinition& textDefinition);
+	static Size getContentSizeWithString(const char16_t* text, const FontDefinition& textDefinition);
     
 private:
     /**

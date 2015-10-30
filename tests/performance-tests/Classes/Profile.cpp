@@ -1,7 +1,7 @@
 #include "Profile.h"
-#include "json/document.h"
-#include "json/prettywriter.h"
-#include "json/stringbuffer.h"
+#include "rapidjson/document.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
 #include "platform/CCFileUtils.h"
 #include "cocos2d.h"
 #include <time.h>

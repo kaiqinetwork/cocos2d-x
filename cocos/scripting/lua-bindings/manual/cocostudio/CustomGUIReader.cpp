@@ -1,7 +1,7 @@
 #include "CustomGUIReader.h"
 #include "CCLuaEngine.h"
-#include "json/writer.h"
-#include "json/stringbuffer.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
 USING_NS_CC;
 

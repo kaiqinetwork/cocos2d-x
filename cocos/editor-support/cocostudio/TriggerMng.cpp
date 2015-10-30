@@ -23,9 +23,9 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include "TriggerMng.h"
-#include "json/filestream.h"
-#include "json/prettywriter.h"
-#include "json/stringbuffer.h"
+#include "rapidjson/filestream.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
 
 using namespace cocos2d;
 

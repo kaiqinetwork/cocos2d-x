@@ -58,6 +58,7 @@ EventListenerMouse* EventListenerMouse::clone()
         ret->onMouseDown = onMouseDown;
         ret->onMouseMove = onMouseMove;
         ret->onMouseScroll = onMouseScroll;
+		ret->onMouseDblClk = onMouseDblClk;
     }
     else
     {
@@ -96,6 +97,10 @@ bool EventListenerMouse::init()
                 if(onMouseScroll != nullptr)
                     onMouseScroll(mouseEvent);
                 break;
+			case EventMouse::MouseEventType::MOUSE_DBLCLK:
+				if (onMouseDblClk != nullptr)
+					onMouseDblClk(mouseEvent);
+				break;
             default:
                 break;
         }

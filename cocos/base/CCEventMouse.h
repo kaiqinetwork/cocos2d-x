@@ -62,6 +62,7 @@ public:
         MOUSE_UP,
         MOUSE_MOVE,
         MOUSE_SCROLL,
+		MOUSE_DBLCLK,
     };
 
     /** Constructor.
@@ -132,6 +133,9 @@ public:
      */
     inline float getCursorY() const { return _y; };
 
+	inline void setMods(int mods) { _mods = mods; };
+	inline int getMods() { return _mods; };
+
     /** Returns the current touch location in OpenGL coordinates.
      *
      * @return The current touch location in OpenGL coordinates.
@@ -180,6 +184,7 @@ private:
     float _y;
     float _scrollX;
     float _scrollY;
+	int _mods;
 
     bool _startPointCaptured;
     Vec2 _startPoint;

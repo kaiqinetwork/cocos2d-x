@@ -91,7 +91,26 @@ void MciPlayer::Open(const char* pFileName, UINT uId)
 		WCHAR* fileNameWideChar = new WCHAR[nLen + 1];
 		BREAK_IF(! fileNameWideChar);
 		MultiByteToWideChar(CP_ACP, 0, pFileName, nLen + 1, fileNameWideChar, nLen + 1);
-        mciOpen.lpstrElementName = fileNameWideChar;
+#ifdef UNICODE
+		mciOpen.lpstrElementName = fileNameWideChar;
+#else
+		nLen = WideCharToMultiByte(CP_UTF8, 0, fileNameWideChar, -1, nullptr, 0, nullptr, FALSE);
+		char* utf8String = nullptr;
+		if (nLen)
+		{
+			utf8String = new char[nLen + 1];
+			utf8String[0] = 0;
+
+			nLen = WideCharToMultiByte(CP_UTF8, 0, fileNameWideChar, -1, utf8String, nLen + 1, nullptr, FALSE);
+
+			delete[] fileNameWideChar;
+		}
+		else
+		{
+			CCLOG("Wrong convert to Utf8 code:0x%x", GetLastError());
+		}
+		mciOpen.lpstrElementName = utf8String;
+#endif // UNICODE
 
         mciError = mciSendCommand(0,MCI_OPEN, MCI_OPEN_ELEMENT, reinterpret_cast<DWORD_PTR>(&mciOpen));
 		CC_SAFE_DELETE_ARRAY(mciOpen.lpstrElementName);

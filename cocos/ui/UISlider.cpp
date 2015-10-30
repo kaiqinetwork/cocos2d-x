@@ -437,8 +437,16 @@ bool Slider::hitTest(const cocos2d::Vec2 &pt, const Camera *camera, Vec3 *p) con
 bool Slider::onTouchBegan(Touch *touch, Event *unusedEvent)
 {
     bool pass = Widget::onTouchBegan(touch, unusedEvent);
-    if (_hitted)
+	Vec2 nsp = convertToNodeSpace(_touchBeganPosition);
+	Rect rect(0, 0, getContentSize().width, getContentSize().height);
+	if (rect.containsPoint(nsp))
     {
+		if (!_hittedByCamera)
+		{
+			auto camera = Camera::getVisitingCamera();
+			if (Widget::hitTest(_touchBeganPosition, camera, nullptr))
+				_hittedByCamera = camera;
+		}
         setPercent(getPercentWithBallPos(_touchBeganPosition));
         percentChangedEvent(EventType::ON_SLIDEBALL_DOWN);
     }
