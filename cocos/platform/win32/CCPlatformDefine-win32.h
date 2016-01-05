@@ -60,6 +60,7 @@ THE SOFTWARE.
 #endif
 #endif
 
+#if 0
 #if _MSC_VER > 1800
 #pragma comment(lib,"libpng-2015.lib")
 #pragma comment(lib,"libjpeg-2015.lib")
@@ -72,6 +73,7 @@ THE SOFTWARE.
 #pragma comment(lib,"libtiff.lib")
 #pragma comment(lib,"glfw3.lib")
 #pragma comment(lib,"libchipmunk.lib")
+#endif
 #endif
 
 #endif //s CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
