@@ -320,8 +320,9 @@ if not exist "$(OutDir)\include-win\cocos" mkdir "$(OutDir)\include-win\cocos"
 if not exist "$(OutDir)\include-win\extensions" mkdir "$(OutDir)\include-win\extensions"
 if not exist "$(OutDir)\include-win\external" mkdir "$(OutDir)\include-win\external"
 xcopy /Y /Q /E "$(ProjectDir)..\..\cocos\*.h" "$(OutDir)\include-win\cocos"
+xcopy /Y /Q /E "$(ProjectDir)..\..\cocos\*.inl" "$(OutDir)\include-win\cocos"
 xcopy /Y /Q /E "$(ProjectDir)..\..\extensions\*.h" "$(OutDir)\include-win\extensions"
-xcopy /Y /Q /E "$(ProjectDir)..\..\external\*.h" "$(OutDir)\include-win\external"</Command>
+xcopy /Y /Q /E "$(ProjectDir)..\..\extensions\*.inl" "$(OutDir)\include-win\extensions"</Command>
     </PreLinkEvent>
     <Link>
       <AdditionalDependencies>sqlite3.lib;libcurl_imp.lib;websockets.lib;%(AdditionalDependencies)</AdditionalDependencies>
