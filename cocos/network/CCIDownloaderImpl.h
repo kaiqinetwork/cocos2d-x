@@ -63,6 +63,10 @@ namespace network
         mutable double downloaded;
         mutable double totalToDownload;
         mutable void *_reserved;
+
+		DownloadUnit() : fp(nullptr), resumeDownload(false), resumeDownloadedSize(0.0f), 
+			downloaded(0.0f), totalToDownload(0.0f), _reserved(nullptr)
+		{}
     };
 
     typedef std::unordered_map<std::string, DownloadUnit> DownloadUnits;

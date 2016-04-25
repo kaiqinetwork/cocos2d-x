@@ -523,7 +523,7 @@ Size Device::getSizeWithText(const char * text, const FontDefinition& textDefini
 		memset(pwszBuffer, 0, sizeof(wchar_t)*nBufLen);
 		nLen = MultiByteToWideChar(CP_UTF8, 0, text, nLen, pwszBuffer, nBufLen);
 
-		SIZE newSize = dc.sizeWithText(pwszBuffer, nLen, 0, 0);
+		SIZE newSize = dc.sizeWithText(pwszBuffer, nLen, 0, textDefinition._dimensions.width);
 		textSize.setSize(newSize.cx, newSize.cy);
 	} while (0);
 	CC_SAFE_DELETE_ARRAY(pwszBuffer);
@@ -544,7 +544,7 @@ Size Device::getSizeWithText(const char16_t* text, const FontDefinition& textDef
 		}
 		
 		int nLen = wcslen((const wchar_t*)text);
-		SIZE newSize = dc.sizeWithText((const wchar_t*)text, nLen, 0, 0);
+		SIZE newSize = dc.sizeWithText((const wchar_t*)text, nLen, 0, textDefinition._dimensions.width);
 		textSize.setSize(newSize.cx, newSize.cy);
 	} while (0);
 
