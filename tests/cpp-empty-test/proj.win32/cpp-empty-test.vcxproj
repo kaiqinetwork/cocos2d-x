@@ -157,7 +157,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static_Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Classes;$(KAIQI_PROJECT_ROOT)\include;$(KAIQI_PROJECT_ROOT)\include\glfw3;$(OutDir)\include-win;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Classes;$(KAIQI_PROJECT_ROOT)\include;$(KAIQI_PROJECT_ROOT)\include\glfw3;$(OutDir)\include-win;.\;$(EngineRoot);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;CC_3D_STATIC;IGNORE_EXPORT;CC_STUDIO_STATIC;CC_EX_STATIC;CC_GUI_STATIC;CC_ENABLE_CHIPMUNK_INTEGRATION=1;CC_STATIC;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -174,7 +174,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>libcocos2d-static-vc120-xp-d.lib;libchipmunk-vc120-d.lib;tinyxml-static-vc120-xp-d.lib;libgif-vc120-xp.lib;librecast-static-vc120-xp-d.lib;libbullet-static-vc120-xp-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcocos2d-static-vc120-xp-d.lib;tinyxml-static-vc120-xp-d.lib;libgif-vc120-xp.lib;librecast-static-vc120-xp-d.lib;libbullet-static-vc120-xp-d.lib;chipmunk-static-vc120-xp-d.lib;libcurl-vc120-xp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>MSVRT.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
