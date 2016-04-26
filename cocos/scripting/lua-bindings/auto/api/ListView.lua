@@ -20,14 +20,14 @@
         
 --------------------------------
 -- brief Query the center item<br>
--- return A item instance.
+-- return An item instance.
 -- @function [parent=#ListView] getCenterItemInCurrentView 
 -- @param self
 -- @return Widget#Widget ret (return value: ccui.Widget)
         
 --------------------------------
--- brief Query current selected widget's idnex.<br>
--- return A index of a selected item.
+-- brief Query current selected widget's index.<br>
+-- return An index of a selected item.
 -- @function [parent=#ListView] getCurSelectedIndex 
 -- @param self
 -- @return long#long ret (return value: long)
@@ -38,6 +38,18 @@
 -- @function [parent=#ListView] getItemsMargin 
 -- @param self
 -- @return float#float ret (return value: float)
+        
+--------------------------------
+-- brief Jump to specific item<br>
+-- param itemIndex Specifies the item's index<br>
+-- param positionRatioInView Specifies the position with ratio in list view's content size.<br>
+-- param itemAnchorPoint Specifies an anchor point of each item for position to calculate distance.
+-- @function [parent=#ListView] jumpToItem 
+-- @param self
+-- @param #long itemIndex
+-- @param #vec2_table positionRatioInView
+-- @param #vec2_table itemAnchorPoint
+-- @return ListView#ListView self (return value: ccui.ListView)
         
 --------------------------------
 -- Set magnetic type of ListView.<br>
@@ -58,7 +70,7 @@
         
 --------------------------------
 -- Insert a  custom item into the end of ListView.<br>
--- param item A item in `Widget*`.
+-- param item An item in `Widget*`.
 -- @function [parent=#ListView] pushBackCustomItem 
 -- @param self
 -- @param #ccui.Widget item
@@ -66,7 +78,7 @@
         
 --------------------------------
 -- Insert a default item(create by cloning model) into listview at a give index.<br>
--- param index  A index in ssize_t.
+-- param index  An index in ssize_t.
 -- @function [parent=#ListView] insertDefaultItem 
 -- @param self
 -- @param #long index
@@ -80,7 +92,7 @@
 -- @return ListView#ListView self (return value: ccui.ListView)
         
 --------------------------------
--- Add a event click callback to ListView, then one item of Listview is clicked, the callback will be called.<br>
+-- Add an event click callback to ListView, then one item of Listview is clicked, the callback will be called.<br>
 -- param callback A callback function with type of `ccListViewCallback`.
 -- @function [parent=#ListView] addEventListener 
 -- @param self
@@ -95,7 +107,7 @@
         
 --------------------------------
 -- brief Query the topmost item in horizontal list<br>
--- return A item instance.
+-- return An item instance.
 -- @function [parent=#ListView] getTopmostItemInCurrentView 
 -- @param self
 -- @return Widget#Widget ret (return value: ccui.Widget)
@@ -108,7 +120,7 @@
         
 --------------------------------
 -- brief Query the bottommost item in horizontal list<br>
--- return A item instance.
+-- return An item instance.
 -- @function [parent=#ListView] getBottommostItemInCurrentView 
 -- @param self
 -- @return Widget#Widget ret (return value: ccui.Widget)
@@ -122,7 +134,7 @@
         
 --------------------------------
 -- brief Query the leftmost item in horizontal list<br>
--- return A item instance.
+-- return An item instance.
 -- @function [parent=#ListView] getLeftmostItemInCurrentView 
 -- @param self
 -- @return Widget#Widget ret (return value: ccui.Widget)
@@ -142,7 +154,7 @@
 -- @return int#int ret (return value: int)
         
 --------------------------------
--- Return a item at a given index.<br>
+-- Return an item at a given index.<br>
 -- param index A given index in ssize_t.<br>
 -- return A widget instance.
 -- @function [parent=#ListView] getItem 
@@ -151,7 +163,7 @@
 -- @return Widget#Widget ret (return value: ccui.Widget)
         
 --------------------------------
--- Remove a item at given index.<br>
+-- Remove an item at given index.<br>
 -- param index A given index in ssize_t.
 -- @function [parent=#ListView] removeItem 
 -- @param self
@@ -159,18 +171,18 @@
 -- @return ListView#ListView self (return value: ccui.ListView)
         
 --------------------------------
--- @overload self, int, vec2_table, vec2_table, float         
--- @overload self, int, vec2_table, vec2_table         
+-- @overload self, long, vec2_table, vec2_table, float         
+-- @overload self, long, vec2_table, vec2_table         
 -- @function [parent=#ListView] scrollToItem
 -- @param self
--- @param #int itemIndex
+-- @param #long itemIndex
 -- @param #vec2_table positionRatioInView
 -- @param #vec2_table itemAnchorPoint
 -- @param #float timeInSec
 -- @return ListView#ListView self (return value: ccui.ListView)
 
 --------------------------------
--- Insert a  a default item(create by a cloned model) at the end of the listview.
+-- Insert a default item(create by a cloned model) at the end of the listview.
 -- @function [parent=#ListView] pushBackDefaultItem 
 -- @param self
 -- @return ListView#ListView self (return value: ccui.ListView)
@@ -185,7 +197,7 @@
 -- brief Query the closest item to a specific position in inner container.<br>
 -- param targetPosition Specifies the target position in inner container's coordinates.<br>
 -- param itemAnchorPoint Specifies an anchor point of each item for position to calculate distance.<br>
--- return A item instance if list view is not empty. Otherwise, returns null.
+-- return An item instance if list view is not empty. Otherwise, returns null.
 -- @function [parent=#ListView] getClosestItemToPosition 
 -- @param self
 -- @param #vec2_table targetPosition
@@ -194,7 +206,7 @@
         
 --------------------------------
 -- brief Query the rightmost item in horizontal list<br>
--- return A item instance.
+-- return An item instance.
 -- @function [parent=#ListView] getRightmostItemInCurrentView 
 -- @param self
 -- @return Widget#Widget ret (return value: ccui.Widget)
@@ -204,7 +216,7 @@
 -- For instance, to find the item in the center of view, call 'getClosestItemToPositionInCurrentView(Vec2::ANCHOR_MIDDLE, Vec2::ANCHOR_MIDDLE)'.<br>
 -- param positionRatioInView Specifies the target position with ratio in list view's content size.<br>
 -- param itemAnchorPoint Specifies an anchor point of each item for position to calculate distance.<br>
--- return A item instance if list view is not empty. Otherwise, returns null.
+-- return An item instance if list view is not empty. Otherwise, returns null.
 -- @function [parent=#ListView] getClosestItemToPositionInCurrentView 
 -- @param self
 -- @param #vec2_table positionRatioInView
@@ -212,25 +224,12 @@
 -- @return Widget#Widget ret (return value: ccui.Widget)
         
 --------------------------------
--- brief Refresh content view of ListView.
--- @function [parent=#ListView] refreshView 
--- @param self
--- @return ListView#ListView self (return value: ccui.ListView)
-        
---------------------------------
--- Set a item model for listview.<br>
+-- Set an item model for listview.<br>
 -- When calling `pushBackDefaultItem`, the model will be used as a blueprint and new model copy will be inserted into ListView.<br>
 -- param model  Model in `Widget*`.
 -- @function [parent=#ListView] setItemModel 
 -- @param self
 -- @param #ccui.Widget model
--- @return ListView#ListView self (return value: ccui.ListView)
-        
---------------------------------
--- brief Refresh view and layout of ListView manually.<br>
--- This method will mark ListView content as dirty and the content view will be refershed in the next frame.
--- @function [parent=#ListView] requestRefreshView 
--- @param self
 -- @return ListView#ListView self (return value: ccui.ListView)
         
 --------------------------------
@@ -269,10 +268,16 @@
 -- @return ListView#ListView self (return value: ccui.ListView)
 
 --------------------------------
--- 
--- @function [parent=#ListView] forceDoLayout 
+-- Override functions
+-- @function [parent=#ListView] jumpToBottom 
 -- @param self
 -- @return ListView#ListView self (return value: ccui.ListView)
+        
+--------------------------------
+-- 
+-- @function [parent=#ListView] init 
+-- @param self
+-- @return bool#bool ret (return value: bool)
         
 --------------------------------
 -- Changes scroll direction of scrollview.<br>
@@ -285,9 +290,15 @@
         
 --------------------------------
 -- 
--- @function [parent=#ListView] getDescription 
+-- @function [parent=#ListView] jumpToTopRight 
 -- @param self
--- @return string#string ret (return value: string)
+-- @return ListView#ListView self (return value: ccui.ListView)
+        
+--------------------------------
+-- 
+-- @function [parent=#ListView] jumpToLeft 
+-- @param self
+-- @return ListView#ListView self (return value: ccui.ListView)
         
 --------------------------------
 -- 
@@ -298,7 +309,19 @@
         
 --------------------------------
 -- 
+-- @function [parent=#ListView] requestDoLayout 
+-- @param self
+-- @return ListView#ListView self (return value: ccui.ListView)
+        
+--------------------------------
+-- 
 -- @function [parent=#ListView] removeAllChildren 
+-- @param self
+-- @return ListView#ListView self (return value: ccui.ListView)
+        
+--------------------------------
+-- 
+-- @function [parent=#ListView] jumpToTopLeft 
 -- @param self
 -- @return ListView#ListView self (return value: ccui.ListView)
         
@@ -312,9 +335,54 @@
         
 --------------------------------
 -- 
--- @function [parent=#ListView] init 
+-- @function [parent=#ListView] jumpToBottomRight 
 -- @param self
--- @return bool#bool ret (return value: bool)
+-- @return ListView#ListView self (return value: ccui.ListView)
+        
+--------------------------------
+-- 
+-- @function [parent=#ListView] jumpToTop 
+-- @param self
+-- @return ListView#ListView self (return value: ccui.ListView)
+        
+--------------------------------
+-- 
+-- @function [parent=#ListView] jumpToBottomLeft 
+-- @param self
+-- @return ListView#ListView self (return value: ccui.ListView)
+        
+--------------------------------
+-- 
+-- @function [parent=#ListView] jumpToPercentBothDirection 
+-- @param self
+-- @param #vec2_table percent
+-- @return ListView#ListView self (return value: ccui.ListView)
+        
+--------------------------------
+-- 
+-- @function [parent=#ListView] jumpToPercentHorizontal 
+-- @param self
+-- @param #float percent
+-- @return ListView#ListView self (return value: ccui.ListView)
+        
+--------------------------------
+-- 
+-- @function [parent=#ListView] jumpToRight 
+-- @param self
+-- @return ListView#ListView self (return value: ccui.ListView)
+        
+--------------------------------
+-- 
+-- @function [parent=#ListView] getDescription 
+-- @param self
+-- @return string#string ret (return value: string)
+        
+--------------------------------
+-- 
+-- @function [parent=#ListView] jumpToPercentVertical 
+-- @param self
+-- @param #float percent
+-- @return ListView#ListView self (return value: ccui.ListView)
         
 --------------------------------
 -- Default constructor<br>

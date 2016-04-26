@@ -23,10 +23,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#include "InputEvent.h"
-#include "CCWinRTUtils.h"
-#include "CCGLViewImpl-winrt.h"
+#include "platform/winrt/InputEvent.h"
+#include "platform/winrt/CCWinRTUtils.h"
+#include "platform/winrt/CCGLViewImpl-winrt.h"
 #include "base/CCEventAcceleration.h"
+#include "base/CCDirector.h"
+#include "base/CCEventDispatcher.h"
+#include "base/CCIMEDispatcher.h"
 
 NS_CC_BEGIN
 
@@ -62,6 +65,18 @@ void PointerEvent::execute()
         break;           
     case PointerEventType::PointerReleased:
         GLViewImpl::sharedOpenGLView()->OnPointerReleased(m_args.Get());
+        break;
+    case cocos2d::MousePressed:
+        GLViewImpl::sharedOpenGLView()->OnMousePressed(m_args.Get());
+        break;
+    case cocos2d::MouseMoved:
+        GLViewImpl::sharedOpenGLView()->OnMouseMoved(m_args.Get());
+        break;
+    case cocos2d::MouseReleased:
+        GLViewImpl::sharedOpenGLView()->OnMouseReleased(m_args.Get());
+        break;
+    case cocos2d::MouseWheelChanged:
+        GLViewImpl::sharedOpenGLView()->OnMouseWheelChanged(m_args.Get());
         break;
     }
 }

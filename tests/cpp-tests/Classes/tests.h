@@ -9,9 +9,7 @@
 #include "ChipmunkTest/ChipmunkTest.h"
 #include "ClippingNodeTest/ClippingNodeTest.h"
 #endif
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include "NewAudioEngineTest/NewAudioEngineTest.h"
-#endif
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_EMSCRIPEN)
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_MARMALADE)
 // bada don't support libcurl
@@ -19,6 +17,9 @@
 #include "CurlTest/CurlTest.h"
 #endif
 #endif
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "JNITest/JNITest.h"
 #endif
 
 // sort them alphabetically. thanks
@@ -90,5 +91,6 @@
 #include "UserDefaultTest/UserDefaultTest.h"
 #include "VibrateTest/VibrateTest.h"
 #include "ZwoptexTest/ZwoptexTest.h"
+#include "SpriteFrameCacheTest/SpriteFrameCacheTest.h"
 
 #endif

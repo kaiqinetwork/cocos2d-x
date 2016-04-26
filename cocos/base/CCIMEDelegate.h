@@ -28,6 +28,7 @@ THE SOFTWARE.
 
 #include <string>
 #include "math/CCGeometry.h"
+#include "base/CCEventKeyboard.h"
 
 /**
  * @addtogroup base
@@ -124,17 +125,12 @@ protected:
     */
     virtual void deleteBackward() {}
 
-	virtual void deleteForward() {}
-
-	virtual void moveCursorBackward(bool wordbreak, bool selectText) {}
-
-	virtual void moveCursorForward(bool wordbreak, bool selectText) {}
-
-	virtual void moveCursorHome(bool selectText) {}
-
-	virtual void moveCursorEnd(bool selectText) {}
-
-	virtual void selectAllText() {}
+    /**
+    @brief    Called by IMEDispatcher after the user press control key.
+    * @js NA
+    * @lua NA
+    */
+    virtual void controlKey(EventKeyboard::KeyCode keyCode) {}
 
     /**
     @brief    Called by IMEDispatcher for text stored in delegate.
@@ -142,8 +138,6 @@ protected:
     * @lua NA
     */
     virtual const std::string& getContentText() { return STD_STRING_EMPTY; }
-	
-	virtual std::string getSelectedText() { return STD_STRING_EMPTY; }
 
     //////////////////////////////////////////////////////////////////////////
     // keyboard show/hide notification

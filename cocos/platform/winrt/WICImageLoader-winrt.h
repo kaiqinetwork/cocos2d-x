@@ -28,12 +28,15 @@ obtained from https://directxtk.codeplex.com
 #ifndef __WIC_IMAGE_LOADER_H__
 #define __WIC_IMAGE_LOADER_H__
 
-#if defined(CC_USE_WIC)
+#include "base/ccConfig.h"
+
+
+#if CC_USE_WIC
 
 #include <memory>
 #include <string>
 #include <wincodec.h>
-#include "CCPlatformMacros.h"
+#include "platform/CCPlatformMacros.h"
 
 NS_CC_BEGIN
 
@@ -46,7 +49,7 @@ struct WICConvert
 	WICPixelFormatGUID target;
 };
 
-class WICImageLoader
+class CC_DLL WICImageLoader
 {
 public:
 

@@ -29,10 +29,6 @@ THE SOFTWARE.
 #include "2d/CCTextFieldTTF.h"
 #include "ui/GUIExport.h"
 
-#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-#include "2d/CCDrawNode.h"
-#endif
-
 NS_CC_BEGIN
 /**
  * @addtogroup ui
@@ -63,7 +59,7 @@ public:
     virtual void onEnter() override;
     
     /**
-     * Create a UICCTextField intance with a placeholder, a fontName and a fontSize.
+     * Create a UICCTextField instance with a placeholder, a fontName and a fontSize.
      *@param placeholder Placeholder in string.
      *@param fontName Font name in string.
      *@param fontSize Font size in float.
@@ -82,9 +78,6 @@ public:
     virtual bool onTextFieldDeleteBackward(TextFieldTTF * pSender,
                                            const char * delText,
                                            size_t nLen) override;
-	virtual bool onTextFieldDeleteForward(TextFieldTTF * pSender,
-											const char * delText, 
-											size_t nLen) override;
     void insertText(const char* text, size_t len) override;
     void deleteBackward() override;
     
@@ -111,8 +104,8 @@ public:
     bool isMaxLengthEnabled()const;
 
     /**
-     * Set maxmize length.
-     *@param length  The maxmize length in integer.
+     * Set maximize length.
+     *@param length  The maximize length in integer.
      */
     void setMaxLength(int length);
 
@@ -123,10 +116,10 @@ public:
     int getMaxLength()const;
 
     /**
-     * Return the total inputed charaters.
+     * Return the total inputed characters.
      *@return Total inputed character count.
      */
-    int getCharCount()const;
+    std::size_t getCharCount()const;
     
     
     /**
@@ -213,20 +206,13 @@ public:
      * @return True if delete backward is enabled, false otherwise.
      */
     bool getDeleteBackward()const;
-
-	void setDeleteForward(bool deleteForward);
-	bool getDeleteForward()const;
-
 protected:
     bool _maxLengthEnabled;
     int _maxLength;
-    bool _passwordEnabled;
-    std::string _passwordStyleText;
     bool _attachWithIME;
     bool _detachWithIME;
     bool _insertText;
     bool _deleteBackward;
-	bool _deleteForward;
 };
 
 /**
@@ -239,7 +225,6 @@ typedef enum
     TEXTFIELD_EVENT_DETACH_WITH_IME,
     TEXTFIELD_EVENT_INSERT_TEXT,
     TEXTFIELD_EVENT_DELETE_BACKWARD,
-	TEXTFIELD_EVENT_DELETE_FORWARD,
 }TextFiledEventType;
 
 /**
@@ -271,7 +256,6 @@ public:
         DETACH_WITH_IME,
         INSERT_TEXT,
         DELETE_BACKWARD,
-		DELETE_FORWARD,
     };
     /**
      * A callback which would be called when a TextField event happens.
@@ -443,7 +427,6 @@ public:
     const std::string& getString()const;
     
     virtual bool onTouchBegan(Touch *touch, Event *unusedEvent) override;
-	void setFocus();
     
     
     /**
@@ -567,9 +550,6 @@ public:
      * @param deleteBackward True is delete backward is enabled, false otherwise.
      */
     void setDeleteBackward(bool deleteBackward);
-
-	bool getDeleteForward()const;
-	void setDeleteForward(bool deleteForward);
     
     /**
      * Add a event listener to TextField, when some predefined event happens, the callback will be called.
@@ -590,12 +570,12 @@ public:
     virtual std::string getDescription() const override;
     
     /**
-     * @brief Get the the renderer size in auto mode.
+     * @brief Get the renderer size in auto mode.
      *
      * @return A delimitation zone.
      */
     virtual Size getAutoRenderSize();
-    //overide functions.
+    //override functions.
     virtual Size getVirtualRendererSize() const override;
     virtual Node* getVirtualRenderer() override;
     virtual void onEnter() override;
@@ -634,16 +614,36 @@ public:
      */
     void setTextVerticalAlignment(TextVAlignment alignment);
 
-	virtual void onMouseDown(Event *unusedEvent);
-	virtual void onMouseMove(Event *unusedEvent);
-	virtual void onMouseDblClk(Event *unusedEvent);
-    
     /**
      * @brief Inquire the horizontal alignment
      *
      * @return The horizontal alignment
      */
     TextVAlignment getTextVerticalAlignment() const;
+    
+    /**
+     * Set enable cursor use.
+     * @js NA
+     */
+    void setCursorEnabled(bool enabled);
+    
+    /**
+     * Set char showing cursor.
+     * @js NA
+     */
+    void setCursorChar(char cursor);
+    
+    /**
+     * Set cursor position, if enabled
+     * @js NA
+     */
+    void setCursorPosition(std::size_t cursorPosition);
+    
+    /**
+     * Set cursor position to hit letter, if enabled
+     * @js NA
+     */
+    void setCursorFromPoint(const Vec2 &point, const Camera* camera);
     
 CC_CONSTRUCTOR_ACCESS:
     virtual bool init() override;
@@ -654,13 +654,7 @@ protected:
     void detachWithIMEEvent();
     void insertTextEvent();
     void deleteBackwardEvent();
-	void deleteForwardEvent();
     virtual void onSizeChanged() override;
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
-	virtual void onPressStateChangedToNormal() override;
-	virtual void onPressStateChangedToHot() override;
-#endif
   
     void textfieldRendererScaleChangedWithSize();
     
@@ -689,7 +683,6 @@ protected:
 #endif
     ccTextFieldCallback _eventCallback;
     
-    std::string _passwordStyleText;
     bool _textFieldRendererAdaptDirty;
 private:
     enum class FontType

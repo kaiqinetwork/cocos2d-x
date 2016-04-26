@@ -22,9 +22,10 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "UIVideoPlayer.h"
+#include "ui/UIVideoPlayer.h"
 
-#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+// No Available on tvOS
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS && !defined(CC_TARGET_OS_TVOS)
 
 using namespace cocos2d::experimental::ui;
 //-------------------------------------------------------------------------------------

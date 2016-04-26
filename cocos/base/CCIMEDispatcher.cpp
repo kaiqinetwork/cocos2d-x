@@ -144,19 +144,22 @@ bool IMEDispatcher::attachDelegateWithIME(IMEDelegate * delegate)
 
         if (_impl->_delegateWithIme)
         {
-            // if old delegate canDetachWithIME return false 
-            // or pDelegate canAttachWithIME return false,
-            // do nothing.
-            CC_BREAK_IF(! _impl->_delegateWithIme->canDetachWithIME()
-                || ! delegate->canAttachWithIME());
+            if (_impl->_delegateWithIme != delegate)
+            {
+                // if old delegate canDetachWithIME return false 
+                // or pDelegate canAttachWithIME return false,
+                // do nothing.
+                CC_BREAK_IF(!_impl->_delegateWithIme->canDetachWithIME()
+                    || !delegate->canAttachWithIME());
 
-            // detach first
-            IMEDelegate * oldDelegate = _impl->_delegateWithIme;
-            _impl->_delegateWithIme = 0;
-            oldDelegate->didDetachWithIME();
+                // detach first
+                IMEDelegate * oldDelegate = _impl->_delegateWithIme;
+                _impl->_delegateWithIme = 0;
+                oldDelegate->didDetachWithIME();
 
-            _impl->_delegateWithIme = *iter;
-            delegate->didAttachWithIME();
+                _impl->_delegateWithIme = *iter;
+                delegate->didAttachWithIME();
+            }
             ret = true;
             break;
         }
@@ -240,70 +243,17 @@ void IMEDispatcher::dispatchDeleteBackward()
     } while (0);
 }
 
-void IMEDispatcher::dispatchDeleteForward()
+void IMEDispatcher::dispatchControlKey(EventKeyboard::KeyCode keyCode)
 {
-	do
-	{
-		CC_BREAK_IF(!_impl);
+    do
+    {
+        CC_BREAK_IF(!_impl);
 
-		// there is no delegate attached to IME
-		CC_BREAK_IF(!_impl->_delegateWithIme);
+        // there is no delegate attached to IME
+        CC_BREAK_IF(!_impl->_delegateWithIme);
 
-		_impl->_delegateWithIme->deleteForward();
-	} while (0);
-}
-
-void IMEDispatcher::dispatchMoveCursorBackward(bool wordbreak, bool selectText)
-{
-	do
-	{
-		CC_BREAK_IF(!_impl);
-
-		// there is no delegate attached to IME
-		CC_BREAK_IF(!_impl->_delegateWithIme);
-
-		_impl->_delegateWithIme->moveCursorBackward(wordbreak, selectText);
-	} while (0);
-}
-
-void IMEDispatcher::dispatchMoveCursorForward(bool wordbreak, bool selectText)
-{
-	do
-	{
-		CC_BREAK_IF(!_impl);
-
-		// there is no delegate attached to IME
-		CC_BREAK_IF(!_impl->_delegateWithIme);
-
-		_impl->_delegateWithIme->moveCursorForward(wordbreak, selectText);
-	} while (0);
-}
-
-void IMEDispatcher::dispatchMoveCursorHome(bool selectText)
-{
-	do
-	{
-		CC_BREAK_IF(!_impl);
-
-		// there is no delegate attached to IME
-		CC_BREAK_IF(!_impl->_delegateWithIme);
-
-		_impl->_delegateWithIme->moveCursorHome(selectText);
-	} while (0);
-}
-
-
-void IMEDispatcher::dispatchMoveCursorEnd(bool selectText)
-{
-	do
-	{
-		CC_BREAK_IF(!_impl);
-
-		// there is no delegate attached to IME
-		CC_BREAK_IF(!_impl->_delegateWithIme);
-
-		_impl->_delegateWithIme->moveCursorEnd(selectText);
-	} while (0);
+        _impl->_delegateWithIme->controlKey(keyCode);
+    } while (0);
 }
 
 const std::string& IMEDispatcher::getContentText()
@@ -314,29 +264,6 @@ const std::string& IMEDispatcher::getContentText()
     }
     return STD_STRING_EMPTY;
 }
-
-std::string IMEDispatcher::getSelectedText()
-{
-	if (_impl && _impl->_delegateWithIme)
-	{
-		return _impl->_delegateWithIme->getSelectedText();
-	}
-	return STD_STRING_EMPTY;
-}
-
-void IMEDispatcher::dispatchSelectAllText()
-{
-	do
-	{
-		CC_BREAK_IF(!_impl);
-
-		// there is no delegate attached to IME
-		CC_BREAK_IF(!_impl->_delegateWithIme);
-
-		_impl->_delegateWithIme->selectAllText();
-	} while (0);
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // dispatch keyboard message

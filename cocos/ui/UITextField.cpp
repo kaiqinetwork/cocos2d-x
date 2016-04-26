@@ -27,10 +27,6 @@ THE SOFTWARE.
 #include "ui/UIHelper.h"
 #include "base/ccUTF8.h"
 #include "2d/CCCamera.h"
-#include "platform/CCInput.h"
-#include "2d/CCSprite.h"
-#include "platform/CCDevice.h"
-#include "base/CCEventMouse.h"
 
 NS_CC_BEGIN
 
@@ -39,13 +35,10 @@ namespace ui {
 UICCTextField::UICCTextField()
 : _maxLengthEnabled(false)
 , _maxLength(0)
-, _passwordEnabled(false)
-, _passwordStyleText("*")
 , _attachWithIME(false)
 , _detachWithIME(false)
 , _insertText(false)
 , _deleteBackward(false)
-, _deleteForward(false)
 {
 }
 
@@ -73,8 +66,8 @@ UICCTextField * UICCTextField::create(const std::string& placeholder, const std:
 
 void UICCTextField::onEnter()
 {
-	TextFieldTTF::setDelegate(this);
-	TextFieldTTF::onEnter();
+    TextFieldTTF::onEnter();
+    TextFieldTTF::setDelegate(this);
 }
 
 
@@ -108,12 +101,6 @@ bool UICCTextField::onTextFieldDeleteBackward(TextFieldTTF *pSender, const char 
     return false;
 }
 
-bool UICCTextField::onTextFieldDeleteForward(TextFieldTTF * pSender, const char * delText, size_t nLen)
-{
-	setDeleteForward(true);
-	return false;
-}
-
 bool UICCTextField::onTextFieldDetachWithIME(TextFieldTTF *pSender)
 {
     setDetachWithIME(true);
@@ -132,9 +119,9 @@ void UICCTextField::insertText(const char*  text, size_t len)
             if (text_count >= _maxLength)
             {
                 // password
-                if (_passwordEnabled)
+                if (this->isSecureTextEntry())
                 {
-                    setPasswordText(getString().c_str());
+                    setPasswordText(getString());
                 }
                 return;
             }
@@ -154,11 +141,11 @@ void UICCTextField::insertText(const char*  text, size_t len)
     TextFieldTTF::insertText(input_text.c_str(), len);
     
     // password
-    if (_passwordEnabled)
+    if (this->isSecureTextEntry())
     {
         if (TextFieldTTF::getCharCount() > 0)
         {
-            setPasswordText(getString().c_str());
+            setPasswordText(getString());
         }
     }
 }
@@ -170,9 +157,9 @@ void UICCTextField::deleteBackward()
     if (TextFieldTTF::getCharCount() > 0)
     {
         // password
-        if (_passwordEnabled)
+        if (this->isSecureTextEntry())
         {
-            setPasswordText(_inputText.c_str());
+            setPasswordText(_inputText);
         }
     }
 }
@@ -207,33 +194,24 @@ int UICCTextField::getMaxLength()const
     return _maxLength;
 }
 
-int UICCTextField::getCharCount()const
+std::size_t UICCTextField::getCharCount()const
 {
     return TextFieldTTF::getCharCount();
 }
 
 void UICCTextField::setPasswordEnabled(bool enable)
 {
-    _passwordEnabled = enable;
+    this->setSecureTextEntry(enable);
 }
 
 bool UICCTextField::isPasswordEnabled()const
 {
-    return _passwordEnabled;
+    return this->isSecureTextEntry();
 }
 
 void UICCTextField::setPasswordStyleText(const std::string& styleText)
 {
-    if (styleText.length() > 1)
-    {
-        return;
-    }
-    char value = styleText[0];
-    if (value < 33 || value > 126)
-    {
-        return;
-    }
-    _passwordStyleText = styleText;
+    this->setPasswordTextStyle(styleText);
 }
 
 void UICCTextField::setPasswordText(const std::string& text)
@@ -298,18 +276,6 @@ bool UICCTextField::getDeleteBackward()const
     return _deleteBackward;
 }
 
-void UICCTextField::setDeleteForward(bool deleteForward)
-{
-	_deleteForward = deleteForward;
-}
-
-bool UICCTextField::getDeleteForward() const
-{
-	return _deleteForward;
-}
-
-
-static const int SELECT_TEXT_RENDERER_Z = (-2);
 static const int TEXTFIELD_RENDERER_Z = (-1);
 
 IMPLEMENT_CLASS_GUI_INFO(TextField)
@@ -323,7 +289,6 @@ _useTouchArea(false),
 _textFieldEventListener(nullptr),
 _textFieldEventSelector(nullptr),
 _eventCallback(nullptr),
-_passwordStyleText(""),
 _textFieldRendererAdaptDirty(true),
 _fontName("Thonburi"),
 _fontSize(10),
@@ -369,7 +334,6 @@ bool TextField::init()
     if (Widget::init())
     {
         setTouchEnabled(true);
-		setMouseEnabled(true);
         return true;
     }
     return false;
@@ -561,6 +525,11 @@ bool TextField::onTouchBegan(Touch *touch, Event *unusedEvent)
     bool pass = Widget::onTouchBegan(touch, unusedEvent);
     if (_hitted)
     {
+        if (isFocusEnabled())
+        {
+            requestFocus();
+        }
+
         _textFieldRenderer->attachWithIME();
     }
     else
@@ -605,14 +574,13 @@ bool TextField::isPasswordEnabled()const
 void TextField::setPasswordStyleText(const char *styleText)
 {
     _textFieldRenderer->setPasswordStyleText(styleText);
-    _passwordStyleText = styleText;
     
     setString(getString());
 }
     
 const char* TextField::getPasswordStyleText()const
 {
-    return _passwordStyleText.c_str();
+    return _textFieldRenderer->getPasswordTextStyle().c_str();
 }
 
 void TextField::update(float dt)
@@ -647,14 +615,6 @@ void TextField::update(float dt)
         insertTextEvent();
         setInsertText(false);
     }
-	if (getDeleteForward())
-	{
-		deleteForwardEvent();
-		setDeleteForward(false);
-
-		_textFieldRendererAdaptDirty = true;
-		updateContentSizeWithTextureSize(_textFieldRenderer->getContentSize());
-	}
 }
 
 bool TextField::getAttachWithIME()const
@@ -695,16 +655,6 @@ bool TextField::getDeleteBackward()const
 void TextField::setDeleteBackward(bool deleteBackward)
 {
     _textFieldRenderer->setDeleteBackward(deleteBackward);
-}
-
-bool TextField::getDeleteForward() const
-{
-	return _textFieldRenderer->getDeleteForward();
-}
-
-void TextField::setDeleteForward(bool deleteForward)
-{
-	_textFieldRenderer->setDeleteForward(deleteForward);
 }
 
 void TextField::attachWithIMEEvent()
@@ -776,23 +726,6 @@ void TextField::deleteBackwardEvent()
         _ccEventCallback(this, static_cast<int>(EventType::DELETE_BACKWARD));
     }
     this->release();
-}
-
-void TextField::deleteForwardEvent()
-{
-	this->retain();
-	if (_textFieldEventListener && _textFieldEventSelector)
-	{
-		(_textFieldEventListener->*_textFieldEventSelector)(this, TEXTFIELD_EVENT_DELETE_FORWARD);
-	}
-	if (_eventCallback) {
-		_eventCallback(this, EventType::DELETE_FORWARD);
-	}
-	if (_ccEventCallback)
-	{
-		_ccEventCallback(this, static_cast<int>(EventType::DELETE_FORWARD));
-	}
-	this->release();
 }
 
 void TextField::addEventListenerTextField(Ref *target, SEL_TextFieldEvent selecor)
@@ -880,7 +813,7 @@ void TextField::copySpecialProperties(Widget *widget)
         setMaxLengthEnabled(textField->isMaxLengthEnabled());
         setMaxLength(textField->getMaxLength());
         setPasswordEnabled(textField->isPasswordEnabled());
-        setPasswordStyleText(textField->_passwordStyleText.c_str());
+        setPasswordStyleText(textField->getPasswordStyleText());
         setAttachWithIME(textField->getAttachWithIME());
         setDetachWithIME(textField->getDetachWithIME());
         setInsertText(textField->getInsertText());
@@ -916,59 +849,27 @@ TextVAlignment TextField::getTextVerticalAlignment() const
 {
     return _textFieldRenderer->getVerticalAlignment();
 }
-
-#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-
-void TextField::onPressStateChangedToHot()
+    
+void TextField::setCursorEnabled(bool enabled)
 {
- 	//if (isHovered())
- 	//	Input::sharedInput()->pushCursor(Input::CURSOR_IBEAM);
+    _textFieldRenderer->setCursorEnabled(enabled);
+}
+    
+void TextField::setCursorChar(char cursor)
+{
+    _textFieldRenderer->setCursorChar(cursor);
 }
 
-void TextField::onPressStateChangedToNormal()
+void TextField::setCursorPosition(std::size_t cursorPosition)
 {
-// 	if (!isHovered())
-// 	{
-// 		Input::sharedInput()->popCursor();
-// 	}
+    _textFieldRenderer->setCursorPosition(cursorPosition);
 }
 
-#endif
-
-void TextField::onMouseDown(Event *unusedEvent)
+void TextField::setCursorFromPoint(const Vec2 &point, const Camera* camera)
 {
-	if (_textFieldRenderer)
-	{
-		if (_hitted)
-			_textFieldRenderer->handleMouseDown(unusedEvent);
-		else
-			_textFieldRenderer->handleMouseLeave(unusedEvent);
-	}
+    _textFieldRenderer->setCursorFromPoint(point, camera);
 }
 
-void TextField::onMouseMove(Event *unusedEvent)
-{
-	Widget::onMouseMove(unusedEvent);
-
-	if (_textFieldRenderer && _hitted)
-	{
-		_textFieldRenderer->handleMouseMove(unusedEvent);
-	}
-}
-
-void TextField::onMouseDblClk(Event *unusedEvent)
-{
-	if (_textFieldRenderer && _hitted)
-	{
-		_textFieldRenderer->handleMouseDblClk(unusedEvent);
-	}
-}
-
-void TextField::setFocus()
-{
-	if (_textFieldRenderer)
-		_textFieldRenderer->attachWithIME();
-}
 
 }
 

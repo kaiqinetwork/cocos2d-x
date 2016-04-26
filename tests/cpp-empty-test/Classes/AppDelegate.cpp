@@ -6,6 +6,9 @@
 #include "HelloWorldScene.h"
 #include "AppMacros.h"
 
+//Uncomment the following line to use localize manager
+//#include "editor-support/cocostudio/LocalizationManager.h"
+
 USING_NS_CC;
 using namespace std;
 
@@ -29,15 +32,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-//         glview = GLViewImpl::create("Cpp Empty Test");
-//         director->setOpenGLView(glview);
-		glview = GLViewImpl::createWithRect("µÂÖÝÆË¿Ë", Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
-
-		if (!glview)
-			return false;
-
-		director->setOpenGLView(glview);
-		((GLViewImpl*)glview)->centerWindow();
+        glview = GLViewImpl::create("Cpp Empty Test");
+        director->setOpenGLView(glview);
     }
 
     director->setOpenGLView(glview);
@@ -78,12 +74,28 @@ bool AppDelegate::applicationDidFinishLaunching() {
     
     // set searching path
     FileUtils::getInstance()->setSearchPaths(searchPath);
-	
+
+    // Uncomment follow block to use localize manager to set localize strings
+
+    //  If you want to load json localize data, use follow block
+    /*
+    cocostudio::ILocalizationManager * lm = cocostudio::JsonLocalizationManager::getInstance();
+    lm->initLanguageData("your localize file name.lang.json");
+    cocostudio::LocalizationHelper::setCurrentManager(lm, false);
+    */
+
+    //  If you want to load binary localize data, use follow block
+    /*
+    cocostudio::ILocalizationManager * lm = cocostudio::BinLocalizationManager::getInstance();
+    lm->initLanguageData("your localize file name.lang.csb");
+    cocostudio::LocalizationHelper::setCurrentManager(lm, true);
+    */
+
     // turn on display FPS
     director->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0 / 60);
+    director->setAnimationInterval(1.0f / 60);
 
     // create a scene. it's an autorelease object
     auto scene = HelloWorld::scene();
@@ -108,9 +120,4 @@ void AppDelegate::applicationWillEnterForeground() {
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
-}
-
-void AppDelegate::applicationWillClose()
-{
-
 }

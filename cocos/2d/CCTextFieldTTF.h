@@ -28,7 +28,6 @@ THE SOFTWARE.
 
 #include "2d/CCLabel.h"
 #include "base/CCIMEDelegate.h"
-#include "2d/CCDrawNode.h"
 
 /**
  * @addtogroup ui
@@ -37,7 +36,6 @@ THE SOFTWARE.
 NS_CC_BEGIN
 
 class TextFieldTTF;
-class Event;
 
 
 /**
@@ -47,7 +45,7 @@ class CC_DLL TextFieldDelegate
 {
 public:
     /**
-     * Desctructor for TextFieldDelegate.
+     * Destructor for TextFieldDelegate.
      * @js NA
      */
     virtual ~TextFieldDelegate() {}
@@ -90,18 +88,7 @@ public:
         CC_UNUSED_PARAM(delText);
         CC_UNUSED_PARAM(nLen);
         return false;
-	} 
-	
-	/**
-	  @brief    If the sender doesn't want to delete the delText, return true;
-	  */
-	virtual bool onTextFieldDeleteForward(TextFieldTTF * sender, const char * delText, size_t nLen)
-	{
-		CC_UNUSED_PARAM(sender);
-		CC_UNUSED_PARAM(delText);
-		CC_UNUSED_PARAM(nLen);
-		return false;
-	}
+    }
 
     /**
      *@brief    If the sender doesn't want to draw, return true.
@@ -172,10 +159,10 @@ public:
     inline void setDelegate(TextFieldDelegate* delegate) { _delegate = delegate; };
 
     /**
-     * Query the currently inputed charater count.
+     * Query the currently inputed character count.
      *@return The total input character count.
      */
-    inline int getCharCount() const { return _charCount; };
+    inline std::size_t getCharCount() const { return _charCount; };
     
     /**
      * Query the color of place holder.
@@ -208,6 +195,12 @@ public:
     virtual void setString(const std::string& text) override;
 
     /**
+    * Append to input text of TextField.
+    *@param text The append text of TextField.
+    */
+    virtual void appendString(const std::string& text);
+
+    /**
      * Query the input text of TextField.
      *@return Get the input text of TextField.
      */
@@ -227,54 +220,66 @@ public:
     virtual const std::string& getPlaceHolder() const;
 
     /**
-     * Set enable secure text entry represention.
+     * Set enable secure text entry representation.
      * If you want to display password in TextField, this option is very helpful.
      *@param value Whether or not to display text with secure text entry.
      * @js NA
      */
     virtual void setSecureTextEntry(bool value);
+    virtual void setPasswordTextStyle(const std::string& text);
+    std::string getPasswordTextStyle() const;
 
     /**
      * Query whether the currently display mode is secure text entry or not.
      *@return Whether current text is displayed as secure text entry.
      * @js NA
      */
-    virtual bool isSecureTextEntry();
-
-	virtual void updateContent() override;
+    virtual bool isSecureTextEntry()const;
 
     virtual void visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags) override;
 
-	virtual void handleMouseDown(Event *unusedEvent);
-	virtual void handleMouseMove(Event *unusedEvent);
-	virtual void handleMouseDblClk(Event *unusedEvent);
-	virtual void handleMouseLeave(Event *unusedEvent);
+    virtual void update(float delta) override;
 
-	void setSelectedText(int blockStart, int blockEnd);
-	int pointToCursor(Vec2& pt);
+    /**
+    * Set enable cursor use.
+    * @js NA
+    */
+    void setCursorEnabled(bool enabled);
+
+    /**
+    * Set char showing cursor.
+    * @js NA
+    */
+    void setCursorChar(char cursor);
+
+    /**
+    * Set cursor position, if enabled
+    * @js NA
+    */
+    void setCursorPosition(std::size_t cursorPosition);
+
+    /**
+    * Set cursor position to hit letter, if enabled
+    * @js NA
+    */
+    void setCursorFromPoint(const Vec2 &point, const Camera* camera);
 
 protected:
-	virtual void _setString(const std::string& text);
-
     //////////////////////////////////////////////////////////////////////////
     // IMEDelegate interface
     //////////////////////////////////////////////////////////////////////////
 
     virtual bool canAttachWithIME() override;
     virtual bool canDetachWithIME() override;
+    virtual void didAttachWithIME() override;
+    virtual void didDetachWithIME() override;
     virtual void insertText(const char * text, size_t len) override;
     virtual void deleteBackward() override;
-	virtual void deleteForward() override;
-	virtual void moveCursorBackward(bool wordbreak, bool selectText) override;
-	virtual void moveCursorForward(bool wordbreak, bool selectText) override;
-	virtual void moveCursorEnd(bool selectText) override;
-	virtual void moveCursorHome(bool selectText) override;
     virtual const std::string& getContentText() override;
-	virtual void selectAllText() override;
-	virtual std::string getSelectedText() override;
+    virtual void controlKey(EventKeyboard::KeyCode keyCode) override;
 
     TextFieldDelegate * _delegate;
-    int _charCount;
+    std::size_t _charCount;
 
     std::string _inputText;
 
@@ -283,17 +288,22 @@ protected:
     Color4B _colorText;
 
     bool _secureTextEntry;
+    std::string _passwordStyleText;
 
-	DrawNode* _blockNode;
-	Sprite* _blockTextSprite;
-	Sprite* _cursorSprite;
+    // Need use cursor
+    bool _cursorEnabled;
+    // Current position cursor
+    std::size_t _cursorPosition;
+    // Char showing cursor
+    char _cursorChar;
+    // >0 - show, <0 - hide
+    float _cursorShowingTime;
 
-	int _blockStart;
-	int _blockEnd;
-	int _cursorPos;
-	Point _textOffset;
+    bool _isAttachWithIME;
 
-	Action* _cursorAction;
+    void makeStringSupportCursor(std::string& displayText);
+    void updateCursorDisplayText();
+    void setAttachWithIME(bool isAttachWithIME);
 
 private:
     class LengthStack;

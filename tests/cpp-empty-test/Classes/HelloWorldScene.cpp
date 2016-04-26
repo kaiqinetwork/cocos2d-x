@@ -1,10 +1,7 @@
 #include "HelloWorldScene.h"
 #include "AppMacros.h"
-#include "ui/CocosGUI.h"//UI相关的头文件
-#include"cocostudio/CocoStudio.h"//在CocosStudio.h 头文件中已经包含了Studio所需要的各个头文件(除CocosGUI)因此我们使用Studio仅需要包含他就可以
 
 USING_NS_CC;
-using namespace ui;
 
 
 Scene* HelloWorld::scene()
@@ -75,45 +72,6 @@ bool HelloWorld::init()
 
     // add the sprite as a child to this layer
     this->addChild(sprite);
-
-	FileUtils::getInstance()->addSearchPath("TexasPoker");
-	FileUtils::getInstance()->addSearchPath("TexasPoker/ui");
-	FileUtils::getInstance()->addSearchPath("TexasPoker/images");
-	FileUtils::getInstance()->addSearchPath("TexasPoker/images/game");
-
-// 	FileUtils::getInstance()->addSearchPath("TexasPoker/images");
-// 	Widget* rootNode = cocostudio::GUIReader::getInstance()->widgetFromJsonFile("main_ui.json");
-
-	Node* rootNode = CSLoader::createNode("main_ui.csb");
-	addChild(rootNode);
-
-// 	rootNode = CSLoader::createNode("result_ui.csb");
-// 	addChild(rootNode);
-	auto layout = (Layout*)rootNode->getChildByName("main_panel");
-	cocos2d::ui::Widget* m_pBtnWidget[3];
-	for (int i = 0; i < 3; ++i)
-	{
-		m_pBtnWidget[i] = (cocos2d::ui::Widget*)Helper::seekWidgetByName(layout, StringUtils::format("btns_panel_%d", i));
-		m_pBtnWidget[i]->setVisible(false);
-	}
-	m_pBtnWidget[2]->setVisible(true);
-
-	Button* pBtn = (Button*)Helper::seekWidgetByName(m_pBtnWidget[2], "btn_fold");
-	Vec2 pt(0,0);
-	if (pBtn)
-	{
-		pBtn->loadTextureHot("btn_fold_2.png");
-		pt = pBtn->getPosition();
-	}
-
-// 	m_pEditBk = (Widget*)m_pBtnWidget[2]->getChildByName("edit_bk");
-// 	m_pBetEdit = (TextField*)m_pEditBk->getChildByName("edit_bet");
-	TextField* m_pBetEdit = (TextField*)Helper::seekWidgetByName(m_pBtnWidget[2], "edit_bet");
-	m_pBetEdit->setPlaceHolderColor(Color3B(92, 64, 0));
-// 	m_pBetEdit->addEventListener(CC_CALLBACK_2(MainScene::onBetEditChanged, this));
-
-	auto m_pSlider = (Slider*)Helper::seekWidgetByName(m_pBtnWidget[2], "slider_bet");
-// 	m_pSlider->addEventListener(CC_CALLBACK_2(MainScene::onSliderBetChanged, this));
     
     return true;
 }

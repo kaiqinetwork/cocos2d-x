@@ -36,6 +36,7 @@ NS_CC_BEGIN
 
 class Label;
 class SpriteFrame;
+struct CC_DLL ResourceData;
 
 namespace ui{
 
@@ -168,18 +169,13 @@ public:
      */
     void setCapInsetsDisabledRenderer(const Rect &capInsets);
 
+	void setCapInsetsHotRenderer(const Rect &capInsets);
+
     /**
      * Return the capInsets of disabled state scale9sprite.
      *@return The disabled scale9 renderer capInsets.
      */
     const Rect& getCapInsetsDisabledRenderer()const;
-
-	/**
-	* Sets capInsets for button, only the hot state scale9 renderer will be affected.
-	*
-	* @param capInsets  capInsets in Rect.
-	*/
-	void setCapInsetsHotRenderer(const Rect &capInsets);
 
 	/**
 	* Return the capInsets of hot state scale9sprite.
@@ -230,7 +226,7 @@ public:
      * Query the button title content.
      *@return Get the button's title content.
      */
-    const std::string getTitleText() const;
+    std::string getTitleText() const;
 
     /**
      * Change the color of button's title.
@@ -266,7 +262,7 @@ public:
      * Query the font name of button's title
      *@return font name in std::string
      */
-    const std::string getTitleFontName() const;
+    std::string getTitleFontName() const;
 
     /**
      * Sets the title's text horizontal alignment.
@@ -295,6 +291,36 @@ public:
      * @since v3.3
      */
     float getZoomScale()const;
+    
+    /**
+     * @brief Return the nine-patch sprite of normal state
+     * @return the nine-patch sprite of normal state
+     * @since v3.9
+     */
+    Scale9Sprite* getRendererNormal() const { return _buttonNormalRenderer; }
+    
+    /**
+     * @brief Return the nine-patch sprite of clicked state
+     * @return the nine-patch sprite of clicked state
+     * @since v3.9
+     */
+    Scale9Sprite* getRendererClicked() const { return _buttonClickedRenderer; }
+    
+    /**
+     * @brief Return the nine-patch sprite of disabled state
+     * @return the nine-patch sprite of disabled state
+     * @since v3.9
+     */
+    Scale9Sprite* getRendererDisabled() const { return _buttonDisabledRenderer; }
+
+    void resetNormalRender();
+    void resetPressedRender();
+    void resetDisabledRender();
+	void resetHotRender();
+
+    ResourceData getNormalFile();
+    ResourceData getPressedFile();
+    ResourceData getDisabledFile();
 
 CC_CONSTRUCTOR_ACCESS:
     virtual bool init() override;
@@ -314,13 +340,13 @@ protected:
     virtual void onSizeChanged() override;
 
     void loadTextureNormal(SpriteFrame* normalSpriteFrame);
-    void setupNormalTexture();
+    void setupNormalTexture(bool textureLoaded);
     void loadTexturePressed(SpriteFrame* pressedSpriteFrame);
-    void setupPressedTexture();
+    void setupPressedTexture(bool textureLoaded);
     void loadTextureDisabled(SpriteFrame* disabledSpriteFrame);
-    void setupDisabledTexture();
+    void setupDisabledTexture(bool textureLoaded);
 	void loadTextureHot(SpriteFrame* hotSpriteFrame);
-	void setupHotTexture();
+	void setupHotTexture(bool textureLoaded);
 
     void normalTextureScaleChangedWithSize();
     void pressedTextureScaleChangedWithSize();
@@ -339,7 +365,7 @@ protected:
 protected:
     Scale9Sprite* _buttonNormalRenderer;
     Scale9Sprite* _buttonClickedRenderer;
-    Scale9Sprite* _buttonDisableRenderer;
+    Scale9Sprite* _buttonDisabledRenderer;
 	Scale9Sprite* _buttonHotRenderer;
     Label* _titleRenderer;
 
@@ -356,11 +382,6 @@ protected:
     Size _pressedTextureSize;
     Size _disabledTextureSize;
 	Size _hotTextureSize;
-    float _normalTextureScaleXInSize;
-    float _normalTextureScaleYInSize;
-    float _pressedTextureScaleXInSize;
-    float _pressedTextureScaleYInSize;
-
     bool _normalTextureLoaded;
     bool _pressedTextureLoaded;
     bool _disabledTextureLoaded;
@@ -369,6 +390,15 @@ protected:
     bool _pressedTextureAdaptDirty;
     bool _disabledTextureAdaptDirty;
 	bool _hotTextureAdaptDirty;
+
+    std::string _normalFileName;
+    std::string _clickedFileName;
+    std::string _disabledFileName;
+	std::string _hotFileName;
+    TextureResType _normalTexType;
+    TextureResType _pressedTexType;
+    TextureResType _disabledTexType;
+	TextureResType _hotTexType;
 
 private:
     enum class FontType
@@ -380,6 +410,7 @@ private:
 
     int _fontSize;
     FontType _type;
+    std::string _fontName;
 };
 
 }

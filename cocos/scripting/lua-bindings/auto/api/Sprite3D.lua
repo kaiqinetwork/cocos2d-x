@@ -42,6 +42,12 @@
 -- @return Sprite3D#Sprite3D self (return value: cc.Sprite3D)
         
 --------------------------------
+-- Get meshes used in sprite 3d
+-- @function [parent=#Sprite3D] getMeshes 
+-- @param self
+-- @return array_table#array_table ret (return value: array_table)
+        
+--------------------------------
 -- remove all attach nodes
 -- @function [parent=#Sprite3D] removeAllAttachNode 
 -- @param self
@@ -113,6 +119,12 @@
 -- @function [parent=#Sprite3D] setForce2DQueue 
 -- @param self
 -- @param #bool force2D
+-- @return Sprite3D#Sprite3D self (return value: cc.Sprite3D)
+        
+--------------------------------
+-- generate default material
+-- @function [parent=#Sprite3D] genMaterial 
+-- @param self
 -- @return Sprite3D#Sprite3D self (return value: cc.Sprite3D)
         
 --------------------------------

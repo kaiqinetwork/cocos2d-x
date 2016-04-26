@@ -26,7 +26,7 @@ THE SOFTWARE.
 #include "platform/CCPlatformConfig.h"
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 
-#include "CCFileUtils-win32.h"
+#include "platform/win32/CCFileUtils-win32.h"
 #include "platform/CCCommon.h"
 #include <Shlobj.h>
 #include <cstdlib>
@@ -38,13 +38,10 @@ NS_CC_BEGIN
 
 #define CC_MAX_PATH  512
 
-#ifdef TString
-#undef TString
-#endif
 #ifdef UNICODE
-#define TString	std::wstring
+typedef	std::wstring tstring;
 #else
-#define TString	std::string
+typedef	std::string tstring;
 #endif // UNICODE
 
 // The root path of resources, the character encoding is UTF-8.
@@ -171,16 +168,9 @@ static void _checkPath()
 {
     if (s_resourcePath.empty())
     {
-		WCHAR *pUtf16ExePath = nullptr;
-#ifdef UNICODE
-		_get_wpgmptr(&pUtf16ExePath);
-#else
-		char *pExePath = nullptr;
-		_get_pgmptr(&pExePath);
-		WCHAR utf16ExePath[CC_MAX_PATH * 2] = { 0 };
-		MultiByteToWideChar(CP_ACP, 0, pExePath, -1, utf16ExePath, CC_MAX_PATH * 2);
-		pUtf16ExePath = utf16ExePath;
-#endif // UNICODE
+        WCHAR utf16Path[CC_MAX_PATH] = { 0 };
+        GetModuleFileNameW(NULL, utf16Path, CC_MAX_PATH - 1);
+        WCHAR *pUtf16ExePath = &(utf16Path[0]);
 
 		// We need only directory part without exe
 		WCHAR *pUtf16DirEnd = wcsrchr(pUtf16ExePath, L'\\');
@@ -236,6 +226,23 @@ bool FileUtilsWin32::isDirectoryExistInternal(const std::string& dirPath) const
 std::string FileUtilsWin32::getSuitableFOpen(const std::string& filenameUtf8) const
 {
     return UTF8StringToMultiByte(filenameUtf8);
+}
+
+long FileUtilsWin32::getFileSize(const std::string &filepath)
+{
+    WIN32_FILE_ATTRIBUTE_DATA fad;
+#ifdef UNICODE
+    if (!GetFileAttributesEx(StringUtf8ToWideChar(filepath).c_str(), GetFileExInfoStandard, &fad))
+#else
+	if (!GetFileAttributesEx(UTF8StringToMultiByte(filepath).c_str(), GetFileExInfoStandard, &fad))
+#endif
+    {
+        return 0; // error condition, could call GetLastError to find out more
+    }
+    LARGE_INTEGER size;
+    size.HighPart = fad.nFileSizeHigh;
+    size.LowPart = fad.nFileSizeLow;
+    return (long)size.QuadPart;
 }
 
 bool FileUtilsWin32::isFileExistInternal(const std::string& strFilePath) const
@@ -599,10 +606,10 @@ bool FileUtilsWin32::createDirectory(const std::string& dirPath)
     // Split the path
     size_t start = 0;
     size_t found = path.find_first_of(TEXT("/\\"), start);
-    TString subpath;
-    std::vector<TString> dirs;
+    tstring subpath;
+    std::vector<tstring> dirs;
 
-    if (found != TString::npos)
+    if (found != tstring::npos)
     {
         while (true)
         {
@@ -611,7 +618,7 @@ bool FileUtilsWin32::createDirectory(const std::string& dirPath)
                 dirs.push_back(subpath);
             start = found + 1;
             found = path.find_first_of(TEXT("/\\"), start);
-            if (found == TString::npos)
+            if (found == tstring::npos)
             {
                 if (start < path.length())
                 {
@@ -677,7 +684,7 @@ bool FileUtilsWin32::removeDirectory(const std::string& dirPath)
 	std::string path = UTF8StringToMultiByte(dirPath);
 #endif // UNICODE
 
-	TString files = path + TEXT("*.*");
+	tstring files = path + TEXT("*.*");
     WIN32_FIND_DATA fd;
     HANDLE  search = FindFirstFileEx(files.c_str(), FindExInfoStandard, &fd, FindExSearchNameMatch, NULL, 0);
     bool ret = true;
@@ -686,10 +693,11 @@ bool FileUtilsWin32::removeDirectory(const std::string& dirPath)
         BOOL find = true;
         while (find)
         {
-            //. ..
-            if (fd.cFileName[0] != '.')
+            // Need check string . and .. for delete folders and files begin name.
+            tstring fileName = fd.cFileName;
+            if (fileName != TEXT(".") && fileName != TEXT(".."))
             {
-				TString temp = path + fd.cFileName;
+				tstring temp = path + fd.cFileName;
                 if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                 {
                     temp += '/';

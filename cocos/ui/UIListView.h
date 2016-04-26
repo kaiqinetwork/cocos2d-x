@@ -128,7 +128,7 @@ public:
     static ListView* create();
     
     /**
-     * Set a item model for listview.
+     * Set an item model for listview.
      *
      * When calling `pushBackDefaultItem`, the model will be used as a blueprint and new model copy will be inserted into ListView.
      * @param model  Model in `Widget*`.
@@ -136,19 +136,19 @@ public:
     void setItemModel(Widget* model);
     
     /**
-     * Insert a  a default item(create by a cloned model) at the end of the listview.
+     * Insert a default item(create by a cloned model) at the end of the listview.
      */
     void pushBackDefaultItem();
     
     /**
      * Insert a default item(create by cloning model) into listview at a give index.
-     *@param index  A index in ssize_t.
+     *@param index  An index in ssize_t.
      */
     void insertDefaultItem(ssize_t index);
     
     /**
      * Insert a  custom item into the end of ListView.
-     *@param item A item in `Widget*`.
+     *@param item An item in `Widget*`.
      */
     void pushBackCustomItem(Widget* item);
     
@@ -167,13 +167,12 @@ public:
     void removeLastItem();
     
     /**
-     * Remove a item at given index.
+     * Remove an item at given index.
      *
      * @param index A given index in ssize_t.
      */
     void removeItem(ssize_t index);
-    
-    
+
     /**
      * @brief Remove all items in current ListView.
      *
@@ -182,7 +181,7 @@ public:
     void removeAllItems();
     
     /**
-     * Return a item at a given index.
+     * Return an item at a given index.
      *
      * @param index A given index in ssize_t.
      * @return A widget instance.
@@ -246,8 +245,8 @@ public:
     float getItemsMargin()const;
     
     //override methods
-    virtual void forceDoLayout()override;
     virtual void doLayout() override;
+    virtual void requestDoLayout() override;
     virtual void addChild(Node* child)override;
     virtual void addChild(Node * child, int localZOrder)override;
     virtual void addChild(Node* child, int zOrder, int tag) override;
@@ -255,75 +254,98 @@ public:
     virtual void removeAllChildren() override;
     virtual void removeAllChildrenWithCleanup(bool cleanup) override;
     virtual void removeChild(Node* child, bool cleaup = true) override;
+
+    /**
+     * @brief Query the closest item to a specific position in inner container.
+     *
+     * @param targetPosition Specifies the target position in inner container's coordinates.
+     * @param itemAnchorPoint Specifies an anchor point of each item for position to calculate distance.
+     * @return An item instance if list view is not empty. Otherwise, returns null.
+     */
+    Widget* getClosestItemToPosition(const Vec2& targetPosition, const Vec2& itemAnchorPoint) const;
     
-	/**
-	 * @brief Query the closest item to a specific position in inner container.
-	 *
-	 * @param targetPosition Specifies the target position in inner container's coordinates.
-	 * @param itemAnchorPoint Specifies an anchor point of each item for position to calculate distance.
-	 * @return A item instance if list view is not empty. Otherwise, returns null.
-	 */
-	Widget* getClosestItemToPosition(const Vec2& targetPosition, const Vec2& itemAnchorPoint) const;
-	
-	/**
-	 * @brief Query the closest item to a specific position in current view.
+    /**
+     * @brief Query the closest item to a specific position in current view.
      * For instance, to find the item in the center of view, call 'getClosestItemToPositionInCurrentView(Vec2::ANCHOR_MIDDLE, Vec2::ANCHOR_MIDDLE)'.
-	 *
-	 * @param positionRatioInView Specifies the target position with ratio in list view's content size.
-	 * @param itemAnchorPoint Specifies an anchor point of each item for position to calculate distance.
-	 * @return A item instance if list view is not empty. Otherwise, returns null.
-	 */
-	Widget* getClosestItemToPositionInCurrentView(const Vec2& positionRatioInView, const Vec2& itemAnchorPoint) const;
-	
+     *
+     * @param positionRatioInView Specifies the target position with ratio in list view's content size.
+     * @param itemAnchorPoint Specifies an anchor point of each item for position to calculate distance.
+     * @return An item instance if list view is not empty. Otherwise, returns null.
+     */
+    Widget* getClosestItemToPositionInCurrentView(const Vec2& positionRatioInView, const Vec2& itemAnchorPoint) const;
+    
     /**
      * @brief Query the center item
-     * @return A item instance.
+     * @return An item instance.
      */
     Widget* getCenterItemInCurrentView() const;
     
     /**
      * @brief Query the leftmost item in horizontal list
-     * @return A item instance.
+     * @return An item instance.
      */
     Widget* getLeftmostItemInCurrentView() const;
     
     /**
      * @brief Query the rightmost item in horizontal list
-     * @return A item instance.
+     * @return An item instance.
      */
     Widget* getRightmostItemInCurrentView() const;
     
     /**
      * @brief Query the topmost item in horizontal list
-     * @return A item instance.
+     * @return An item instance.
      */
     Widget* getTopmostItemInCurrentView() const;
     
     /**
      * @brief Query the bottommost item in horizontal list
-     * @return A item instance.
+     * @return An item instance.
      */
     Widget* getBottommostItemInCurrentView() const;
-	
-	/**
-	 * @brief Scroll to specific item
-	 * @param positionRatioInView Specifies the position with ratio in list view's content size.
-	 * @param itemAnchorPoint Specifies an anchor point of each item for position to calculate distance.
-	 * @param timeInSec Scroll time
-	 */
-    void scrollToItem(int itemIndex, const Vec2& positionRatioInView, const Vec2& itemAnchorPoint);
-	void scrollToItem(int itemIndex, const Vec2& positionRatioInView, const Vec2& itemAnchorPoint, float timeInSec);
-	
+
     /**
-     * @brief Query current selected widget's idnex.
+     * Override functions
+     */
+    virtual void jumpToBottom() override;
+    virtual void jumpToTop() override;
+    virtual void jumpToLeft() override;
+    virtual void jumpToRight() override;
+    virtual void jumpToTopLeft() override;
+    virtual void jumpToTopRight() override;
+    virtual void jumpToBottomLeft() override;
+    virtual void jumpToBottomRight() override;
+    virtual void jumpToPercentVertical(float percent) override;
+    virtual void jumpToPercentHorizontal(float percent) override;
+    virtual void jumpToPercentBothDirection(const Vec2& percent) override;
+
+    /**
+     * @brief Jump to specific item
+     * @param itemIndex Specifies the item's index
+     * @param positionRatioInView Specifies the position with ratio in list view's content size.
+     * @param itemAnchorPoint Specifies an anchor point of each item for position to calculate distance.
+     */
+    void jumpToItem(ssize_t itemIndex, const Vec2& positionRatioInView, const Vec2& itemAnchorPoint);
+    
+    /**
+     * @brief Scroll to specific item
+     * @param positionRatioInView Specifies the position with ratio in list view's content size.
+     * @param itemAnchorPoint Specifies an anchor point of each item for position to calculate distance.
+     * @param timeInSec Scroll time
+     */
+    void scrollToItem(ssize_t itemIndex, const Vec2& positionRatioInView, const Vec2& itemAnchorPoint);
+    void scrollToItem(ssize_t itemIndex, const Vec2& positionRatioInView, const Vec2& itemAnchorPoint, float timeInSec);
+    
+    /**
+     * @brief Query current selected widget's index.
      *
      
-     * @return A index of a selected item.
+     * @return An index of a selected item.
      */
     ssize_t getCurSelectedIndex() const;
     
     /**
-     * Add a event click callback to ListView, then one item of Listview is clicked, the callback will be called.
+     * Add an event click callback to ListView, then one item of Listview is clicked, the callback will be called.
      *@deprecated Use  `addEventListener` instead.
      *@param target A pointer of `Ref*` type.
      *@param selector A member function pointer with type of `SEL_ListViewEvent`.
@@ -331,7 +353,7 @@ public:
     CC_DEPRECATED_ATTRIBUTE void addEventListenerListView(Ref* target, SEL_ListViewEvent selector);
 
     /**
-     * Add a event click callback to ListView, then one item of Listview is clicked, the callback will be called.
+     * Add an event click callback to ListView, then one item of Listview is clicked, the callback will be called.
      *@param callback A callback function with type of `ccListViewCallback`.
      */
     void addEventListener(const ccListViewCallback& callback);
@@ -349,24 +371,27 @@ public:
     
     /**
      * @brief Refresh view and layout of ListView manually.
-     * This method will mark ListView content as dirty and the content view will be refershed in the next frame.
+     * This method will mark ListView content as dirty and the content view will be refreshed in the next frame.
+     * @deprecated Use method requestDoLayout() instead
      */
-    void requestRefreshView();
+    CC_DEPRECATED_ATTRIBUTE void requestRefreshView();
 
-    
     /**
      * @brief Refresh content view of ListView.
+     * @deprecated Use method forceDoLayout() instead
      */
-    void refreshView();
+    CC_DEPRECATED_ATTRIBUTE void refreshView();
 
 CC_CONSTRUCTOR_ACCESS:
     virtual bool init() override;
     
 protected:
     virtual void handleReleaseLogic(Touch *touch) override;
-    
+
+    virtual void onItemListChanged();
+
+    virtual void remedyLayoutParameter(Widget* item);
     void updateInnerContainerSize();
-    void remedyLayoutParameter(Widget* item);
     void remedyVerticalLayoutParameter(LinearLayoutParameter* layoutParameter, ssize_t itemIndex);
     void remedyHorizontalLayoutParameter(LinearLayoutParameter* layoutParameter,ssize_t itemIndex);
     
@@ -382,6 +407,7 @@ protected:
     virtual void startAttenuatingAutoScroll(const Vec2& deltaMove, const Vec2& initialVelocity) override;
     
     void startMagneticScroll();
+    Vec2 calculateItemDestination(const Vec2& positionRatioInView, Widget* item, const Vec2& itemAnchorPoint);
     
 protected:
     Widget* _model;
@@ -396,7 +422,8 @@ protected:
     float _itemsMargin;
     
     ssize_t _curSelectedIndex;
-    bool _refreshViewDirty;
+
+    bool _innerContainerDoLayoutDirty;
     
     Ref*       _listViewEventListener;
 #if defined(__GNUC__) && ((__GNUC__ >= 4) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 1)))

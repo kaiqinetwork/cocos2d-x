@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 // 0x00 HI ME LO
 // 00   03 08 00
-#define COCOS2D_VERSION 0x00030800
+#define COCOS2D_VERSION 0x00031100
 
 //
 // all cocos2d include files
@@ -186,8 +186,6 @@ THE SOFTWARE.
 #include "physics/CCPhysicsJoint.h"
 #include "physics/CCPhysicsShape.h"
 #include "physics/CCPhysicsWorld.h"
-#include "physics/CCComponentPhysics2d.h"
-#include "physics/CCPhysicsManager.h"
 
 // platform
 #include "platform/CCCommon.h"
@@ -292,6 +290,7 @@ THE SOFTWARE.
 #include "3d/CCFrustum.h"
 #include "3d/CCMesh.h"
 #include "3d/CCMeshSkin.h"
+#include "3d/CCMotionStreak3D.h"
 #include "3d/CCMeshVertexIndexData.h"
 #include "3d/CCOBB.h"
 #include "3d/CCPlane.h"
@@ -303,17 +302,10 @@ THE SOFTWARE.
 #include "3d/CCTerrain.h"
 
 
-// Deprecated include
-#include "deprecated/CCArray.h"
-#include "deprecated/CCBool.h"
-#include "deprecated/CCDictionary.h"
-#include "deprecated/CCDouble.h"
-#include "deprecated/CCFloat.h"
-#include "deprecated/CCInteger.h"
-#include "deprecated/CCNotificationCenter.h"
-#include "deprecated/CCSet.h"
-#include "deprecated/CCString.h"
-// CCDeprecated.h must be included at the end
+// Deprecated
+// All deprecated features are include inside deprecated/CCDeprecated.h.
+// It is recommanded that you just inlcude what is needed.
+// eg. #include "deprecated/CCString.h" if you only need cocos2d::__String.
 #include "deprecated/CCDeprecated.h"
 
 

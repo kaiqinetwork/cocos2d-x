@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 #include "../../BaseTest.h"
-#include "cocostudio/CocoStudio.h"
+#include "editor-support/cocostudio/CocoStudio.h"
 
 class CocoStudioActionTimelineTests : public TestSuite
 {
@@ -146,4 +146,32 @@ public:
     virtual void onEnter() override;
     virtual std::string title() const override;
 };
+
+class TestAnimationClipEndCallBack : public ActionTimelineBaseTest
+{
+public:
+    CREATE_FUNC(TestAnimationClipEndCallBack);
+
+    virtual void onEnter() override;
+    virtual std::string title() const override;
+};
+
+class TestActionTimelinePlayableFrame : public ActionTimelineBaseTest
+{
+public:
+    CREATE_FUNC(TestActionTimelinePlayableFrame);
+
+    virtual void onEnter() override;
+    virtual std::string  title() const override;
+};
+
+class TestActionTimelineIssueWith2SameActionInOneNode : public ActionTimelineBaseTest
+{
+public:
+    CREATE_FUNC(TestActionTimelineIssueWith2SameActionInOneNode);
+
+    virtual void onEnter() override;
+    virtual std::string  title() const override;
+};
+
 #endif  // __ANIMATION_SCENE_H__

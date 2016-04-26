@@ -364,7 +364,7 @@ struct SchedulerScriptData
     void* node;
     
     /**
-     * Construtor of SchedulerScriptData.
+     * Constructor of SchedulerScriptData.
      *
      * @js NA
      * @lua NA
@@ -428,7 +428,7 @@ struct TouchesScriptData
 };
 
 /**
- * For Lua, the TouchScriptData is used to find the Lua function pointer by the nativeObject, then call the Lua function by push touch data and actionType convered to string type into the Lua stack as the parameters when the touch event is triggered.
+ * For Lua, the TouchScriptData is used to find the Lua function pointer by the nativeObject, then call the Lua function by push touch data and actionType converted to string type into the Lua stack as the parameters when the touch event is triggered.
  * @js NA
  */
 struct TouchScriptData
@@ -479,7 +479,7 @@ struct TouchScriptData
 
 
 /**
- * For Lua, the KeypadScriptData is used to find the Lua function pointer by the nativeObject, then call the Lua function by push the actionType convered to string type into the Lua stack as the parameters when the Keypad event is triggered.
+ * For Lua, the KeypadScriptData is used to find the Lua function pointer by the nativeObject, then call the Lua function by push the actionType converted to string type into the Lua stack as the parameters when the Keypad event is triggered.
  * @js NA
  */
 struct KeypadScriptData
@@ -641,6 +641,36 @@ public:
      * @js NA
      */
     virtual ccScriptType getScriptType() { return kScriptTypeNone; };
+    
+    /**
+     * Reflect the retain relationship to script scope
+     */
+    virtual void retainScriptObject(Ref* owner, Ref* target) {};
+    
+    /**
+     * Add the script object to root object
+     */
+    virtual void rootScriptObject(Ref* target) {};
+    
+    /**
+     * Reflect the release relationship to script scope
+     */
+    virtual void releaseScriptObject(Ref* owner, Ref* target) {};
+    
+    /**
+     * Remove the script object from root object
+     */
+    virtual void unrootScriptObject(Ref* target) {};
+    
+    /**
+     * Release all children native refs for the given node in script scope
+     */
+    virtual void releaseAllChildrenRecursive(Node* node) {};
+    
+    /**
+     * Release all native refs for the given owner in script scope
+     */
+    virtual void releaseAllNativeRefs(cocos2d::Ref* owner) {};
 
     /** 
      * Remove script object,The specific meaning should refer to the ScriptType.
@@ -649,7 +679,7 @@ public:
      * @lua NA
      * @js NA
      */
-    virtual void removeScriptObjectByObject(Ref* obj) = 0;
+    virtual void removeScriptObjectByObject(Ref* obj) {};
     
     /** 
      * Remove script function handler, only LuaEngine class need to implement this function.
@@ -750,6 +780,20 @@ public:
      * @js NA
      */
     virtual bool parseConfig(ConfigType type, const std::string& str) = 0;
+
+
+    /** Root a Reference.
+     It tells the Garbage Collector that the associated Scripting object should not be collected
+     */
+    virtual void rootObject(Ref* obj) {}
+
+    /** Unroot a Reference.
+     It tells the Garbage Collector that the associated Scripting object can be collected
+     */
+    virtual void unrootObject(Ref* obj) {}
+
+    /** Triggers the garbage collector */
+    virtual void garbageCollect() {}
 };
 
 class Node;
@@ -781,9 +825,9 @@ public:
         return _scriptEngine;
     }
     /**
-     * Set the ScriptEngineProtocol object should be managered.
+     * Set the ScriptEngineProtocol object should be managed.
      *
-     * @param scriptEngine should be managered.
+     * @param scriptEngine should be managed.
      *
      * @lua NA
      * @js NA
@@ -791,7 +835,7 @@ public:
     void setScriptEngine(ScriptEngineProtocol *scriptEngine);
     
     /**
-     * Remove the ScriptEngineProtocol object managered.
+     * Remove the ScriptEngineProtocol object managed.
      *
      *
      * @lua NA

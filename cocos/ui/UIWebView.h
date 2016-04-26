@@ -27,7 +27,7 @@
 
 #include "platform/CCPlatformConfig.h"
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS )
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS) && !defined(CC_PLATFORM_OS_TVOS)
 
 
 #include "ui/UIWidget.h"
@@ -149,7 +149,7 @@ public:
      * Call before a web view begins loading.
      *
      * @param callback The web view that is about to load new content.
-     * @return YES if the web view should begin loading content; otherwise, NO .
+     * @return YES if the web view should begin loading content; otherwise, NO.
      */
     void setOnShouldStartLoading(const std::function<bool(WebView *sender, const std::string &url)>& callback);
     

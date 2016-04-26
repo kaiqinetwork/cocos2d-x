@@ -4,6 +4,7 @@
 #include "renderer/CCCustomCommand.h"
 #include "VisibleRect.h"
 #include "editor-support/cocostudio/CCComExtensionData.h"
+#include "ui/CocosGUI.h"
 
 
 USING_NS_CC;
@@ -24,6 +25,9 @@ CocoStudioActionTimelineTests::CocoStudioActionTimelineTests()
     ADD_TEST_CASE(TestActionTimelineSkeleton);
     ADD_TEST_CASE(TestTimelineExtensionData);
     ADD_TEST_CASE(TestActionTimelineBlendFuncFrame);
+    ADD_TEST_CASE(TestAnimationClipEndCallBack);
+    ADD_TEST_CASE(TestActionTimelinePlayableFrame);
+    ADD_TEST_CASE(TestActionTimelineIssueWith2SameActionInOneNode);
 }
 
 CocoStudioActionTimelineTests::~CocoStudioActionTimelineTests()
@@ -596,4 +600,164 @@ void TestActionTimelineBlendFuncFrame::onEnter()
 std::string TestActionTimelineBlendFuncFrame::title() const
 {
     return "Test ActionTimeline BlendFunc Frame";
+}
+
+//TestAnimationClipEndCallBack
+void TestAnimationClipEndCallBack::onEnter()
+{
+    ActionTimelineBaseTest::onEnter();
+    Node* node = CSLoader::createNode("ActionTimeline/DemoPlayer_skeleton.csb");
+    ActionTimeline* action = CSLoader::createTimeline("ActionTimeline/DemoPlayer_skeleton.csb");
+    node->runAction(action);
+    node->setScale(0.2f);
+    node->setPosition(150, 150);
+
+     // test for frame end call back
+     action->addFrameEndCallFunc(5, "CallBackAfterFifthFrame", [this]{
+          auto text = ui::Text::create();
+          text->setString("CallBackAfterFifthFrame");
+          text->setPosition(Vec2(100, 40));
+          text->setLocalZOrder(1000);
+          this->runAction(Sequence::create(
+              CallFunc::create([this, text]{this->addChild(text); }),
+              DelayTime::create(3),
+              CallFunc::create([text]{text->removeFromParent(); }),
+              nullptr));
+     });
+     action->addFrameEndCallFunc(5, "AnotherCallBackAfterFifthFrame", [this]{
+         auto text = ui::Text::create();
+         text->setString("AnotherCallBackAfterFifthFrame");
+         text->setPosition(Vec2(100, 70));
+         this->runAction(Sequence::create(
+             CallFunc::create([this, text]{this->addChild(text); }),
+             DelayTime::create(3),
+             CallFunc::create([text]{text->removeFromParent(); }),
+             nullptr));
+     });
+     action->addFrameEndCallFunc(7, "CallBackAfterSenvnthFrame", [this]{
+         auto text = ui::Text::create();
+         text->setString("CallBackAfterSenvnthFrame");
+         text->setPosition(Vec2(100, 100));
+         this->runAction(Sequence::create(
+             CallFunc::create([this, text]{this->addChild(text); }),
+             DelayTime::create(3),
+             CallFunc::create([text]{text->removeFromParent(); }),
+             nullptr));
+     });
+     
+     // test for animation clip end call back
+     action->setAnimationEndCallFunc("stand", [this]{
+         auto text = ui::Text::create();
+         text->setString("CallBackAfterStandAnimationClip");
+         text->setPosition(Vec2(100, 130));
+         this->runAction(Sequence::create(
+             CallFunc::create([this, text]{this->addChild(text); }),
+             DelayTime::create(3),
+             CallFunc::create([text]{text->removeFromParent(); }),
+             nullptr));
+     });
+ 
+     AnimationClip animClip("testClip", 3, 13);
+     animClip.clipEndCallBack = ([this,node]{
+         auto text = ui::Text::create();
+         text->setString("testClip");
+         text->setPosition(Vec2(100, 140));
+         this->runAction(Sequence::create(
+             CallFunc::create([this, text]{this->addChild(text); }),
+             DelayTime::create(3),
+             CallFunc::create([text]{text->removeFromParent(); }),
+             nullptr));
+     });
+     action->addAnimationInfo(animClip);
+
+    action->setTimeSpeed(0.2f);
+    addChild(node);
+    action->gotoFrameAndPlay(0);
+}
+
+std::string TestAnimationClipEndCallBack::title() const
+{
+    return "Test ActionTimeline Frame End Call Back\n and Animation Clip End Call Back";
+}
+
+//TestActionTimelinePlayableFrame
+void TestActionTimelinePlayableFrame::onEnter()
+{
+    ActionTimelineBaseTest::onEnter();
+
+    Node* node = Node::create();
+    auto action = ActionTimeline::create();
+
+    auto particle = ParticleSystemQuad::create("Particles/Comet.plist");
+    particle->setPosition(VisibleRect::center());
+    ComExtensionData* extensionData_p = ComExtensionData::create();
+    extensionData_p->setActionTag(890890);
+    extensionData_p->setName(ComExtensionData::COMPONENT_NAME);
+    particle->addComponent(extensionData_p);
+    node->addChild(particle);
+
+    auto audio = ComAudio::create();
+    audio->setFile("audio/LuckyDay.mp3");
+    audio->start();
+    auto audioNode = Node::create();
+    audio->setName(PlayableFrame::PLAYABLE_EXTENTION);
+    audioNode->addComponent(audio);
+    ComExtensionData* extensionData_a = ComExtensionData::create();
+    extensionData_a->setActionTag(123123);
+    extensionData_a->setName(ComExtensionData::COMPONENT_NAME);
+    audioNode->addComponent(extensionData_a);
+    node->addChild(audioNode);
+
+    auto frame_a1 = PlayableFrame::create();
+    frame_a1->setFrameIndex(0);
+    frame_a1->setPlayableAct("start");
+    auto frame_a2 = PlayableFrame::create();
+    frame_a2->setFrameIndex(50);
+    frame_a2->setPlayableAct("stop");
+    auto timeline_a = Timeline::create();
+    timeline_a->setActionTag(123123);
+    timeline_a->addFrame(frame_a1);
+    timeline_a->addFrame(frame_a2);
+    action->addTimeline(timeline_a);
+
+    auto timeline_p = Timeline::create();
+    auto frame_p1 = PlayableFrame::create();
+    frame_p1->setFrameIndex(0);
+    frame_p1->setPlayableAct("start");
+    auto frame_p2 = PlayableFrame::create();
+    frame_p2->setFrameIndex(50);
+    frame_p2->setPlayableAct("stop");
+    timeline_p->setActionTag(890890);
+    timeline_p->addFrame(frame_p1);
+    timeline_p->addFrame(frame_p2);
+    action->addTimeline(timeline_p);
+
+    action->setTimeSpeed(0.2f);
+    action->setDuration(65);
+    node->runAction(action);
+    action->gotoFrameAndPlay(0);
+    this->addChild(node);
+}
+
+std::string TestActionTimelinePlayableFrame::title() const
+{
+    return "Test Action Timeline PlayableFrame\n particle and audio";
+}
+
+void TestActionTimelineIssueWith2SameActionInOneNode::onEnter()
+{
+    FileUtils::getInstance()->addSearchPath("ActionTimeline");
+    ActionTimelineBaseTest::onEnter();
+
+    Node* node = CSLoader::createNode("ani2.csb");
+    ActionTimeline* action = CSLoader::createTimeline("ani2.csb");
+    node->setPosition(Vec2(150, 100));
+    node->runAction(action);
+    action->gotoFrameAndPlay(0);
+    this->addChild(node);
+}
+
+std::string TestActionTimelineIssueWith2SameActionInOneNode::title() const
+{
+    return "Add multi same action in one node issue\n  These two actions should play async.";
 }

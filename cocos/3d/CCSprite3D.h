@@ -80,7 +80,7 @@ public:
     
     static void createAsync(const std::string &modelPath, const std::string &texturePath, const std::function<void(Sprite3D*, void*)>& callback, void* callbackparam);
     
-    /**set texture, set the first if multiple textures exist*/
+    /**set diffuse texture, set the first if multiple textures exist*/
     void setTexture(const std::string& texFile);
     void setTexture(Texture2D* texture);
     
@@ -200,6 +200,11 @@ public:
     */
     void setForce2DQueue(bool force2D);
 
+    /**
+    * Get meshes used in sprite 3d
+    */
+    const Vector<Mesh*>& getMeshes() const { return _meshes; }
+
 CC_CONSTRUCTOR_ACCESS:
     
     Sprite3D();
@@ -223,8 +228,8 @@ CC_CONSTRUCTOR_ACCESS:
      */
     virtual void visit(Renderer *renderer, const Mat4& parentTransform, uint32_t parentFlags) override;
     
-    /**generate default GLProgramState*/
-    void genGLProgramState(bool useLight = false);
+    /**generate default material*/
+    void genMaterial(bool useLight = false);
 
     void createNode(NodeData* nodedata, Node* root, const MaterialDatas& matrialdatas, bool singleSprite);
     void createAttachSprite3DNode(NodeData* nodedata,const MaterialDatas& matrialdatas);

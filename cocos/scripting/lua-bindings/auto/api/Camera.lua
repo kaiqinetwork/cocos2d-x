@@ -60,6 +60,12 @@
 -- @return mat4_table#mat4_table ret (return value: mat4_table)
         
 --------------------------------
+-- 
+-- @function [parent=#Camera] isBrushValid 
+-- @param self
+-- @return bool#bool ret (return value: bool)
+        
+--------------------------------
 -- Get object depth towards camera
 -- @function [parent=#Camera] getDepthInView 
 -- @param self
@@ -73,7 +79,7 @@
 -- @return Camera#Camera self (return value: cc.Camera)
         
 --------------------------------
--- set additional matrix for the projection matrix, it multiplys mat to projection matrix when called, used by WP8
+-- set additional matrix for the projection matrix, it multiplies mat to projection matrix when called, used by WP8
 -- @function [parent=#Camera] setAdditionalProjection 
 -- @param self
 -- @param #mat4_table mat
@@ -189,7 +195,7 @@
 -- @return Camera#Camera self (return value: cc.Camera)
         
 --------------------------------
--- Set FBO, which will attacha several render target for the rendered result.
+-- Set FBO, which will attach several render target for the rendered result.
 -- @function [parent=#Camera] setFrameBufferObject 
 -- @param self
 -- @param #cc.experimental::FrameBuffer fbo
