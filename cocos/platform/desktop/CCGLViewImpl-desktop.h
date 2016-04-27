@@ -119,7 +119,7 @@ protected:
     GLViewImpl(bool initglfw = true);
     virtual ~GLViewImpl();
 
-    bool initWithRect(const std::string& viewName, Rect rect, float frameZoomFactor, bool resizable);
+	bool initWithRect(const std::string& viewName, Rect rect, float frameZoomFactor, bool resizable, bool decorated = true);
     bool initWithFullScreen(const std::string& viewName);
     bool initWithFullscreen(const std::string& viewname, const GLFWvidmode &videoMode, GLFWmonitor *monitor);
 
