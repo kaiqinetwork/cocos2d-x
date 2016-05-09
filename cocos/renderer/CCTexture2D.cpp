@@ -804,7 +804,9 @@ bool Texture2D::initWithImage(Image *image, PixelFormat format)
         // set the premultiplied tag
         _hasPremultipliedAlpha = image->hasPremultipliedAlpha();
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 		setAliasTexParameters();
+#endif
         
         return true;
     }

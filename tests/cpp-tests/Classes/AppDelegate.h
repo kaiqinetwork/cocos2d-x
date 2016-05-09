@@ -61,6 +61,8 @@ public:
     */
     virtual void applicationWillEnterForeground();
 
+	virtual void applicationWillClose();
+
 private:
     TestController* _testController;
 };
