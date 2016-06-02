@@ -55,3 +55,8 @@ void AppDelegate::applicationWillEnterForeground()
     Director::getInstance()->startAnimation();
     SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 }
+
+void AppDelegate::applicationWillClose()
+{
+
+}

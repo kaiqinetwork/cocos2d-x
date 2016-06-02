@@ -102,7 +102,18 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // run
     director->runWithScene(scene);
-
+	FontDefinition fd;
+	fd._fontName = "ËÎÌו";
+	fd._fontSize = 14;
+	fd._dimensions.setSize(0, 0);
+	int width = 0, height = 0;
+	bool hasPremultipliedAlpha = false;
+	Device::getTextureDataForText("Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!", fd, Device::TextAlign::TOP_LEFT, width, height, hasPremultipliedAlpha);
+	if (width > 840)
+	{
+		fd._dimensions.setSize(840, 0);
+		Device::getTextureDataForText("Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!Hello World!", fd, Device::TextAlign::TOP_LEFT, width, height, hasPremultipliedAlpha);
+	}
     return true;
 }
 
@@ -120,4 +131,9 @@ void AppDelegate::applicationWillEnterForeground() {
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+}
+
+void AppDelegate::applicationWillClose()
+{
+
 }

@@ -324,6 +324,14 @@ THE SOFTWARE.
 #endif
 #endif // CC_USE_WIC
 
+/** Support gif or not. If your application don't use gif format picture, you can undefine this macro to save package size.
+*/
+#ifndef CC_USE_GIF
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#define CC_USE_GIF  1
+#endif
+#endif // CC_USE_WEBP
+
 /** Enable Script binding. */
 #ifndef CC_ENABLE_SCRIPT_BINDING
 #define CC_ENABLE_SCRIPT_BINDING 1

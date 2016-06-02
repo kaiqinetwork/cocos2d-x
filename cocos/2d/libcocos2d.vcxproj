@@ -191,7 +191,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\include;$(KAIQI_PROJECT_ROOT)\include\box2d;$(KAIQI_PROJECT_ROOT)\include\sqlite;$(EngineRoot)external\unzip;$(EngineRoot)external\edtaa3func;$(KAIQI_PROJECT_ROOT)\include\tinyxml;$(KAIQI_PROJECT_ROOT)\include\libpng;$(KAIQI_PROJECT_ROOT)\include\jpeg;$(KAIQI_PROJECT_ROOT)\include\tiff;$(KAIQI_PROJECT_ROOT)\include\webp;$(KAIQI_PROJECT_ROOT)\include;$(KAIQI_PROJECT_ROOT)\include\iconv;$(KAIQI_PROJECT_ROOT)\include\zlib;$(KAIQI_PROJECT_ROOT)\include\chipmunk;$(EngineRoot)external\xxhash;$(EngineRoot)external\ConvertUTF;$(KAIQI_PROJECT_ROOT)\include\curl;$(KAIQI_PROJECT_ROOT)\include\websockets;$(EngineRoot)external;$(EngineRoot)cocos;$(EngineRoot)cocos\editor-support;$(EngineRoot)cocos\audio\include;$(EngineRoot)extensions;$(EngineRoot);$(KAIQI_PROJECT_ROOT)\include\glfw3;$(KAIQI_PROJECT_ROOT)\include\al;$(KAIQI_PROJECT_ROOT)\include\ogg;$(KAIQI_PROJECT_ROOT)\include\mpg123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\include;$(KAIQI_PROJECT_ROOT)\include\box2d;$(KAIQI_PROJECT_ROOT)\include\sqlite;$(EngineRoot)external\unzip;$(EngineRoot)external\edtaa3func;$(KAIQI_PROJECT_ROOT)\include\tinyxml2;$(KAIQI_PROJECT_ROOT)\include\libpng;$(KAIQI_PROJECT_ROOT)\include\jpeg;$(KAIQI_PROJECT_ROOT)\include\tiff;$(KAIQI_PROJECT_ROOT)\include\webp;$(KAIQI_PROJECT_ROOT)\include;$(KAIQI_PROJECT_ROOT)\include\iconv;$(KAIQI_PROJECT_ROOT)\include\zlib;$(KAIQI_PROJECT_ROOT)\include\chipmunk;$(EngineRoot)external\xxhash;$(EngineRoot)external\ConvertUTF;$(KAIQI_PROJECT_ROOT)\include\curl;$(KAIQI_PROJECT_ROOT)\include\websockets;$(EngineRoot)external;$(EngineRoot)cocos;$(EngineRoot)cocos\editor-support;$(EngineRoot)cocos\audio\include;$(EngineRoot)extensions;$(EngineRoot);$(KAIQI_PROJECT_ROOT)\include\glfw3;$(KAIQI_PROJECT_ROOT)\include\al;$(KAIQI_PROJECT_ROOT)\include\ogg;$(KAIQI_PROJECT_ROOT)\include\mpg123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;COCOS2DXWIN32_EXPORTS;GL_GLEXT_PROTOTYPES;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;CC_3D_STATIC;IGNORE_EXPORT;CC_STUDIO_STATIC;CC_EX_STATIC;CC_GUI_STATIC;CC_ENABLE_CHIPMUNK_INTEGRATION=1;CC_STATIC;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -199,7 +199,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -212,6 +212,7 @@ if not exist "$(OutDir)\include-win\cocos" mkdir "$(OutDir)\include-win\cocos"
 if not exist "$(OutDir)\include-win\extensions" mkdir "$(OutDir)\include-win\extensions"
 if not exist "$(OutDir)\include-win\external" mkdir "$(OutDir)\include-win\external"
 xcopy /Y /Q /E "$(ProjectDir)..\..\cocos\*.h" "$(OutDir)\include-win\cocos"
+xcopy /Y /Q /E "$(ProjectDir)..\..\cocos\*.hpp" "$(OutDir)\include-win\cocos"
 xcopy /Y /Q /E "$(ProjectDir)..\..\cocos\*.inl" "$(OutDir)\include-win\cocos"
 xcopy /Y /Q /E "$(ProjectDir)..\..\extensions\*.h" "$(OutDir)\include-win\extensions"
 xcopy /Y /Q /E "$(ProjectDir)..\..\external\*.h" "$(OutDir)\include-win\external"</Command>
@@ -534,7 +535,6 @@ xcopy /Y /Q /E "$(ProjectDir)..\..\extensions\*.inl" "$(OutDir)\include-win\exte
     <ClCompile Include="..\..\external\poly2tri\sweep\cdt.cc" />
     <ClCompile Include="..\..\external\poly2tri\sweep\sweep.cc" />
     <ClCompile Include="..\..\external\poly2tri\sweep\sweep_context.cc" />
-    <ClCompile Include="..\..\external\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="..\..\external\unzip\ioapi_mem.cpp" />
     <ClCompile Include="..\..\external\unzip\ioapi.cpp" />
     <ClCompile Include="..\..\external\unzip\unzip.cpp" />
@@ -825,6 +825,7 @@ xcopy /Y /Q /E "$(ProjectDir)..\..\extensions\*.inl" "$(OutDir)\include-win\exte
     <ClCompile Include="..\ui\UIRelativeBox.cpp" />
     <ClCompile Include="..\ui\UIRichText.cpp" />
     <ClCompile Include="..\ui\UIScale9Sprite.cpp" />
+    <ClCompile Include="..\ui\UIScrollBar.cpp" />
     <ClCompile Include="..\ui\UIScrollView.cpp" />
     <ClCompile Include="..\ui\UIScrollViewBar.cpp" />
     <ClCompile Include="..\ui\UISlider.cpp" />
@@ -1109,7 +1110,6 @@ xcopy /Y /Q /E "$(ProjectDir)..\..\extensions\*.inl" "$(OutDir)\include-win\exte
     <ClInclude Include="..\..\external\poly2tri\sweep\cdt.h" />
     <ClInclude Include="..\..\external\poly2tri\sweep\sweep.h" />
     <ClInclude Include="..\..\external\poly2tri\sweep\sweep_context.h" />
-    <ClInclude Include="..\..\external\tinyxml2\tinyxml2.h" />
     <ClInclude Include="..\..\external\unzip\ioapi_mem.h" />
     <ClInclude Include="..\..\external\unzip\ioapi.h" />
     <ClInclude Include="..\..\external\unzip\unzip.h" />

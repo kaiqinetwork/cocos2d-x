@@ -28,6 +28,8 @@ public:
     */
     virtual void applicationDidEnterBackground();
 
+	virtual void applicationWillClose();
+
     /**
     @brief  The function be called when the application enter foreground
     @param  the pointer of the application

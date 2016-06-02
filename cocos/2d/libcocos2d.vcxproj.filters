@@ -34,9 +34,6 @@
     <Filter Include="external">
       <UniqueIdentifier>{ec174f10-2de3-4568-9f30-b2f0a4e9396e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="external\tinyxml2">
-      <UniqueIdentifier>{364c3b8c-77eb-46ed-a866-a8686b1b65bc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="external\unzip">
       <UniqueIdentifier>{589928bf-e550-41f1-ae21-64443dd5fe21}</UniqueIdentifier>
     </Filter>
@@ -285,6 +282,12 @@
     </Filter>
     <Filter Include="cocostudio\reader\WidgetReader\TabControlReader">
       <UniqueIdentifier>{8686c220-18af-4bea-abce-f4797afd01f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cocostudio\reader\WidgetReader\GameNode3DReader">
+      <UniqueIdentifier>{12a8ec70-4316-4e4d-98d7-fdb3e5d9964b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cocostudio\reader\WidgetReader\Light3DReader">
+      <UniqueIdentifier>{3a4a907d-f1c9-441a-849b-9e40b3e2b50d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -732,9 +735,6 @@
     </ClCompile>
     <ClCompile Include="..\platform\CCThread.cpp">
       <Filter>platform</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\external\tinyxml2\tinyxml2.cpp">
-      <Filter>external\tinyxml2</Filter>
     </ClCompile>
     <ClCompile Include="..\..\external\unzip\ioapi_mem.cpp">
       <Filter>external\unzip</Filter>
@@ -1357,8 +1357,6 @@
     <ClCompile Include="..\editor-support\cocostudio\WidgetReader\ArmatureNodeReader\ArmatureNodeReader.cpp">
       <Filter>cocostudio\reader\WidgetReader\ArmatureNodeReader</Filter>
     </ClCompile>
-    <ClCompile Include="..\3d\CCFrustum.cpp" />
-    <ClCompile Include="..\3d\CCPlane.cpp" />
     <ClCompile Include="..\3d\CCAABB.cpp">
       <Filter>3d</Filter>
     </ClCompile>
@@ -1912,7 +1910,6 @@
     <ClCompile Include="..\..\external\clipper\clipper.cpp">
       <Filter>external\clipper</Filter>
     </ClCompile>
-    <ClCompile Include="..\editor-support\cocostudio\WidgetReader\GameNode3DReader\GameNode3DReader.cpp" />
     <ClCompile Include="..\editor-support\cocostudio\WidgetReader\SkeletonReader\BoneNodeReader.cpp">
       <Filter>cocostudio\reader\WidgetReader\SkeletonReader</Filter>
     </ClCompile>
@@ -1943,7 +1940,6 @@
     <ClCompile Include="..\network\CCDownloader-curl.cpp">
       <Filter>network</Filter>
     </ClCompile>
-    <ClCompile Include="..\editor-support\cocostudio\WidgetReader\Light3DReader\Light3DReader.cpp" />
     <ClCompile Include="..\editor-support\cocostudio\WidgetReader\TabControlReader\TabControlReader.cpp">
       <Filter>cocostudio\reader\WidgetReader\TabControlReader</Filter>
     </ClCompile>
@@ -1953,10 +1949,33 @@
     <ClCompile Include="..\editor-support\cocostudio\LocalizationManager.cpp">
       <Filter>cocostudio\json</Filter>
     </ClCompile>
-    <ClCompile Include="..\platform\CCInput.cpp" />
-    <ClCompile Include="..\platform\win32\CCInput-win32.cpp" />
-    <ClCompile Include="..\ui\UIWebViewImpl-win.cpp" />
-    <ClCompile Include="..\ui\UIWindow.cpp" />
+    <ClCompile Include="..\ui\UIWebViewImpl-win.cpp">
+      <Filter>ui\UIWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\CCFrustum.cpp">
+      <Filter>3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\platform\win32\CCInput-win32.cpp">
+      <Filter>platform\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\platform\CCInput.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\CCPlane.cpp">
+      <Filter>3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editor-support\cocostudio\WidgetReader\GameNode3DReader\GameNode3DReader.cpp">
+      <Filter>cocostudio\reader\WidgetReader\GameNode3DReader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\UIWindow.cpp">
+      <Filter>ui\UIWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\UIScrollBar.cpp">
+      <Filter>ui\UIWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editor-support\cocostudio\WidgetReader\Light3DReader\Light3DReader.cpp">
+      <Filter>cocostudio\reader\WidgetReader\Light3DReader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\physics\CCPhysicsBody.h">
@@ -2463,9 +2482,6 @@
     </ClInclude>
     <ClInclude Include="..\platform\CCThread.h">
       <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\tinyxml2\tinyxml2.h">
-      <Filter>external\tinyxml2</Filter>
     </ClInclude>
     <ClInclude Include="..\..\external\unzip\unzip.h">
       <Filter>external\unzip</Filter>
@@ -3088,9 +3104,6 @@
     <ClInclude Include="..\audio\include\AudioEngine.h">
       <Filter>audioengine</Filter>
     </ClInclude>
-    <ClInclude Include="..\audio\win32\AudioCache.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
     <ClInclude Include="..\audio\win32\AudioEngine-win32.h">
       <Filter>audioengine</Filter>
     </ClInclude>
@@ -3196,8 +3209,6 @@
     <ClInclude Include="..\editor-support\cocostudio\WidgetReader\ArmatureNodeReader\CSArmatureNode_generated.h">
       <Filter>cocostudio\reader\WidgetReader\ArmatureNodeReader</Filter>
     </ClInclude>
-    <ClInclude Include="..\3d\CCFrustum.h" />
-    <ClInclude Include="..\3d\CCPlane.h" />
     <ClInclude Include="..\physics\CCPhysicsHelper.h">
       <Filter>physics</Filter>
     </ClInclude>
@@ -3760,7 +3771,6 @@
     <ClInclude Include="..\..\external\clipper\clipper.hpp">
       <Filter>external\clipper</Filter>
     </ClInclude>
-    <ClInclude Include="..\editor-support\cocostudio\WidgetReader\GameNode3DReader\GameNode3DReader.h" />
     <ClInclude Include="..\editor-support\cocostudio\WidgetReader\SkeletonReader\BoneNodeReader.h">
       <Filter>cocostudio\reader\WidgetReader\SkeletonReader</Filter>
     </ClInclude>
@@ -3800,7 +3810,6 @@
     <ClInclude Include="..\network\CCDownloader-curl.h">
       <Filter>network\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\editor-support\cocostudio\WidgetReader\Light3DReader\Light3DReader.h" />
     <ClInclude Include="..\ui\UIAbstractCheckButton.h">
       <Filter>ui</Filter>
     </ClInclude>
@@ -3819,12 +3828,39 @@
     <ClInclude Include="..\editor-support\cocostudio\LocalizationManager.h">
       <Filter>cocostudio\json</Filter>
     </ClInclude>
-    <ClInclude Include="..\platform\CCInput.h" />
-    <ClInclude Include="..\platform\win32\CCInput-win32.h" />
-    <ClInclude Include="..\ui\UIRadioButton.h" />
-    <ClInclude Include="..\ui\UIScrollBar.h" />
-    <ClInclude Include="..\ui\UIWebViewImpl-win.h" />
-    <ClInclude Include="..\ui\UIWindow.h" />
+    <ClInclude Include="..\ui\UIRadioButton.h">
+      <Filter>ui\UIWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\UIWebViewImpl-win.h">
+      <Filter>ui\UIWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\CCFrustum.h">
+      <Filter>3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\win32\CCInput-win32.h">
+      <Filter>platform\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\CCInput.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\audio\win32\AudioCache.h">
+      <Filter>audioengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\CCPlane.h">
+      <Filter>3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editor-support\cocostudio\WidgetReader\GameNode3DReader\GameNode3DReader.h">
+      <Filter>cocostudio\reader\WidgetReader\GameNode3DReader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\UIWindow.h">
+      <Filter>ui\UIWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\UIScrollBar.h">
+      <Filter>ui\UIWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editor-support\cocostudio\WidgetReader\Light3DReader\Light3DReader.h">
+      <Filter>cocostudio\reader\WidgetReader\Light3DReader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\math\Mat4.inl">

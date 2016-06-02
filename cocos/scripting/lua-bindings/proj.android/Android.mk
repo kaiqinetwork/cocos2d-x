@@ -11,7 +11,6 @@ LOCAL_SRC_FILES := ../manual/platform/android/CCLuaJavaBridge.cpp \
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../.. \
                     $(LOCAL_PATH)/../manual \
-                    $(LOCAL_PATH)/../../../../external/lua/tolua \
                     $(LOCAL_PATH)/../manual/platform/android \
                     $(LOCAL_PATH)/../manual/platform/android/jni
 
@@ -20,6 +19,7 @@ LOCAL_EXPORT_LDLIBS := -lGLESv2 \
                        -landroid
 
 LOCAL_STATIC_LIBRARIES := luajit_static
+LOCAL_STATIC_LIBRARIES += tolua++_static
 
 include $(BUILD_STATIC_LIBRARY)
 
@@ -52,11 +52,6 @@ LOCAL_SRC_FILES := ../manual/CCLuaBridge.cpp \
           ../manual/cocos2d/LuaOpengl.cpp \
           ../manual/cocos2d/LuaScriptHandlerMgr.cpp \
           ../manual/tolua_fix.cpp \
-          ../../../../external/lua/tolua/tolua_event.c \
-          ../../../../external/lua/tolua/tolua_is.c \
-          ../../../../external/lua/tolua/tolua_map.c \
-          ../../../../external/lua/tolua/tolua_push.c \
-          ../../../../external/lua/tolua/tolua_to.c \
           ../../../../external/xxtea/xxtea.cpp \
           ../auto/lua_cocos2dx_audioengine_auto.cpp \
           ../manual/audioengine/lua_cocos2dx_audioengine_manual.cpp
@@ -133,7 +128,7 @@ LOCAL_SRC_FILES += ../manual/navmesh/lua_cocos2dx_navmesh_conversions.cpp \
                    ../manual/navmesh/lua_cocos2dx_navmesh_manual.cpp \
                    ../auto/lua_cocos2dx_navmesh_auto.cpp \
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../../external/lua/tolua \
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../../external/lua/tolua/include \
                     $(LOCAL_PATH)/../../../../external/lua/luajit/include \
                     $(LOCAL_PATH)/../../../2d \
                     $(LOCAL_PATH)/../../../3d \
@@ -163,7 +158,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../../external/lua/tolua \
                     $(LOCAL_PATH)/../../../.. \
                     $(LOCAL_PATH)/../../../../external/lua
 
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../../external/lua/tolua \
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../../external/lua/tolua/include \
                            $(LOCAL_PATH)/../../../../external/lua/luajit/include \
                            $(LOCAL_PATH)/../auto \
                            $(LOCAL_PATH)/../manual \
@@ -188,3 +183,4 @@ include $(BUILD_STATIC_LIBRARY)
 
 $(call import-module,lua/luajit/prebuilt/android)
 $(call import-module,.)
+$(call import-module,lua/tolua/prebuilt/android)

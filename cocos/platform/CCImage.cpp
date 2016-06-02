@@ -59,8 +59,10 @@ extern "C"
 #include "png.h"
 #endif //CC_USE_PNG
 
+#if CC_USE_GIF
 #include "gif/gif_lib.h"
-    
+#endif //CC_USE_GIF
+
 #if CC_USE_TIFF
 #include "tiffio.h"
 #endif //CC_USE_TIFF
@@ -431,6 +433,8 @@ namespace
         }
     }
 #endif //CC_USE_PNG
+
+#ifdef CC_USE_GIF
 	static int gifReadCallback(GifFileType* gifFile, GifByteType* data, int length)
 	{
 		tImageSource* isource = (tImageSource*)gifFile->UserData;
@@ -444,6 +448,7 @@ namespace
 		}
 		return readLength;
 	}
+#endif //CC_USE_GIF
 }
 
 Texture2D::PixelFormat getDevicePixelFormat(Texture2D::PixelFormat format)
@@ -2515,6 +2520,7 @@ bool Image::isGif(const unsigned char *data, ssize_t dataLen)
 const int InterlacedOffset[] = { 0, 4, 2, 1 }; /* The way Interlaced image should. */
 const int InterlacedJumps[] = { 8, 8, 4, 2 };    /* be read - offsets and jumps... */
 
+#ifdef CC_USE_GIF
 // Copy bytes from source to destination  skipping transparent bytes
 void CopyGIF(uint8_t* pDst, uint8_t* pSrc, int width, const int transparent, GifColorType* pColorTable)
 {
@@ -2551,9 +2557,11 @@ void FillGIF(uint8_t* pDst, GifColorType* transparentColor, int width)
 		} while (--width);
 	}
 }
+#endif //CC_USE_GIF
 
 bool Image::initWithGifData(const unsigned char *data, ssize_t dataLen)
 {
+#ifdef CC_USE_GIF
 	tImageSource imageSource;
 	imageSource.data = (unsigned char*)data;
 	imageSource.size = dataLen;
@@ -2631,6 +2639,10 @@ bool Image::initWithGifData(const unsigned char *data, ssize_t dataLen)
 	}
 
 	return ret;
+#else 
+	CCLOG("gif is not enabled, please enable it in ccConfig.h");
+	return false;
+#endif // CC_USE_WEBP
 }
 
 NS_CC_END
