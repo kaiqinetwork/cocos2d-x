@@ -443,6 +443,7 @@ void AssetsManagerEx::downloadVersion()
     {
         _updateState = State::DOWNLOADING_VERSION;
         // Download version file asynchronously
+		versionUrl += StringUtils::format("?t=%u", time(NULL));
         _downloader->createDownloadFileTask(versionUrl, _cacheVersionPath, VERSION_ID);
     }
     // No version file found
@@ -499,6 +500,7 @@ void AssetsManagerEx::downloadManifest()
     {
         _updateState = State::DOWNLOADING_MANIFEST;
         // Download version file asynchronously
+		manifestUrl += StringUtils::format("?t=%u", time(NULL));
         _downloader->createDownloadFileTask(manifestUrl, _tempManifestPath, MANIFEST_ID);
     }
     // No manifest file found
@@ -602,7 +604,7 @@ void AssetsManagerEx::startUpdate()
 
                     DownloadUnit unit;
                     unit.customId = it->first;
-                    unit.srcUrl = packageUrl + path;
+                    unit.srcUrl = packageUrl + path + "?v=" + diff.asset.md5;
                     unit.storagePath = _storagePath + path;
                     _downloadUnits.emplace(unit.customId, unit);
                 }
@@ -988,10 +990,11 @@ void AssetsManagerEx::destroyDownloadedVersion()
 
 void AssetsManagerEx::batchDownload()
 {
+	time_t nowTime = time(NULL);
     for(auto iter : _downloadUnits)
     {
         DownloadUnit& unit = iter.second;
-        _downloader->createDownloadFileTask(unit.srcUrl, unit.storagePath, unit.customId);
+		_downloader->createDownloadFileTask(unit.srcUrl, unit.storagePath, unit.customId);
     }
 }
 
