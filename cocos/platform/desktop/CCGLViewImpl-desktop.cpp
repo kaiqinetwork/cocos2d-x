@@ -329,10 +329,10 @@ GLViewImpl* GLViewImpl::create(const std::string& viewName)
     return nullptr;
 }
 
-GLViewImpl* GLViewImpl::createWithRect(const std::string& viewName, Rect rect, float frameZoomFactor, bool resizable)
+GLViewImpl* GLViewImpl::createWithRect(const std::string& viewName, Rect rect, float frameZoomFactor, bool resizable, bool decorated)
 {
     auto ret = new (std::nothrow) GLViewImpl;
-    if(ret && ret->initWithRect(viewName, rect, frameZoomFactor, resizable)) {
+	if (ret && ret->initWithRect(viewName, rect, frameZoomFactor, resizable, decorated)) {
         ret->autorelease();
         return ret;
     }
