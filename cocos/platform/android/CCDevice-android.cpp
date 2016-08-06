@@ -168,6 +168,16 @@ Data Device::getTextureDataForText(const char * text, const FontDefinition& text
     return ret;
 }
 
+Size Device::getSizeWithText(const char * text, const FontDefinition& textDefinition)
+{
+	return Size::ZERO;
+}
+
+Size Device::getSizeWithText(const char16_t* text, const FontDefinition& textDefinition)
+{
+	return Size::ZERO;
+}
+
 void Device::setKeepScreenOn(bool value)
 {
     JniHelper::callStaticVoidMethod(helperClassName, "setKeepScreenOn", value);

@@ -645,6 +645,10 @@ public:
      */
     void setCursorFromPoint(const Vec2 &point, const Camera* camera);
     
+	virtual void onMouseDown(Event *unusedEvent);
+	virtual void onMouseMove(Event *unusedEvent);
+	virtual void onMouseDblClk(Event *unusedEvent);
+
 CC_CONSTRUCTOR_ACCESS:
     virtual bool init() override;
     
@@ -656,6 +660,11 @@ protected:
     void deleteBackwardEvent();
     virtual void onSizeChanged() override;
   
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
+	virtual void onPressStateChangedToNormal() override;
+	virtual void onPressStateChangedToHot() override;
+#endif
+
     void textfieldRendererScaleChangedWithSize();
     
     virtual Widget* createCloneInstance() override;

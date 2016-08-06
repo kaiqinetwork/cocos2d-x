@@ -1,5 +1,6 @@
 #include "HelloWorldScene.h"
 #include "AppMacros.h"
+#include "ui/UITextField.h"
 
 USING_NS_CC;
 
@@ -65,13 +66,24 @@ bool HelloWorld::init()
     this->addChild(label, 1);
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
+    //auto sprite = Sprite::create("HelloWorld.png");
 
     // position the sprite on the center of the screen
-    sprite->setPosition(Vec2(visibleSize / 2) + origin);
+    //sprite->setPosition(Vec2(visibleSize / 2) + origin);
 
     // add the sprite as a child to this layer
-    this->addChild(sprite);
+    //this->addChild(sprite);
+
+	auto textField = ui::TextField::create();
+	//textField->setFontName("fonts/HKYuanMini.ttf"); 
+	textField->setFontName("ËÎÌו");
+	textField->setCursorEnabled(true); 
+
+	// position the sprite on the center of the screen
+	textField->setPosition(Vec2(visibleSize / 2) + origin);
+
+	// add the sprite as a child to this layer
+	this->addChild(textField);
     
     return true;
 }

@@ -130,7 +130,9 @@ protected:
     * @js NA
     * @lua NA
     */
-    virtual void controlKey(EventKeyboard::KeyCode keyCode) {}
+	virtual void controlKey(EventKeyboard::KeyCode keyCode, int mods) {}
+
+	virtual void selectAllText() {}
 
     /**
     @brief    Called by IMEDispatcher for text stored in delegate.
@@ -138,6 +140,8 @@ protected:
     * @lua NA
     */
     virtual const std::string& getContentText() { return STD_STRING_EMPTY; }
+
+	virtual std::string getSelectedText() { return STD_STRING_EMPTY; }
 
     //////////////////////////////////////////////////////////////////////////
     // keyboard show/hide notification

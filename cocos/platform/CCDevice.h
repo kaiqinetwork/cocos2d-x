@@ -29,6 +29,7 @@ THE SOFTWARE.
 #include "platform/CCPlatformMacros.h"
 #include "base/ccMacros.h"
 #include "base/CCData.h"
+#include "math/CCGeometry.h"
 
 NS_CC_BEGIN
 
@@ -97,6 +98,10 @@ public:
      */
     static Data getTextureDataForText(const char * text, const FontDefinition& textDefinition, TextAlign align, int &width, int &height, bool& hasPremultipliedAlpha);
     
+	static Size getSizeWithText(const char * text, const FontDefinition& textDefinition);
+
+	static Size getSizeWithText(const char16_t* text, const FontDefinition& textDefinition);
+
 private:
     CC_DISALLOW_IMPLICIT_CONSTRUCTORS(Device);
 };

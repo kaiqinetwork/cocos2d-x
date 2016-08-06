@@ -243,7 +243,7 @@ void IMEDispatcher::dispatchDeleteBackward()
     } while (0);
 }
 
-void IMEDispatcher::dispatchControlKey(EventKeyboard::KeyCode keyCode)
+void IMEDispatcher::dispatchControlKey(EventKeyboard::KeyCode keyCode, int mods)
 {
     do
     {
@@ -252,7 +252,7 @@ void IMEDispatcher::dispatchControlKey(EventKeyboard::KeyCode keyCode)
         // there is no delegate attached to IME
         CC_BREAK_IF(!_impl->_delegateWithIme);
 
-        _impl->_delegateWithIme->controlKey(keyCode);
+        _impl->_delegateWithIme->controlKey(keyCode, mods);
     } while (0);
 }
 
@@ -350,6 +350,28 @@ IMEDispatcher* IMEDispatcher::sharedDispatcher()
 {
     static IMEDispatcher s_instance;
     return &s_instance;
+}
+
+void IMEDispatcher::dispatchSelectAllText()
+{
+	do
+	{
+		CC_BREAK_IF(!_impl);
+
+		// there is no delegate attached to IME
+		CC_BREAK_IF(!_impl->_delegateWithIme);
+
+		_impl->_delegateWithIme->selectAllText();
+	} while (0);
+}
+
+std::string IMEDispatcher::getSelectedText()
+{
+	if (_impl && _impl->_delegateWithIme)
+	{
+		return _impl->_delegateWithIme->getSelectedText();
+	}
+	return STD_STRING_EMPTY;
 }
 
 NS_CC_END

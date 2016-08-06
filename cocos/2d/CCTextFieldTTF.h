@@ -28,6 +28,7 @@ THE SOFTWARE.
 
 #include "2d/CCLabel.h"
 #include "base/CCIMEDelegate.h"
+#include "2d/CCDrawNode.h"
 
 /**
  * @addtogroup ui
@@ -188,6 +189,10 @@ public:
      */
     virtual void setTextColor(const Color4B& textColor) override;
 
+	virtual void setSelectedTextColor(const Color4B& textColor);
+
+	virtual void setSelectedTextBgColor(const Color4B& color);
+
     /**
      * Change input text of TextField.
      *@param text The input text of TextField.
@@ -235,6 +240,8 @@ public:
      * @js NA
      */
     virtual bool isSecureTextEntry()const;
+	
+	virtual void updateContent() override;
 
     virtual void visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags) override;
 
@@ -264,7 +271,18 @@ public:
     */
     void setCursorFromPoint(const Vec2 &point, const Camera* camera);
 
+	std::size_t getCursorFromPoint(const Vec2 &point);
+
+	void setSelectedText(int startPos, int endPos);
+
+	virtual void handleMouseDown(Event *unusedEvent);
+	virtual void handleMouseMove(Event *unusedEvent);
+	virtual void handleMouseDblClk(Event *unusedEvent);
+	virtual void handleMouseLeave(Event *unusedEvent);
+
 protected:
+	Sprite* getCursorSprite();
+
     //////////////////////////////////////////////////////////////////////////
     // IMEDelegate interface
     //////////////////////////////////////////////////////////////////////////
@@ -276,7 +294,14 @@ protected:
     virtual void insertText(const char * text, size_t len) override;
     virtual void deleteBackward() override;
     virtual const std::string& getContentText() override;
-    virtual void controlKey(EventKeyboard::KeyCode keyCode) override;
+	virtual void controlKey(EventKeyboard::KeyCode keyCode, int mods) override;
+	virtual void selectAllText() override;
+	virtual std::string getSelectedText() override;
+
+	void moveCursorHome(bool selectText);
+	void moveCursorEnd(bool selectText);
+	void moveCursorForward(bool wordbreak, bool selectText);
+	void moveCursorBackward(bool wordbreak, bool selectText);
 
     TextFieldDelegate * _delegate;
     std::size_t _charCount;
@@ -286,11 +311,13 @@ protected:
     std::string _placeHolder;
     Color4B _colorSpaceHolder;
     Color4B _colorText;
+	Color4B _colorSelectedTextBg;
+	Color4B _colorSelectedText;
 
     bool _secureTextEntry;
     std::string _passwordStyleText;
 
-    // Need use cursor
+	// Need use cursor
     bool _cursorEnabled;
     // Current position cursor
     std::size_t _cursorPosition;
@@ -298,8 +325,13 @@ protected:
     char _cursorChar;
     // >0 - show, <0 - hide
     float _cursorShowingTime;
-
-    bool _isAttachWithIME;
+	std::size_t _selectedTextStartPos;
+	std::size_t _selectedTextEndPos;
+	DrawNode* _selectedTextNode;
+	Sprite* _selectedTextSprite;
+	Sprite* _cursorSprite;
+    
+	bool _isAttachWithIME;
 
     void makeStringSupportCursor(std::string& displayText);
     void updateCursorDisplayText();

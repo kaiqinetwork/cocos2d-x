@@ -38,6 +38,11 @@
 #define MOUSE_BUTTON_7          6
 #define MOUSE_BUTTON_8          7
 
+#define MOUSE_MOD_SHIFT			0x0001
+#define MOUSE_MOD_CONTROL       0x0002
+#define MOUSE_MOD_ALT           0x0004
+#define MOUSE_MOD_SUPER         0x0008
+
 /**
  * @addtogroup base
  * @{

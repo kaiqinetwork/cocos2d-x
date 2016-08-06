@@ -159,6 +159,7 @@ protected:
 	float _lastReleaseMouseX;
 	float _lastReleaseMouseY;
 	long _lastReleaseTime;
+	int _lastReleaseButton;
 
     friend class GLFWEventHandler;
 

@@ -174,7 +174,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>libcocos2d-static-vc120-xp-d.lib;tinyxml-static-vc120-xp-d.lib;libgif-vc120-xp.lib;librecast-static-vc120-xp-d.lib;libbullet-static-vc120-xp-d.lib;chipmunk-static-vc120-xp.lib;libcurl-vc120-xp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcocos2d-static-vc120-xp-d.lib;tinyxml2-static-vc120-xp-d.lib;libgif-vc120-xp.lib;librecast-static-vc120-xp-d.lib;libbullet-static-vc120-xp-d.lib;chipmunk-static-vc120-xp.lib;libcurl-vc120-xp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>MSVRT.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
@@ -232,7 +232,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..\Classes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;CC_3D_STATIC;IGNORE_EXPORT;CC_STUDIO_STATIC;CC_EX_STATIC;CC_GUI_STATIC;CC_ENABLE_CHIPMUNK_INTEGRATION=1;CC_STATIC;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
@@ -242,7 +242,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libcocos2d-static-vc120-xp.lib;libchipmunk-vc120-d.lib;tinyxml-static-vc120-xp.lib;libgif-vc120-xp.lib;librecast-static-vc120-xp.lib;libbullet-static-vc120-xp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcocos2d-static-vc120-xp.lib;chipmunk-static-vc120-xp.lib;tinyxml2-static-vc120-xp.lib;libgif-vc120-xp.lib;librecast-static-vc120-xp.lib;libbullet-static-vc120-xp.lib;libcurl-vc120-xp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>

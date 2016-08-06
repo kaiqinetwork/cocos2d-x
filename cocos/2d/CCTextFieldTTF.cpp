@@ -29,6 +29,7 @@ THE SOFTWARE.
 #include "platform/CCFileUtils.h"
 #include "base/ccUTF8.h"
 #include "2d/CCSprite.h"
+#include "base/CCEventMouse.h"
 
 NS_CC_BEGIN
 
@@ -52,6 +53,28 @@ static int _calcCharCount(const char * text)
     return n;
 }
 
+static std::size_t _calcCharPos(const char * text, int charCount)
+{
+	int n = 0;
+	char ch = 0;
+	const char* beginPtr = text;
+	while ((ch = *text))
+	{
+		CC_BREAK_IF(!ch);
+
+		if (0x80 != (0xC0 & ch))
+		{
+			++n;
+			if ((n - 1) == charCount)
+			{
+				break;
+			}
+		}
+		++text;
+	}
+	return text - beginPtr;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // constructor and destructor
 //////////////////////////////////////////////////////////////////////////
@@ -69,6 +92,13 @@ TextFieldTTF::TextFieldTTF()
 , _cursorChar(CURSOR_DEFAULT_CHAR)
 , _cursorShowingTime(0.0f)
 , _isAttachWithIME(false)
+, _selectedTextNode(nullptr)
+, _selectedTextSprite(nullptr)
+, _cursorSprite(nullptr)
+, _selectedTextStartPos(0)
+, _selectedTextEndPos(0)
+, _colorSelectedTextBg(Color4B::BLUE)
+, _colorSelectedText(Color4B::BLACK)
 {
     _colorSpaceHolder.r = _colorSpaceHolder.g = _colorSpaceHolder.b = 127;
     _colorSpaceHolder.a = 255;
@@ -237,17 +267,27 @@ void TextFieldTTF::insertText(const char * text, size_t len)
 
         int countInsertChar = _calcCharCount(insert.c_str());
         _charCount += countInsertChar;
-
+		
         if (_cursorEnabled)
         {
-            StringUtils::StringUTF8 stringUTF8;
+			std::string sText(_inputText);
+			if (_selectedTextEndPos > _selectedTextStartPos)
+			{
+				std::size_t charStartPos = _calcCharPos(sText.c_str(), _selectedTextStartPos);
+				std::size_t charEndPos = _calcCharPos(sText.c_str(), _selectedTextEndPos);
+				sText.replace(charStartPos, charEndPos - charStartPos, insert);
 
-            stringUTF8.replace(_inputText);
-            stringUTF8.insert(_cursorPosition, insert);
+				_charCount -= charEndPos - charStartPos;
+				setCursorPosition(_selectedTextStartPos + countInsertChar);
+				_selectedTextStartPos = _selectedTextEndPos = 0;
+			}
+			else
+			{
+				sText.insert(_cursorPosition == _charCount ? sText.size() : _calcCharPos(sText.c_str(), _cursorPosition), insert);
+				setCursorPosition(_cursorPosition + countInsertChar);
+			}
 
-            setCursorPosition(_cursorPosition + countInsertChar);            
-
-            setString(stringUTF8.getAsCharSequence());
+			setString(sText);
         }
         else
         {
@@ -274,19 +314,39 @@ void TextFieldTTF::insertText(const char * text, size_t len)
 void TextFieldTTF::deleteBackward()
 {
     size_t len = _inputText.length();
-    if (! len)
-    {
-        // there is no string
-        return;
-    }
+	if (!len || (_cursorPosition == 0 && _selectedTextEndPos == _selectedTextStartPos))
+	{
+		// there is no string
+		return;
+	}
 
     // get the delete byte number
     size_t deleteLen = 1;    // default, erase 1 byte
 
-    while(0x80 == (0xC0 & _inputText.at(len - deleteLen)))
-    {
-        ++deleteLen;
-    }
+	size_t cursorPos = _cursorPosition;
+	if (_selectedTextEndPos > _selectedTextStartPos)
+	{
+		cursorPos = _selectedTextEndPos;
+	}
+
+	size_t pos = _calcCharPos(_inputText.c_str(), cursorPos);
+
+	if (_selectedTextEndPos > _selectedTextStartPos)
+	{
+		deleteLen = pos - _calcCharPos(_inputText.c_str(), _selectedTextStartPos);
+		cursorPos = _selectedTextStartPos;
+		_selectedTextStartPos = 0;
+		_selectedTextEndPos = 0;
+	}
+	else
+	{
+		while (0x80 == (0xC0 & _inputText.at(pos - deleteLen)))
+		{
+			++deleteLen;
+		}
+		cursorPos -= 1;
+	}
+	setCursorPosition(cursorPos);
 
     if (_delegate && _delegate->onTextFieldDeleteBackward(this, _inputText.c_str() + len - deleteLen, static_cast<int>(deleteLen)))
     {
@@ -305,26 +365,9 @@ void TextFieldTTF::deleteBackward()
     }
 
     // set new input text
-    if (_cursorEnabled)
-    {
-        if (_cursorPosition)
-        {
-            setCursorPosition(_cursorPosition - 1);
-
-            StringUtils::StringUTF8 stringUTF8;
-
-            stringUTF8.replace(_inputText);
-            stringUTF8.deleteChar(_cursorPosition);
-
-            _charCount = stringUTF8.length();
-            setString(stringUTF8.getAsCharSequence());
-        }
-    }
-    else
-    {
-        std::string text(_inputText.c_str(), len - deleteLen);
-        setString(text);
-    }
+	std::string text(_inputText.c_str());
+	text.erase(pos - deleteLen, deleteLen);
+	setString(text);
 }
 
 const std::string& TextFieldTTF::getContentText()
@@ -421,8 +464,8 @@ void TextFieldTTF::update(float delta)
         {
             _cursorShowingTime = CURSOR_TIME_SHOW_HIDE;
         }
-        // before cursor inserted '\b', need next letter
-        auto sprite = getLetter((int)_cursorPosition + 1);
+        
+        auto sprite = getCursorSprite();
 
         if (sprite)
         {
@@ -532,7 +575,7 @@ void TextFieldTTF::appendString(const std::string& text)
 
 void TextFieldTTF::makeStringSupportCursor(std::string& displayText)
 {
-    if (_cursorEnabled && _isAttachWithIME)
+    if (_cursorEnabled && _isAttachWithIME && _currentLabelType == Label::LabelType::TTF)
     {
         if (displayText.empty())
         {
@@ -576,7 +619,7 @@ void TextFieldTTF::setCursorChar(char cursor)
     }
 }
 
-void TextFieldTTF::controlKey(EventKeyboard::KeyCode keyCode)
+void TextFieldTTF::controlKey(EventKeyboard::KeyCode keyCode, int mods)
 {
     if (_cursorEnabled)
     {
@@ -584,12 +627,10 @@ void TextFieldTTF::controlKey(EventKeyboard::KeyCode keyCode)
         {
         case EventKeyboard::KeyCode::KEY_HOME:
         case EventKeyboard::KeyCode::KEY_KP_HOME:
-            setCursorPosition(0);
-            updateCursorDisplayText();
+			moveCursorHome((mods & KEYBOARD_MOD_SHIFT) != 0);
             break;
         case EventKeyboard::KeyCode::KEY_END:
-            setCursorPosition(_charCount);
-            updateCursorDisplayText();
+			moveCursorEnd((mods & KEYBOARD_MOD_SHIFT) != 0);
             break;
         case EventKeyboard::KeyCode::KEY_DELETE:
         case EventKeyboard::KeyCode::KEY_KP_DELETE:
@@ -605,18 +646,10 @@ void TextFieldTTF::controlKey(EventKeyboard::KeyCode keyCode)
             }
             break;
         case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-            if (_cursorPosition)
-            {
-                setCursorPosition(_cursorPosition - 1);
-                updateCursorDisplayText();
-            }
+			moveCursorBackward((mods & KEYBOARD_MOD_CONTROL) != 0, (mods & KEYBOARD_MOD_SHIFT) != 0);
             break;
         case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-            if (_cursorPosition < (std::size_t)_charCount)
-            {
-                setCursorPosition(_cursorPosition + 1);
-                updateCursorDisplayText();
-            }
+			moveCursorForward((mods & KEYBOARD_MOD_CONTROL) != 0, (mods & KEYBOARD_MOD_SHIFT) != 0);
             break;
         case EventKeyboard::KeyCode::KEY_ESCAPE:
             detachWithIME();
@@ -650,28 +683,21 @@ const std::string& TextFieldTTF::getPlaceHolder() const
 
 void TextFieldTTF::setCursorEnabled(bool enabled)
 {
-    if (_currentLabelType == LabelType::TTF)
+    if (_cursorEnabled != enabled)
     {
-        if (_cursorEnabled != enabled)
+        _cursorEnabled = enabled;
+        if (_cursorEnabled)
         {
-            _cursorEnabled = enabled;
-            if (_cursorEnabled)
-            {
-                _cursorPosition = _charCount;
+            _cursorPosition = _charCount;
 
-                scheduleUpdate();
-            }
-            else
-            {
-                _cursorPosition = 0;
-
-                unscheduleUpdate();
-            }
+            scheduleUpdate();
         }
-    }
-    else
-    {
-        CCLOG("TextFieldTTF cursor worked only LabelType::TTF");
+        else
+        {
+            _cursorPosition = 0;
+
+            unscheduleUpdate();
+        }
     }
 }
 
@@ -706,6 +732,721 @@ std::string TextFieldTTF::getPasswordTextStyle()const
 bool TextFieldTTF::isSecureTextEntry() const
 {
     return _secureTextEntry;
+}
+
+void TextFieldTTF::selectAllText()
+{
+	setSelectedText(0, -1);
+}
+
+void TextFieldTTF::setSelectedText(int startPos, int endPos)
+{
+	if (endPos == -1)
+	{
+		endPos = _charCount;
+	}
+
+	if (startPos >= endPos)
+	{
+		return;
+	}
+
+	_selectedTextStartPos = startPos;
+	_selectedTextEndPos = endPos;
+
+	_contentDirty = true;
+}
+
+std::string TextFieldTTF::getSelectedText()
+{
+	std::string selectedText;
+	if (_selectedTextStartPos != _selectedTextEndPos)
+	{
+		std::u16string tempStr;
+		tempStr = _utf16Text.substr(_selectedTextStartPos, _selectedTextEndPos - _selectedTextStartPos);
+		StringUtils::UTF16ToUTF8(tempStr, selectedText);
+	}
+	return selectedText;
+}
+
+void TextFieldTTF::handleMouseDown(Event *unusedEvent)
+{
+	if (!_cursorEnabled)
+	{
+		return;
+	}
+
+	if (_charCount < 1)
+	{
+		if (!_cursorSprite)
+			_contentDirty = true;
+		return;
+	}
+
+	EventMouse* mouseEvent = static_cast<EventMouse*>(unusedEvent);
+	Vec2 pt;
+	pt.x = mouseEvent->getCursorX();
+	pt.y = mouseEvent->getCursorY();
+	pt = convertToNodeSpace(pt);
+
+	std::size_t cursorPos = getCursorFromPoint(pt);
+
+	if (cursorPos == _cursorPosition && (((mouseEvent->getMods() & MOUSE_MOD_SHIFT != 0) && _selectedTextEndPos != 0) ||
+		((mouseEvent->getMods() & MOUSE_MOD_SHIFT == 0) && _selectedTextStartPos == 0 && _selectedTextEndPos == 0)))
+	{
+		if (!_cursorSprite)
+			_contentDirty = true;
+		return;
+	}
+
+	if (mouseEvent->getMods() & MOUSE_MOD_SHIFT)
+	{
+		if (_selectedTextStartPos == 0 && _selectedTextEndPos == 0)
+		{
+			_selectedTextStartPos = std::min(_cursorPosition, cursorPos);
+			_selectedTextEndPos = std::max(_cursorPosition, cursorPos);
+		}
+		else
+		{
+			if (_cursorPosition == _selectedTextStartPos)
+			{
+				if (cursorPos <= _selectedTextEndPos)
+				{
+					_selectedTextStartPos = cursorPos;
+				}
+				else if (cursorPos > _selectedTextEndPos)
+				{
+					_selectedTextStartPos = _selectedTextEndPos;
+					_selectedTextEndPos = cursorPos;
+				}
+			}
+			else if (_cursorPosition == _selectedTextEndPos)
+			{
+				if (cursorPos >= _selectedTextStartPos)
+				{
+					_selectedTextEndPos = cursorPos;
+				}
+				else if (cursorPos < _selectedTextStartPos)
+				{
+					_selectedTextEndPos = _selectedTextStartPos;
+					_selectedTextStartPos = cursorPos;
+				}
+			}
+			else
+			{
+				_selectedTextStartPos = _selectedTextEndPos = 0;
+			}
+		}
+	}
+	else
+	{
+		if (_selectedTextStartPos != 0)
+			_selectedTextStartPos = 0;
+		if (_selectedTextEndPos != 0)
+			_selectedTextEndPos = 0;
+	}
+
+	_cursorPosition = cursorPos;
+
+	_contentDirty = true;
+}
+
+void TextFieldTTF::handleMouseMove(Event *unusedEvent)
+{
+	if (!_cursorEnabled || _charCount < 1)
+	{
+		return;
+	}
+
+	EventMouse* mouseEvent = static_cast<EventMouse*>(unusedEvent);
+
+	if (mouseEvent->getMouseButton() == -1)
+		return;
+
+	Vec2 pt;
+	pt.x = mouseEvent->getCursorX();
+	pt.y = mouseEvent->getCursorY();
+	pt = convertToNodeSpace(pt);
+
+	std::size_t cursorPos = getCursorFromPoint(pt);
+
+	if (cursorPos == _cursorPosition)
+		return;
+
+	if (_selectedTextStartPos == 0 && _selectedTextEndPos == 0)
+	{
+		_selectedTextStartPos = std::min(_cursorPosition, cursorPos);
+		_selectedTextEndPos = std::max(_cursorPosition, cursorPos);
+	}
+	else
+	{
+		if (_cursorPosition == _selectedTextStartPos)
+		{
+			if (cursorPos <= _selectedTextEndPos)
+			{
+				_selectedTextStartPos = cursorPos;
+			}
+			else if (cursorPos > _selectedTextEndPos)
+			{
+				_selectedTextStartPos = _selectedTextEndPos;
+				_selectedTextEndPos = cursorPos;
+			}
+		}
+		else if (_cursorPosition == _selectedTextEndPos)
+		{
+			if (cursorPos >= _selectedTextStartPos)
+			{
+				_selectedTextEndPos = cursorPos;
+			}
+			else if (cursorPos < _selectedTextStartPos)
+			{
+				_selectedTextEndPos = _selectedTextStartPos;
+				_selectedTextStartPos = cursorPos;
+			}
+		}
+		else
+		{
+			_selectedTextStartPos = _selectedTextEndPos = 0;
+		}
+	}
+
+	_cursorPosition = cursorPos;
+
+	_contentDirty = true;
+}
+
+void TextFieldTTF::handleMouseDblClk(Event *unusedEvent)
+{
+	if (!_cursorEnabled || _charCount < 1)
+	{
+		return;
+	}
+	
+	EventMouse* mouseEvent = static_cast<EventMouse*>(unusedEvent);
+	if (mouseEvent->getMouseButton() == MOUSE_BUTTON_LEFT)
+	{
+		setSelectedText(0, -1);
+	}
+}
+
+void TextFieldTTF::handleMouseLeave(Event *unusedEvent)
+{
+	if (_cursorSprite)
+	{
+		_cursorSprite->removeFromParent();
+		_cursorSprite = nullptr;
+	}
+}
+
+std::size_t TextFieldTTF::getCursorFromPoint(const Vec2 &point)
+{
+	if (!_cursorEnabled || _charCount < 1 || point.x <= 0)
+	{
+		return 0;
+	}
+
+	if (_currentLabelType == Label::LabelType::STRING_TEXTURE)
+	{
+		FontDefinition fd = _getFontDefinition();
+		fd._dimensions = Size::ZERO;
+		fd._alignment = TextHAlignment::LEFT;
+		Size textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
+
+		if (point.x >= textSize.width)
+			return _charCount;
+
+		std::u16string tempText;
+		std::size_t selectedTextStartPos = 0;
+		std::size_t selectedTextEndPos = _charCount;
+
+		std::size_t selectedTextMidPos = 0;
+		float x1 = 0.0f, x2 = textSize.width, mid = 0.0f;
+		do
+		{
+			if (selectedTextEndPos - selectedTextStartPos == 1)
+			{
+				if (point.x >= x1 + (x2 - x1) / 2)
+				{
+					return selectedTextEndPos;
+				}
+				else
+				{
+					return selectedTextStartPos;
+				}
+			}
+			else
+			{
+				if (point.x >= x1 && point.x <= x2)
+				{
+					selectedTextMidPos = (selectedTextStartPos + selectedTextEndPos) / 2;
+					tempText = _utf16Text.substr(0, selectedTextMidPos);
+					mid = Texture2D::getContentSizeWithString(tempText.c_str(), fd).width;
+					if (point.x >= mid)
+					{
+						selectedTextStartPos = selectedTextMidPos;
+						x1 = mid;
+					}
+					else
+					{
+						selectedTextEndPos = selectedTextMidPos;
+						x2 = mid;
+					}
+				}
+			}
+		} while (true);
+	}
+}
+
+void TextFieldTTF::updateContent()
+{
+	Label::updateContent();
+
+	_selectedTextNode = nullptr;
+	_selectedTextSprite = nullptr;
+	_cursorSprite = nullptr;
+
+	if (_currentLabelType == Label::LabelType::STRING_TEXTURE)
+	{
+		FontDefinition fd = _getFontDefinition();
+		fd._dimensions = Size::ZERO;
+		fd._alignment = TextHAlignment::LEFT;
+		Size textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
+		Point textOffset;
+
+		Size contentSize = getContentSize();
+		if (_labelWidth != 0 && _labelHeight != 0)
+		{
+			contentSize.width = _labelWidth;
+			contentSize.height = _labelHeight;
+			setContentSize(contentSize);
+		}
+
+		std::u16string tempText;
+		Size tempSize;
+		
+		float cursorOffset = 0;
+		if (_cursorPosition > 0)
+		{
+			tempText = _utf16Text.substr(0, _cursorPosition);
+			cursorOffset = Texture2D::getContentSizeWithString(tempText.c_str(), fd).width;
+		}
+		else
+			cursorOffset = 0;
+
+		Rect textureRect;
+		if (contentSize.width > textSize.width)
+		{
+			switch (fd._alignment)
+			{
+			case TextHAlignment::LEFT:
+				textOffset.x = 0;
+				break;
+			case TextHAlignment::RIGHT:
+				textOffset.x = (contentSize.width - textSize.width);
+				break;
+			case TextHAlignment::CENTER:
+				textOffset.x = ((contentSize.width - textSize.width) / 2);
+				break;
+			default:
+				break;
+			}
+			textureRect.size = textSize;
+		}
+		else
+		{
+			if (cursorOffset > contentSize.width)
+			{
+				textOffset.x = contentSize.width - cursorOffset;
+			}
+			else if ((cursorOffset + textOffset.x) < 0)
+			{
+				textOffset.x = -cursorOffset;
+			}
+			textureRect.origin.x = -textOffset.x;
+			textureRect.origin.y = 0;
+			textureRect.size.width = contentSize.width;
+			textureRect.size.height = textSize.height;
+		}
+		switch (fd._vertAlignment)
+		{
+		case TextVAlignment::TOP:
+			textOffset.y = contentSize.height - textSize.height;
+			break;
+		case TextVAlignment::CENTER:
+			textOffset.y = (contentSize.height - textSize.height) / 2;
+			break;
+		case TextVAlignment::BOTTOM:
+			textOffset.y = 0;
+			break;
+		default:
+			break;
+		}
+
+		std::u16string selectedText16 = _utf16Text.substr(_selectedTextStartPos, _selectedTextEndPos - _selectedTextStartPos);
+		if (!selectedText16.empty())
+		{
+			Rect selectedTextRect;
+
+			if (_selectedTextStartPos > 0)
+			{
+				tempText = _utf16Text.substr(0, _selectedTextStartPos);
+				tempSize = Texture2D::getContentSizeWithString(tempText.c_str(), fd);
+				selectedTextRect.origin.x = tempSize.width;
+			}
+
+			tempSize = Texture2D::getContentSizeWithString(selectedText16.c_str(), fd);
+			selectedTextRect.size.width = tempSize.width;
+			selectedTextRect.size.height = tempSize.height;
+			selectedTextRect.origin.y = 0;
+			selectedTextRect.origin.x += textOffset.x;
+			selectedTextRect.intersect(Rect(0, 0, contentSize.width, contentSize.height));
+
+			_selectedTextNode = DrawNode::create();
+			_selectedTextNode->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			Size textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
+			_selectedTextNode->drawSolidRect(selectedTextRect.origin, Vec2(selectedTextRect.getMaxX(), selectedTextRect.getMaxY()), Color4F(_colorSelectedTextBg));
+
+			fd._fontFillColor = Color3B(_colorSelectedText);
+			auto texture = new (std::nothrow) Texture2D;
+			textureRect = selectedTextRect;
+			textureRect.origin.x -= textOffset.x < 0 ? textOffset.x : 0;
+			texture->initWithString(_utf8Text.c_str(), fd);
+			_selectedTextSprite = Sprite::createWithTexture(texture, textureRect);
+			_selectedTextSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			_selectedTextSprite->setPosition(selectedTextRect.origin.x, 0);
+			texture->release();
+
+			_textSprite->addChild(_selectedTextNode, -1, Node::INVALID_TAG);
+			_textSprite->addChild(_selectedTextSprite, 1, Node::INVALID_TAG);
+		}
+
+		{
+			_cursorSprite = Sprite::create();
+			_cursorSprite->setTextureRect(Rect(0, 0, 1, 20));
+			_cursorSprite->setColor(Color3B(250, 250, 250));
+			_cursorSprite->setPosition(cursorOffset + textOffset.x, textSize.height / 2);
+
+			_textSprite->addChild(_cursorSprite, 2, Node::INVALID_TAG);
+		}
+	}
+}
+
+Sprite* TextFieldTTF::getCursorSprite()
+{
+	if (!_cursorEnabled)
+	{
+		return nullptr;
+	}
+
+	if (_currentLabelType == Label::LabelType::TTF)
+	{
+		// before cursor inserted '\b', need next letter
+		return getLetter((int)_cursorPosition + 1);
+	}
+	else
+	{
+		return _cursorSprite;
+	}
+}
+
+void TextFieldTTF::moveCursorHome(bool selectText)
+{
+	if (_cursorPosition == 0 && (selectText && _selectedTextStartPos == 0 && _selectedTextEndPos != 0 || !selectText && _selectedTextEndPos == 0))
+	{
+		return;
+	}
+
+	if (selectText)
+	{
+		if (_cursorPosition == _selectedTextStartPos)
+		{
+			if (_selectedTextStartPos > 0)
+				_selectedTextStartPos = 0;
+		}
+		else
+		{
+			_selectedTextEndPos = _selectedTextStartPos;
+			_selectedTextStartPos = 0;
+		}
+	}
+	else
+	{
+		_selectedTextStartPos = _selectedTextEndPos = 0;
+	}
+	setCursorPosition(0);
+
+	if (_currentLabelType == Label::LabelType::TTF)
+	{
+		updateCursorDisplayText();
+	}
+	else
+	{
+		_contentDirty = true;
+	}
+}
+
+void TextFieldTTF::moveCursorEnd(bool selectText)
+{
+	if (_cursorPosition == _charCount && (selectText && _selectedTextEndPos == _charCount || !selectText && _selectedTextEndPos == 0))
+	{
+		return;
+	}
+
+	if (selectText)
+	{
+		if (_cursorPosition == _selectedTextEndPos)
+		{
+			if (_cursorPosition < _charCount)
+				_selectedTextEndPos = _charCount;
+		}
+		else
+		{
+			_selectedTextStartPos = _selectedTextEndPos;
+			_selectedTextEndPos = _charCount;
+		}
+	}
+	else
+	{
+		_selectedTextStartPos = _selectedTextEndPos = 0;
+	}
+	setCursorPosition(_charCount);
+
+	if (_currentLabelType == Label::LabelType::TTF)
+	{
+		updateCursorDisplayText();
+	}
+	else
+	{
+		_contentDirty = true;
+	}
+}
+
+void TextFieldTTF::moveCursorForward(bool wordbreak, bool selectText)
+{
+	if (_cursorPosition == _charCount && (selectText && _selectedTextEndPos == _charCount || !selectText && _selectedTextEndPos == 0))
+	{
+		return;
+	}
+
+	if (selectText)
+	{
+		if (_cursorPosition > _selectedTextEndPos)
+		{
+			_selectedTextStartPos = _cursorPosition;
+			_selectedTextEndPos = _cursorPosition + 1;
+		}
+		else if (_cursorPosition == _selectedTextEndPos)
+		{
+			_selectedTextEndPos = _cursorPosition + 1;
+		}
+		else
+		{
+			_selectedTextStartPos = _cursorPosition + 1;
+		}
+	}
+	else
+	{
+		_selectedTextStartPos = _selectedTextEndPos = 0;
+	}
+
+	if (wordbreak)
+	{
+		const char* text = _inputText.c_str();
+		int cursorPos = 0;
+		char ch = 0;
+		char first = 0;
+		bool firstSpace = false;
+		while ((ch = *text))
+		{
+			CC_BREAK_IF(!ch);
+
+			++text;
+			if (0x80 != (0xC0 & ch))
+			{
+				++cursorPos;
+				if (cursorPos - 1 < _cursorPosition)
+				{
+					continue;
+				}
+				else if (!first)
+				{
+					if (ch < 0)
+						break;
+
+					if (!isspace(ch))
+						first = ch;
+					else if (cursorPos - 1 == _cursorPosition && !firstSpace)
+						firstSpace = true;
+
+					continue;
+				}
+
+				if (first > 0)
+				{
+					if (ch < 0 || (isalnum(first) && ispunct(ch)) ||
+						(isalnum(ch) && ispunct(first)))
+					{
+						--cursorPos;
+						break;
+					}
+					else if (!isspace(first) && isspace(ch))
+					{
+						if (firstSpace)
+						{
+							--cursorPos;
+							break;
+						}
+
+						ch = *(text + 1);
+						if (ch <= 0 || (ch && !isspace(ch)))
+							break;
+					}
+				}
+			}
+		}
+		if (cursorPos <= _charCount && _cursorPosition != cursorPos)
+		{
+			setCursorPosition(cursorPos);
+		}
+
+	}
+	else
+		setCursorPosition(_cursorPosition + 1);
+
+	if (_currentLabelType == Label::LabelType::TTF)
+	{
+		updateCursorDisplayText();
+	}
+	else
+	{
+		_contentDirty = true;
+	}
+}
+
+void TextFieldTTF::moveCursorBackward(bool wordbreak, bool selectText)
+{
+	if (_cursorPosition == 0 && (selectText && _selectedTextStartPos == 0 && _selectedTextEndPos != 0 || !selectText && _selectedTextEndPos == 0))
+	{
+		return;
+	}
+
+	if (selectText)
+	{
+		if (_cursorPosition > _selectedTextEndPos)
+		{
+			_selectedTextEndPos = _cursorPosition;
+			_selectedTextStartPos = _cursorPosition - 1;
+		}
+		else if (_cursorPosition == _selectedTextStartPos)
+		{
+			_selectedTextStartPos = _cursorPosition - 1;
+		}
+		else
+		{
+			_selectedTextEndPos = _cursorPosition - 1;
+		}
+	}
+	else
+	{
+		_selectedTextStartPos = _selectedTextEndPos = 0;
+	}
+
+	if (wordbreak)
+	{
+		int cursorPos = _cursorPosition;
+		int n = _calcCharPos(_inputText.c_str(), _cursorPosition) - 1;
+		char ch = 0;
+		char first = 0;
+		bool firstSpace = false;
+		while (n >= 0 && (ch = _inputText[n]))
+		{
+			CC_BREAK_IF(!ch);
+
+			--n;
+			if (0x80 != (0xC0 & ch))
+			{
+				--cursorPos;
+				if (!first)
+				{
+					if (ch < 0)
+						break;
+
+					if (!isspace(ch))
+						first = ch;
+					else if (cursorPos + 1 == _cursorPosition && !firstSpace)
+						firstSpace = true;
+
+					continue;
+				}
+
+				if (first > 0)
+				{
+					if (ch < 0 || (isalnum(first) && ispunct(ch)) ||
+						(isalnum(ch) && ispunct(first)))
+					{
+						++cursorPos;
+						break;
+					}
+					else if (!isspace(first) && isspace(ch))
+					{
+						if (firstSpace)
+						{
+							++cursorPos;
+							break;
+						}
+
+						ch = n > 1 ? _inputText[n - 1] : 0;
+						if (ch <= 0 || (ch && !isspace(ch)))
+							break;
+					}
+				}
+			}
+		}
+		if (cursorPos <= _charCount && _cursorPosition != cursorPos)
+		{
+			_cursorPosition = cursorPos;
+		}
+
+	}
+	else
+		setCursorPosition(_cursorPosition -1);
+
+	if (_currentLabelType == Label::LabelType::TTF)
+	{
+		updateCursorDisplayText();
+	}
+	else
+	{
+		_contentDirty = true;
+	}
+}
+
+void TextFieldTTF::setSelectedTextColor(const Color4B& textColor)
+{
+	if (_colorSelectedText == textColor)
+	{
+		return;
+	}
+
+	_colorSelectedText = textColor;
+	if (!_inputText.empty() && _currentLabelType == LabelType::STRING_TEXTURE)
+	{
+		_contentDirty = true;
+	}
+}
+
+void TextFieldTTF::setSelectedTextBgColor(const Color4B& color)
+{
+	if (_colorSelectedTextBg == color)
+	{
+		return;
+	}
+
+	_colorSelectedTextBg = color;
+	if (_selectedTextStartPos != _selectedTextEndPos && _currentLabelType == LabelType::STRING_TEXTURE)
+	{
+		_contentDirty = true;
+	}
 }
 
 NS_CC_END

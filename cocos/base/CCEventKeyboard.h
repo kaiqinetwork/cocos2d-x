@@ -28,6 +28,11 @@
 
 #include "base/CCEvent.h"
 
+#define KEYBOARD_MOD_SHIFT			0x0001
+#define KEYBOARD_MOD_CONTROL		0x0002
+#define KEYBOARD_MOD_ALT			0x0004
+#define KEYBOARD_MOD_SUPER			0x0008
+
 /**
  * @addtogroup base
  * @{

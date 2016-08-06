@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "ui/UIHelper.h"
 #include "base/ccUTF8.h"
 #include "2d/CCCamera.h"
+#include "platform/CCInput.h"
 
 NS_CC_BEGIN
 
@@ -334,6 +335,9 @@ bool TextField::init()
     if (Widget::init())
     {
         setTouchEnabled(true);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
+		setMouseEnabled(true);
+#endif
         return true;
     }
     return false;
@@ -869,6 +873,55 @@ void TextField::setCursorFromPoint(const Vec2 &point, const Camera* camera)
 {
     _textFieldRenderer->setCursorFromPoint(point, camera);
 }
+
+void TextField::onMouseDown(Event *unusedEvent)
+{
+	if (_textFieldRenderer)
+	{
+		if (_hitted)
+			_textFieldRenderer->handleMouseDown(unusedEvent);
+		else
+			_textFieldRenderer->handleMouseLeave(unusedEvent);
+	}
+}
+
+void TextField::onMouseMove(Event *unusedEvent)
+{
+	Widget::onMouseMove(unusedEvent);
+
+	if (_textFieldRenderer && _hitted)
+	{
+		_textFieldRenderer->handleMouseMove(unusedEvent);
+	}
+}
+
+void TextField::onMouseDblClk(Event *unusedEvent)
+{
+	if (_textFieldRenderer && _hitted)
+	{
+		_textFieldRenderer->handleMouseDblClk(unusedEvent);
+	}
+}
+
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+
+void TextField::onPressStateChangedToNormal()
+{
+// 	if (!isHovered())
+// 	{
+// 		Input::sharedInput()->popCursor();
+// 	}
+}
+
+void TextField::onPressStateChangedToHot()
+{
+// 	if (isHovered())
+// 	{
+// 		Input::sharedInput()->pushCursor(Input::CURSOR_IBEAM);
+// 	}
+}
+
+#endif
 
 
 }

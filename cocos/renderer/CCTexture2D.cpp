@@ -803,10 +803,6 @@ bool Texture2D::initWithImage(Image *image, PixelFormat format)
 
         // set the premultiplied tag
         _hasPremultipliedAlpha = image->hasPremultipliedAlpha();
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-		setAliasTexParameters();
-#endif
         
         return true;
     }
@@ -1489,4 +1485,45 @@ void Texture2D::removeSpriteFrameCapInset(SpriteFrame* spriteFrame)
     }
 }
 
+Size Texture2D::getContentSizeWithString(const char* text, const FontDefinition& textDefinition)
+{
+	if (!text || 0 == strlen(text))
+	{
+		return Size::ZERO;
+	}
+
+	auto textDef = textDefinition;
+	auto contentScaleFactor = CC_CONTENT_SCALE_FACTOR();
+	textDef._fontSize *= contentScaleFactor;
+	textDef._dimensions.width *= contentScaleFactor;
+	textDef._dimensions.height *= contentScaleFactor;
+	textDef._stroke._strokeSize *= contentScaleFactor;
+	textDef._shadow._shadowEnabled = false;
+
+	Size ret = Device::getSizeWithText(text, textDef);
+	ret = ret / CC_CONTENT_SCALE_FACTOR();
+
+	return ret;
+}
+
+Size Texture2D::getContentSizeWithString(const char16_t* text, const FontDefinition& textDefinition)
+{
+	if (!text || 0 == text[0])
+	{
+		return Size::ZERO;
+	}
+
+	auto textDef = textDefinition;
+	auto contentScaleFactor = CC_CONTENT_SCALE_FACTOR();
+	textDef._fontSize *= contentScaleFactor;
+	textDef._dimensions.width *= contentScaleFactor;
+	textDef._dimensions.height *= contentScaleFactor;
+	textDef._stroke._strokeSize *= contentScaleFactor;
+	textDef._shadow._shadowEnabled = false;
+
+	Size ret = Device::getSizeWithText(text, textDef);
+	ret = ret / CC_CONTENT_SCALE_FACTOR();
+
+	return ret;
+}
 NS_CC_END

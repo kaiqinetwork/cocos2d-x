@@ -295,6 +295,7 @@ GLViewImpl::GLViewImpl(bool initglfw)
 , _lastReleaseMouseX(0.0f)
 , _lastReleaseMouseY(0.0f)
 , _lastReleaseTime(0)
+, _lastReleaseButton(0)
 {
     _viewName = "cocos2dx";
     g_keyCodeMap.clear();
@@ -704,7 +705,8 @@ void GLViewImpl::onGLFWMouseCallBack(GLFWwindow* window, int button, int action,
 		if (gettimeofday(&now, nullptr) == 0)
 			currReleaseTime = now.tv_sec * 1000 + now.tv_usec / 1000;
 
-		if (abs(_mouseX - _lastReleaseMouseX) < 5 && 
+		if (_lastReleaseButton == button &&
+			abs(_mouseX - _lastReleaseMouseX) < 5 &&
 			abs(_mouseY - _lastReleaseMouseY) < 5 && 
 			(currReleaseTime - _lastReleaseTime) < 300)
 		{
@@ -719,6 +721,7 @@ void GLViewImpl::onGLFWMouseCallBack(GLFWwindow* window, int button, int action,
 		_lastReleaseMouseX = _mouseX;
 		_lastReleaseMouseY = _mouseY;
 		_lastReleaseTime = currReleaseTime;
+		_lastReleaseButton = button;
     }
 }
 
@@ -804,8 +807,49 @@ void GLViewImpl::onGLFWKeyCallback(GLFWwindow *window, int key, int scancode, in
         case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
         case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
         case EventKeyboard::KeyCode::KEY_ESCAPE:
-            IMEDispatcher::sharedDispatcher()->dispatchControlKey(g_keyCodeMap[key]);
+            IMEDispatcher::sharedDispatcher()->dispatchControlKey(g_keyCodeMap[key], mods);
             break;
+		case EventKeyboard::KeyCode::KEY_CAPITAL_A:
+		case EventKeyboard::KeyCode::KEY_A:
+			if ((mods & GLFW_MOD_CONTROL) != 0)
+			{
+				IMEDispatcher::sharedDispatcher()->dispatchSelectAllText();
+			}
+			break;
+		case EventKeyboard::KeyCode::KEY_CAPITAL_C:
+		case EventKeyboard::KeyCode::KEY_C:
+			if ((mods & GLFW_MOD_CONTROL) != 0)
+			{
+				std::string text = IMEDispatcher::sharedDispatcher()->getSelectedText();
+				if (!text.empty())
+				{
+					glfwSetClipboardString(window, text.c_str());
+				}
+			}
+			break;
+		case EventKeyboard::KeyCode::KEY_CAPITAL_X:
+		case EventKeyboard::KeyCode::KEY_X:
+			if ((mods & GLFW_MOD_CONTROL) != 0)
+			{
+				std::string text = IMEDispatcher::sharedDispatcher()->getSelectedText();
+				if (!text.empty())
+				{
+					glfwSetClipboardString(window, text.c_str());
+					IMEDispatcher::sharedDispatcher()->dispatchDeleteBackward();
+				}
+			}
+			break;
+		case EventKeyboard::KeyCode::KEY_CAPITAL_V:
+		case EventKeyboard::KeyCode::KEY_V:
+			if ((mods & GLFW_MOD_CONTROL) != 0)
+			{
+				const char* text = glfwGetClipboardString(window);
+				if (text)
+				{
+					IMEDispatcher::sharedDispatcher()->dispatchInsertText(text, strlen(text));
+				}
+			}
+			break;
         default:
             break;
         }
