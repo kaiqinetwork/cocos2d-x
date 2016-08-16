@@ -890,7 +890,7 @@ void TextField::onMouseMove(Event *unusedEvent)
 {
 	Widget::onMouseMove(unusedEvent);
 
-	if (_textFieldRenderer && isHighlighted())
+	if (_textFieldRenderer && _hitted)
 	{
 		_textFieldRenderer->handleMouseMove(unusedEvent);
 	}

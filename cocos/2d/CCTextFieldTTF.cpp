@@ -958,7 +958,7 @@ void TextFieldTTF::handleMouseLeave(Event *unusedEvent)
 
 std::size_t TextFieldTTF::getCursorFromPoint(const Vec2 &point)
 {
-	if (!_cursorEnabled || _charCount < 1 || point.x <= 0)
+	if (!_cursorEnabled || _charCount < 1)
 	{
 		return 0;
 	}
@@ -970,7 +970,9 @@ std::size_t TextFieldTTF::getCursorFromPoint(const Vec2 &point)
 		fd._alignment = TextHAlignment::LEFT;
 		Size textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
 
-		if (point.x >= textSize.width)
+		float pointX = std::fmax(point.x - _textOffset.x, 0.0f);
+		pointX = std::fmin(pointX, textSize.width);
+		if (pointX >= textSize.width)
 			return _charCount;
 
 		std::u16string tempText;
@@ -983,7 +985,7 @@ std::size_t TextFieldTTF::getCursorFromPoint(const Vec2 &point)
 		{
 			if (selectedTextEndPos - selectedTextStartPos == 1)
 			{
-				if (point.x >= x1 + (x2 - x1) / 2)
+				if (pointX >= x1 + (x2 - x1) / 2)
 				{
 					return selectedTextEndPos;
 				}
@@ -994,12 +996,12 @@ std::size_t TextFieldTTF::getCursorFromPoint(const Vec2 &point)
 			}
 			else
 			{
-				if (point.x >= x1 && point.x <= x2)
+				if (pointX >= x1 && pointX <= x2)
 				{
 					selectedTextMidPos = (selectedTextStartPos + selectedTextEndPos) / 2;
 					tempText = _utf16Text.substr(0, selectedTextMidPos);
 					mid = Texture2D::getContentSizeWithString(tempText.c_str(), fd).width;
-					if (point.x >= mid)
+					if (pointX >= mid)
 					{
 						selectedTextStartPos = selectedTextMidPos;
 						x1 = mid;
@@ -1068,7 +1070,12 @@ void TextFieldTTF::moveCursorHome(bool selectText)
 
 	if (selectText)
 	{
-		if (_cursorPosition == _selectedTextStartPos)
+		if (_selectedTextStartPos == _selectedTextEndPos)
+		{
+			_selectedTextEndPos = _cursorPosition;
+			_selectedTextStartPos = 0;
+		}
+		else if (_cursorPosition == _selectedTextStartPos)
 		{
 			if (_selectedTextStartPos > 0)
 				_selectedTextStartPos = 0;
@@ -1418,7 +1425,7 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 	}
 	else
 	{
-		if (_cursorOffset > contentSize.width)
+		if ((_cursorOffset + _textOffset.x) > contentSize.width)
 		{
 			_textOffset.x = contentSize.width - _cursorOffset;
 		}
@@ -1426,10 +1433,14 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 		{
 			_textOffset.x = -_cursorOffset;
 		}
-		else
+		else if ((textSize.width + _textOffset.x) < contentSize.width)
 		{
-			_textOffset.x = 0.0f;
+			_textOffset.x = contentSize.width - textSize.width;
 		}
+// 		else
+// 		{
+// 			_textOffset.x = 0.0f;
+// 		}
 		textureRect.origin.x = -_textOffset.x;
 		textureRect.origin.y = 0;
 		textureRect.size.width = contentSize.width;
@@ -1485,12 +1496,11 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 		selectedTextRect.size.width = tempSize.width;
 		selectedTextRect.size.height = tempSize.height;
 		selectedTextRect.origin.y = 0;
-		selectedTextRect.origin.x += _textOffset.x;
+		selectedTextRect.origin.x += _textOffset.x < 0 ? _textOffset.x : 0;
 		selectedTextRect.intersect(Rect(0, 0, contentSize.width, contentSize.height));
 
 		_selectedTextNode = DrawNode::create();
 		_selectedTextNode->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-		Size textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
 		_selectedTextNode->drawSolidRect(selectedTextRect.origin, Vec2(selectedTextRect.getMaxX(), selectedTextRect.getMaxY()), Color4F(_colorSelectedTextBg));
 
 		fd._fontFillColor = Color3B(_colorSelectedText);

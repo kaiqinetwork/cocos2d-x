@@ -907,6 +907,7 @@ void Widget::onTouchEnded(Touch *touch, Event *unusedEvent)
         this->propagateTouchEvent(TouchEventType::ENDED, this, touch);
     }
 
+	_hitted = false;
     bool highlight = _highlight;
     setHighlighted(false);
 
@@ -922,6 +923,7 @@ void Widget::onTouchEnded(Touch *touch, Event *unusedEvent)
 
 void Widget::onTouchCancelled(Touch *touch, Event *unusedEvent)
 {
+	_hitted = false;
     setHighlighted(false);
     cancelUpEvent();
 }
