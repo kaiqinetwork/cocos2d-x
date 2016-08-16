@@ -77,13 +77,28 @@ bool HelloWorld::init()
 	auto textField = ui::TextField::create();
 	//textField->setFontName("fonts/HKYuanMini.ttf"); 
 	textField->setFontName("ËÎÌו");
-	textField->setCursorEnabled(true); 
+	textField->setCursorEnabled(true);
+	textField->setTextHorizontalAlignment(TextHAlignment::LEFT);
 
 	// position the sprite on the center of the screen
 	textField->setPosition(Vec2(visibleSize / 2) + origin);
 
 	// add the sprite as a child to this layer
 	this->addChild(textField);
+
+	auto textField1 = ui::TextField::create();
+	//textField->setFontName("fonts/HKYuanMini.ttf"); 
+	textField1->setFontName("ËÎÌו");
+	textField1->setCursorEnabled(true);
+	textField1->setTextHorizontalAlignment(TextHAlignment::CENTER);
+	textField1->ignoreContentAdaptWithSize(false);
+	textField1->setContentSize(Size(100, 20));
+
+	// position the sprite on the center of the screen
+	textField1->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 4) + origin);
+
+	// add the sprite as a child to this layer
+	this->addChild(textField1);
     
     return true;
 }

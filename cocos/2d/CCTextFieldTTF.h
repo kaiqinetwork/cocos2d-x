@@ -283,6 +283,8 @@ public:
 protected:
 	Sprite* getCursorSprite();
 
+	virtual void createSpriteForSystemFont(const FontDefinition& fontDef);
+
     //////////////////////////////////////////////////////////////////////////
     // IMEDelegate interface
     //////////////////////////////////////////////////////////////////////////
@@ -293,6 +295,7 @@ protected:
     virtual void didDetachWithIME() override;
     virtual void insertText(const char * text, size_t len) override;
     virtual void deleteBackward() override;
+	virtual void deleteForward();
     virtual const std::string& getContentText() override;
 	virtual void controlKey(EventKeyboard::KeyCode keyCode, int mods) override;
 	virtual void selectAllText() override;
@@ -327,6 +330,8 @@ protected:
     float _cursorShowingTime;
 	std::size_t _selectedTextStartPos;
 	std::size_t _selectedTextEndPos;
+	Point _textOffset;
+	float _cursorOffset;
 	DrawNode* _selectedTextNode;
 	Sprite* _selectedTextSprite;
 	Sprite* _cursorSprite;

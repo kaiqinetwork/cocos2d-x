@@ -665,7 +665,7 @@ protected:
     
     bool updateQuads();
 
-    void createSpriteForSystemFont(const FontDefinition& fontDef);
+    virtual void createSpriteForSystemFont(const FontDefinition& fontDef);
     void createShadowSpriteForSystemFont(const FontDefinition& fontDef);
 
     virtual void updateShaderProgram();

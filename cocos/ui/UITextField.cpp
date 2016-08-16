@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "base/ccUTF8.h"
 #include "2d/CCCamera.h"
 #include "platform/CCInput.h"
+#include "base/CCEventMouse.h"
 
 NS_CC_BEGIN
 
@@ -527,7 +528,7 @@ int TextField::getStringLength() const {
 bool TextField::onTouchBegan(Touch *touch, Event *unusedEvent)
 {
     bool pass = Widget::onTouchBegan(touch, unusedEvent);
-    if (_hitted)
+	if (isHighlighted())
     {
         if (isFocusEnabled())
         {
@@ -878,7 +879,7 @@ void TextField::onMouseDown(Event *unusedEvent)
 {
 	if (_textFieldRenderer)
 	{
-		if (_hitted)
+		if (isHighlighted())
 			_textFieldRenderer->handleMouseDown(unusedEvent);
 		else
 			_textFieldRenderer->handleMouseLeave(unusedEvent);
@@ -889,7 +890,7 @@ void TextField::onMouseMove(Event *unusedEvent)
 {
 	Widget::onMouseMove(unusedEvent);
 
-	if (_textFieldRenderer && _hitted)
+	if (_textFieldRenderer && isHighlighted())
 	{
 		_textFieldRenderer->handleMouseMove(unusedEvent);
 	}
@@ -897,7 +898,21 @@ void TextField::onMouseMove(Event *unusedEvent)
 
 void TextField::onMouseDblClk(Event *unusedEvent)
 {
-	if (_textFieldRenderer && _hitted)
+	bool hitted = false;
+	if (isVisible() && isEnabled() && isAncestorsEnabled() && isAncestorsVisible(this) && !isHighlighted())
+	{
+		EventMouse* mouseEvent = static_cast<EventMouse*>(unusedEvent);
+		Vec2 mousePosition;
+		mousePosition.x = mouseEvent->getCursorX();
+		mousePosition.y = mouseEvent->getCursorY();
+		auto camera = Camera::getVisitingCamera();
+		if (hitTest(mousePosition, camera, nullptr) && isClippingParentContainsPoint(mousePosition))
+		{
+			hitted = true;
+		}
+	}
+
+	if (_textFieldRenderer && hitted)
 	{
 		_textFieldRenderer->handleMouseDblClk(unusedEvent);
 	}

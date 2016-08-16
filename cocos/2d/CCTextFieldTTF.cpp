@@ -99,6 +99,7 @@ TextFieldTTF::TextFieldTTF()
 , _selectedTextEndPos(0)
 , _colorSelectedTextBg(Color4B::BLUE)
 , _colorSelectedText(Color4B::BLACK)
+, _cursorOffset(0.0f)
 {
     _colorSpaceHolder.r = _colorSpaceHolder.g = _colorSpaceHolder.b = 127;
     _colorSpaceHolder.a = 255;
@@ -106,6 +107,7 @@ TextFieldTTF::TextFieldTTF()
 
 TextFieldTTF::~TextFieldTTF()
 {
+	CC_SAFE_RELEASE_NULL(_cursorSprite);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -335,8 +337,6 @@ void TextFieldTTF::deleteBackward()
 	{
 		deleteLen = pos - _calcCharPos(_inputText.c_str(), _selectedTextStartPos);
 		cursorPos = _selectedTextStartPos;
-		_selectedTextStartPos = 0;
-		_selectedTextEndPos = 0;
 	}
 	else
 	{
@@ -346,13 +346,16 @@ void TextFieldTTF::deleteBackward()
 		}
 		cursorPos -= 1;
 	}
-	setCursorPosition(cursorPos);
 
-    if (_delegate && _delegate->onTextFieldDeleteBackward(this, _inputText.c_str() + len - deleteLen, static_cast<int>(deleteLen)))
-    {
-        // delegate doesn't want to delete backwards
-        return;
-    }
+	if (_delegate && _delegate->onTextFieldDeleteBackward(this, _inputText.c_str() + pos - deleteLen, static_cast<int>(deleteLen)))
+	{
+		// delegate doesn't want to delete backwards
+		return;
+	}
+
+	_selectedTextStartPos = 0;
+	_selectedTextEndPos = 0;
+	setCursorPosition(cursorPos);
 
     // if all text deleted, show placeholder string
     if (len <= deleteLen)
@@ -360,13 +363,15 @@ void TextFieldTTF::deleteBackward()
         _inputText = "";
         _charCount = 0;
         setCursorPosition(0);
-        setString(_inputText);
+		Label::setTextColor(_colorSpaceHolder);
+		Label::setString(_placeHolder);
         return;
     }
 
     // set new input text
 	std::string text(_inputText.c_str());
 	text.erase(pos - deleteLen, deleteLen);
+	_charCount = _calcCharCount(text.c_str());
 	setString(text);
 }
 
@@ -434,6 +439,7 @@ void TextFieldTTF::setAttachWithIME(bool isAttachWithIME)
             setCursorPosition(_charCount);
         }
         updateCursorDisplayText();
+		setSelectedText(0, 0);
     }
 }
 
@@ -448,11 +454,32 @@ void TextFieldTTF::setTextColor(const Color4B &color)
 
 void TextFieldTTF::visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags)
 {
+	if (!_visible)
+	{
+		return;
+	}
+
     if (_delegate && _delegate->onVisit(this,renderer,parentTransform,parentFlags))
     {
         return;
     }
-    Label::visit(renderer,parentTransform,parentFlags);
+
+	if (_utf8Text.empty() && _cursorEnabled)
+	{
+		if (_systemFontDirty || _contentDirty)
+		{
+			updateContent();
+		}
+	}
+	else
+	{
+		Label::visit(renderer,parentTransform,parentFlags);
+	}
+	
+	if (_cursorSprite)
+	{
+		_cursorSprite->visit(renderer, parentTransform, parentFlags);
+	}
 }
 
 void TextFieldTTF::update(float delta)
@@ -634,16 +661,7 @@ void TextFieldTTF::controlKey(EventKeyboard::KeyCode keyCode, int mods)
             break;
         case EventKeyboard::KeyCode::KEY_DELETE:
         case EventKeyboard::KeyCode::KEY_KP_DELETE:
-            if (_cursorPosition < (std::size_t)_charCount)
-            {
-                StringUtils::StringUTF8 stringUTF8;
-
-                stringUTF8.replace(_inputText);
-                stringUTF8.deleteChar(_cursorPosition);
-                setCursorPosition(_cursorPosition);
-                _charCount = stringUTF8.length();
-                setString(stringUTF8.getAsCharSequence());
-            }
+			deleteForward();
             break;
         case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 			moveCursorBackward((mods & KEYBOARD_MOD_CONTROL) != 0, (mods & KEYBOARD_MOD_SHIFT) != 0);
@@ -746,7 +764,7 @@ void TextFieldTTF::setSelectedText(int startPos, int endPos)
 		endPos = _charCount;
 	}
 
-	if (startPos >= endPos)
+	if (startPos > endPos)
 	{
 		return;
 	}
@@ -944,7 +962,7 @@ std::size_t TextFieldTTF::getCursorFromPoint(const Vec2 &point)
 	{
 		return 0;
 	}
-
+	
 	if (_currentLabelType == Label::LabelType::STRING_TEXTURE)
 	{
 		FontDefinition fd = _getFontDefinition();
@@ -999,134 +1017,26 @@ std::size_t TextFieldTTF::getCursorFromPoint(const Vec2 &point)
 
 void TextFieldTTF::updateContent()
 {
-	Label::updateContent();
-
 	_selectedTextNode = nullptr;
 	_selectedTextSprite = nullptr;
-	_cursorSprite = nullptr;
+	CC_SAFE_RELEASE_NULL(_cursorSprite);
 
+	Label::updateContent();
+	
 	if (_currentLabelType == Label::LabelType::STRING_TEXTURE)
 	{
-		FontDefinition fd = _getFontDefinition();
-		fd._dimensions = Size::ZERO;
-		fd._alignment = TextHAlignment::LEFT;
-		Size textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
-		Point textOffset;
-
-		Size contentSize = getContentSize();
-		if (_labelWidth != 0 && _labelHeight != 0)
+		if (_isAttachWithIME)
 		{
-			contentSize.width = _labelWidth;
-			contentSize.height = _labelHeight;
-			setContentSize(contentSize);
-		}
+			FontDefinition fd = _getFontDefinition();
+			fd._dimensions = Size::ZERO;
+			fd._alignment = TextHAlignment::LEFT;
+			Size textSize = Texture2D::getContentSizeWithString("I", fd);
 
-		std::u16string tempText;
-		Size tempSize;
-		
-		float cursorOffset = 0;
-		if (_cursorPosition > 0)
-		{
-			tempText = _utf16Text.substr(0, _cursorPosition);
-			cursorOffset = Texture2D::getContentSizeWithString(tempText.c_str(), fd).width;
-		}
-		else
-			cursorOffset = 0;
-
-		Rect textureRect;
-		if (contentSize.width > textSize.width)
-		{
-			switch (fd._alignment)
-			{
-			case TextHAlignment::LEFT:
-				textOffset.x = 0;
-				break;
-			case TextHAlignment::RIGHT:
-				textOffset.x = (contentSize.width - textSize.width);
-				break;
-			case TextHAlignment::CENTER:
-				textOffset.x = ((contentSize.width - textSize.width) / 2);
-				break;
-			default:
-				break;
-			}
-			textureRect.size = textSize;
-		}
-		else
-		{
-			if (cursorOffset > contentSize.width)
-			{
-				textOffset.x = contentSize.width - cursorOffset;
-			}
-			else if ((cursorOffset + textOffset.x) < 0)
-			{
-				textOffset.x = -cursorOffset;
-			}
-			textureRect.origin.x = -textOffset.x;
-			textureRect.origin.y = 0;
-			textureRect.size.width = contentSize.width;
-			textureRect.size.height = textSize.height;
-		}
-		switch (fd._vertAlignment)
-		{
-		case TextVAlignment::TOP:
-			textOffset.y = contentSize.height - textSize.height;
-			break;
-		case TextVAlignment::CENTER:
-			textOffset.y = (contentSize.height - textSize.height) / 2;
-			break;
-		case TextVAlignment::BOTTOM:
-			textOffset.y = 0;
-			break;
-		default:
-			break;
-		}
-
-		std::u16string selectedText16 = _utf16Text.substr(_selectedTextStartPos, _selectedTextEndPos - _selectedTextStartPos);
-		if (!selectedText16.empty())
-		{
-			Rect selectedTextRect;
-
-			if (_selectedTextStartPos > 0)
-			{
-				tempText = _utf16Text.substr(0, _selectedTextStartPos);
-				tempSize = Texture2D::getContentSizeWithString(tempText.c_str(), fd);
-				selectedTextRect.origin.x = tempSize.width;
-			}
-
-			tempSize = Texture2D::getContentSizeWithString(selectedText16.c_str(), fd);
-			selectedTextRect.size.width = tempSize.width;
-			selectedTextRect.size.height = tempSize.height;
-			selectedTextRect.origin.y = 0;
-			selectedTextRect.origin.x += textOffset.x;
-			selectedTextRect.intersect(Rect(0, 0, contentSize.width, contentSize.height));
-
-			_selectedTextNode = DrawNode::create();
-			_selectedTextNode->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-			Size textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
-			_selectedTextNode->drawSolidRect(selectedTextRect.origin, Vec2(selectedTextRect.getMaxX(), selectedTextRect.getMaxY()), Color4F(_colorSelectedTextBg));
-
-			fd._fontFillColor = Color3B(_colorSelectedText);
-			auto texture = new (std::nothrow) Texture2D;
-			textureRect = selectedTextRect;
-			textureRect.origin.x -= textOffset.x < 0 ? textOffset.x : 0;
-			texture->initWithString(_utf8Text.c_str(), fd);
-			_selectedTextSprite = Sprite::createWithTexture(texture, textureRect);
-			_selectedTextSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-			_selectedTextSprite->setPosition(selectedTextRect.origin.x, 0);
-			texture->release();
-
-			_textSprite->addChild(_selectedTextNode, -1, Node::INVALID_TAG);
-			_textSprite->addChild(_selectedTextSprite, 1, Node::INVALID_TAG);
-		}
-
-		{
 			_cursorSprite = Sprite::create();
-			_cursorSprite->setTextureRect(Rect(0, 0, 1, 20));
+			_cursorSprite->setTextureRect(Rect(0, 0, 1, textSize.height));
 			_cursorSprite->setColor(Color3B(250, 250, 250));
-			_cursorSprite->setPosition(cursorOffset + textOffset.x, textSize.height / 2);
-
-			_textSprite->addChild(_cursorSprite, 2, Node::INVALID_TAG);
+			_cursorSprite->setPosition(_cursorOffset + _textOffset.x, textSize.height / 2);
+			_cursorSprite->retain();
 		}
 	}
 }
@@ -1447,6 +1357,217 @@ void TextFieldTTF::setSelectedTextBgColor(const Color4B& color)
 	{
 		_contentDirty = true;
 	}
+}
+
+void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
+{
+	_currentLabelType = LabelType::STRING_TEXTURE;
+
+	FontDefinition fd = fontDef;
+	fd._dimensions = Size::ZERO;
+	fd._alignment = TextHAlignment::LEFT;
+	Size textSize;
+	
+	if (!_utf16Text.empty())
+	{
+		textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
+	}
+	else
+	{
+		textSize = Texture2D::getContentSizeWithString(" ", fd);
+		textSize.width = 0.0f;
+	}
+
+	Size contentSize = textSize;
+	if (_labelWidth != 0 && _labelHeight != 0)
+	{
+		contentSize.width = _labelWidth;
+		contentSize.height = _labelHeight;
+	}
+	setContentSize(contentSize);
+
+	std::u16string tempText;
+	Size tempSize;
+
+	if (_cursorPosition > 0)
+	{
+		tempText = _utf16Text.substr(0, _cursorPosition);
+		_cursorOffset = Texture2D::getContentSizeWithString(tempText.c_str(), fd).width;
+	}
+	else
+		_cursorOffset = 0;
+
+	Rect textureRect;
+	if (contentSize.width > textSize.width)
+	{
+		switch (fontDef._alignment)
+		{
+		case TextHAlignment::LEFT:
+			_textOffset.x = 0;
+			break;
+		case TextHAlignment::RIGHT:
+			_textOffset.x = (contentSize.width - textSize.width);
+			break;
+		case TextHAlignment::CENTER:
+			_textOffset.x = ((contentSize.width - textSize.width) / 2);
+			break;
+		default:
+			break;
+		}
+		textureRect.size = textSize;
+	}
+	else
+	{
+		if (_cursorOffset > contentSize.width)
+		{
+			_textOffset.x = contentSize.width - _cursorOffset;
+		}
+		else if ((_cursorOffset + _textOffset.x) < 0)
+		{
+			_textOffset.x = -_cursorOffset;
+		}
+		else
+		{
+			_textOffset.x = 0.0f;
+		}
+		textureRect.origin.x = -_textOffset.x;
+		textureRect.origin.y = 0;
+		textureRect.size.width = contentSize.width;
+		textureRect.size.height = textSize.height;
+	}
+	switch (fontDef._vertAlignment)
+	{
+	case TextVAlignment::TOP:
+		_textOffset.y = contentSize.height - textSize.height;
+		break;
+	case TextVAlignment::CENTER:
+		_textOffset.y = (contentSize.height - textSize.height) / 2;
+		break;
+	case TextVAlignment::BOTTOM:
+		_textOffset.y = 0;
+		break;
+	default:
+		break;
+	}
+
+	auto texture = new (std::nothrow) Texture2D;
+	texture->initWithString(_utf8Text.c_str(), fd);
+
+	_textSprite = Sprite::createWithTexture(texture, textureRect);
+	//set camera mask using label's camera mask, because _textSprite may be null when setting camera mask to label
+	_textSprite->setCameraMask(getCameraMask());
+	_textSprite->setGlobalZOrder(getGlobalZOrder());
+	_textSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	_textSprite->setPosition(std::fmax(_textOffset.x, 0), _textOffset.y);
+	texture->release();
+	if (_blendFuncDirty)
+	{
+		_textSprite->setBlendFunc(_blendFunc);
+	}
+
+	_textSprite->retain();
+	_textSprite->updateDisplayedColor(_displayedColor);
+	_textSprite->updateDisplayedOpacity(_displayedOpacity);
+
+	std::u16string selectedText16 = _utf16Text.substr(_selectedTextStartPos, _selectedTextEndPos - _selectedTextStartPos);
+	if (!selectedText16.empty())
+	{
+		Rect selectedTextRect;
+
+		if (_selectedTextStartPos > 0)
+		{
+			tempText = _utf16Text.substr(0, _selectedTextStartPos);
+			tempSize = Texture2D::getContentSizeWithString(tempText.c_str(), fd);
+			selectedTextRect.origin.x = tempSize.width;
+		}
+
+		tempSize = Texture2D::getContentSizeWithString(selectedText16.c_str(), fd);
+		selectedTextRect.size.width = tempSize.width;
+		selectedTextRect.size.height = tempSize.height;
+		selectedTextRect.origin.y = 0;
+		selectedTextRect.origin.x += _textOffset.x;
+		selectedTextRect.intersect(Rect(0, 0, contentSize.width, contentSize.height));
+
+		_selectedTextNode = DrawNode::create();
+		_selectedTextNode->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+		Size textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
+		_selectedTextNode->drawSolidRect(selectedTextRect.origin, Vec2(selectedTextRect.getMaxX(), selectedTextRect.getMaxY()), Color4F(_colorSelectedTextBg));
+
+		fd._fontFillColor = Color3B(_colorSelectedText);
+		auto texture = new (std::nothrow) Texture2D;
+		textureRect = selectedTextRect;
+		textureRect.origin.x -= _textOffset.x < 0 ? _textOffset.x : 0;
+		texture->initWithString(_utf8Text.c_str(), fd);
+		_selectedTextSprite = Sprite::createWithTexture(texture, textureRect);
+		_selectedTextSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+		_selectedTextSprite->setPosition(selectedTextRect.origin.x, 0);
+		texture->release();
+
+		_textSprite->addChild(_selectedTextNode, -1, Node::INVALID_TAG);
+		_textSprite->addChild(_selectedTextSprite, 1, Node::INVALID_TAG);
+	}
+}
+
+void TextFieldTTF::deleteForward()
+{
+	size_t len = _inputText.length();
+	if (!len || (_cursorPosition == _charCount && _selectedTextEndPos == _selectedTextStartPos))
+	{
+		// there is no string
+		return;
+	}
+
+	// get the delete byte number
+	size_t deleteLen = 1;    // default, erase 1 byte
+
+	size_t cursorPos = _cursorPosition;
+	if (_selectedTextEndPos > _selectedTextStartPos)
+	{
+		cursorPos = _selectedTextStartPos;
+	}
+
+	size_t pos = _calcCharPos(_inputText.c_str(), cursorPos);
+
+	if (_selectedTextEndPos > _selectedTextStartPos)
+	{
+		deleteLen = _calcCharPos(_inputText.c_str(), _selectedTextEndPos) - pos;
+		cursorPos = _selectedTextStartPos;
+	}
+	else
+	{
+		while ((pos + deleteLen) != len && 
+			0x80 == (0xC0 & _inputText.at(pos + deleteLen)))
+		{
+			++deleteLen;
+		}
+	}
+
+	if (_delegate && _delegate->onTextFieldDeleteBackward(this, _inputText.c_str() + pos, static_cast<int>(deleteLen)))
+	{
+		// delegate doesn't want to delete backwards
+		return;
+	}
+
+	_selectedTextStartPos = 0;
+	_selectedTextEndPos = 0;
+	setCursorPosition(cursorPos);
+
+	// if all text deleted, show placeholder string
+	if (len <= deleteLen)
+	{
+		_inputText = "";
+		_charCount = 0;
+		setCursorPosition(0);
+		Label::setTextColor(_colorSpaceHolder);
+		Label::setString(_placeHolder);
+		return;
+	}
+
+	// set new input text
+	std::string text(_inputText.c_str());
+	text.erase(pos, deleteLen);
+	_charCount = _calcCharCount(text.c_str());
+	setString(text);
 }
 
 NS_CC_END
