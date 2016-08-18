@@ -97,7 +97,7 @@ TextFieldTTF::TextFieldTTF()
 , _cursorSprite(nullptr)
 , _selectedTextStartPos(0)
 , _selectedTextEndPos(0)
-, _colorSelectedTextBg(Color4B::BLUE)
+, _colorSelectedTextBg(Color4B(0, 122, 204, 255))
 , _colorSelectedText(Color4B::BLACK)
 , _cursorOffset(0.0f)
 {
