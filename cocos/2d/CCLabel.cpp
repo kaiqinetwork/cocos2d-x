@@ -386,6 +386,7 @@ Label::Label(TextHAlignment hAlignment /* = TextHAlignment::LEFT */,
 , _boldEnabled(false)
 , _underlineNode(nullptr)
 , _strikethroughEnabled(false)
+, _antialiasEnabled(true)
 {
     setAnchorPoint(Vec2::ANCHOR_MIDDLE);
     reset();
@@ -1234,6 +1235,10 @@ void Label::createSpriteForSystemFont(const FontDefinition& fontDef)
 
     auto texture = new (std::nothrow) Texture2D;
     texture->initWithString(_utf8Text.c_str(), fontDef);
+	if (_antialiasEnabled)
+		texture->setAntiAliasTexParameters();
+	else
+		texture->setAliasTexParameters();
 
     _textSprite = Sprite::createWithTexture(texture);
     //set camera mask using label's camera mask, because _textSprite may be null when setting camera mask to label
@@ -1272,6 +1277,10 @@ void Label::createShadowSpriteForSystemFont(const FontDefinition& fontDef)
 
         auto texture = new (std::nothrow) Texture2D;
         texture->initWithString(_utf8Text.c_str(), shadowFontDefinition);
+		if (_antialiasEnabled)
+			texture->setAntiAliasTexParameters();
+		else
+			texture->setAliasTexParameters();
         _shadowNode = Sprite::createWithTexture(texture);
         texture->release();
     }
@@ -2161,6 +2170,24 @@ void Label::updateLetterSpriteScale(Sprite* sprite)
             sprite->setScale(1.0);
         }
     }
+}
+
+void Label::setAntiAliasTexParameters()
+{
+	if (!_antialiasEnabled)
+	{
+		_antialiasEnabled = true;
+		_contentDirty = true;
+	}
+}
+
+void Label::setAliasTexParameters()
+{
+	if (_antialiasEnabled)
+	{
+		_antialiasEnabled = false;
+		_contentDirty = true;
+	}
 }
 
 NS_CC_END

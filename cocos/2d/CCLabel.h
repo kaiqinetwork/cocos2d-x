@@ -567,6 +567,18 @@ public:
      */
     float getAdditionalKerning() const;
 
+	/** sets font texture parameters:
+	- GL_TEXTURE_MIN_FILTER = GL_LINEAR
+	- GL_TEXTURE_MAG_FILTER = GL_LINEAR
+	*/
+	void setAntiAliasTexParameters();
+
+	/** sets font texture parameters:
+	- GL_TEXTURE_MIN_FILTER = GL_NEAREST
+	- GL_TEXTURE_MAG_FILTER = GL_NEAREST
+	*/
+	void setAliasTexParameters();
+
     FontAtlas* getFontAtlas() { return _fontAtlas; }
 
     virtual const BlendFunc& getBlendFunc() const override { return _blendFunc; }
@@ -777,6 +789,8 @@ protected:
     bool _boldEnabled;
     DrawNode* _underlineNode;
     bool _strikethroughEnabled;
+
+	bool _antialiasEnabled;
 
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(Label);

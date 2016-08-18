@@ -1463,6 +1463,10 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 
 	auto texture = new (std::nothrow) Texture2D;
 	texture->initWithString(_utf8Text.c_str(), fd);
+	if (_antialiasEnabled)
+		texture->setAntiAliasTexParameters();
+	else
+		texture->setAliasTexParameters();
 
 	_textSprite = Sprite::createWithTexture(texture, textureRect);
 	//set camera mask using label's camera mask, because _textSprite may be null when setting camera mask to label
@@ -1504,10 +1508,19 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 		_selectedTextNode->drawSolidRect(selectedTextRect.origin, Vec2(selectedTextRect.getMaxX(), selectedTextRect.getMaxY()), Color4F(_colorSelectedTextBg));
 
 		fd._fontFillColor = Color3B(_colorSelectedText);
-		auto texture = new (std::nothrow) Texture2D;
+		texture = new (std::nothrow) Texture2D;
 		textureRect = selectedTextRect;
 		textureRect.origin.x -= _textOffset.x < 0 ? _textOffset.x : 0;
 		texture->initWithString(_utf8Text.c_str(), fd);
+		if (_antialiasEnabled)
+		{
+			texture->setAntiAliasTexParameters();
+		}
+		else
+		{
+			texture->setAliasTexParameters();
+		}
+
 		_selectedTextSprite = Sprite::createWithTexture(texture, textureRect);
 		_selectedTextSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 		_selectedTextSprite->setPosition(selectedTextRect.origin.x, 0);

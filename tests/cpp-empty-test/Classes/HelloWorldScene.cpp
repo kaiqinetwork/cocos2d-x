@@ -56,7 +56,7 @@ bool HelloWorld::init()
     // add a label shows "Hello World"
     // create and initialize a label
     
-    auto label = Label::createWithTTF("Hello World", "fonts/arial.ttf", TITLE_FONT_SIZE);
+	auto label = Label::createWithSystemFont("中华人民共和国", "宋体", TITLE_FONT_SIZE);
     
     // position the label on the center of the screen
     label->setPosition(origin.x + visibleSize.width/2,
@@ -76,9 +76,10 @@ bool HelloWorld::init()
 
 	auto textField = ui::TextField::create();
 	//textField->setFontName("fonts/HKYuanMini.ttf"); 
-	textField->setFontName("宋体");
+	//textField->setFontName("宋体");
 	textField->setCursorEnabled(true);
 	textField->setTextHorizontalAlignment(TextHAlignment::LEFT);
+	textField->setFontSize(10);
 
 	// position the sprite on the center of the screen
 	textField->setPosition(Vec2(visibleSize / 2) + origin);
