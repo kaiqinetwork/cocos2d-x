@@ -1437,10 +1437,10 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 		{
 			_textOffset.x = contentSize.width - textSize.width;
 		}
-// 		else
-// 		{
-// 			_textOffset.x = 0.0f;
-// 		}
+		else if((textSize.width + _textOffset.x) > contentSize.width)
+		{
+			_textOffset.x = 0.0f;
+		}
 		textureRect.origin.x = -_textOffset.x;
 		textureRect.origin.y = 0;
 		textureRect.size.width = contentSize.width;

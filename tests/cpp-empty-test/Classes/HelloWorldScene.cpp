@@ -56,11 +56,12 @@ bool HelloWorld::init()
     // add a label shows "Hello World"
     // create and initialize a label
     
-	auto label = Label::createWithSystemFont("中华人民共和国", "宋体", TITLE_FONT_SIZE);
+	auto label = Label::createWithSystemFont("abcda123", "arial", TITLE_FONT_SIZE);
     
     // position the label on the center of the screen
     label->setPosition(origin.x + visibleSize.width/2,
                             origin.y + visibleSize.height - label->getContentSize().height);
+	label->enableOutline(Color4B(255, 0, 0, 255), 1);
 
     // add the label as a child to this layer
     this->addChild(label, 1);

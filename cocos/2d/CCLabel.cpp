@@ -1327,7 +1327,7 @@ void Label::setFontDefinition(const FontDefinition& textDefinition)
     textColor.a = textDefinition._fontAlpha;
     setTextColor(textColor);
     
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS)
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS) && (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32)
     if (textDefinition._stroke._strokeEnabled)
     {
         CCLOGERROR("Currently only supported on iOS and Android!");
@@ -2053,7 +2053,7 @@ FontDefinition Label::_getFontDefinition() const
         systemFontDef._stroke._strokeEnabled = false;
     }
 
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS)
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS) && (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32)
     if (systemFontDef._stroke._strokeEnabled)
     {
         CCLOGERROR("Currently only supported on iOS and Android!");

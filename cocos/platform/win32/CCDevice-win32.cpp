@@ -190,6 +190,11 @@ public:
         return bRet;
     }
 
+	void setTextColor(COLORREF clr)
+	{
+		SetTextColor(_DC, clr);
+	}
+
     SIZE sizeWithText(const wchar_t * pszText, int nLen, DWORD dwFmt, LONG nWidthLimit)
     {
         SIZE tRet = {0};
@@ -240,7 +245,7 @@ public:
         return true;
     }
 
-    int drawText(const char * pszText, SIZE& tSize, Device::TextAlign eAlign)
+    int drawText(const char * pszText, SIZE& tSize, Device::TextAlign eAlign, int strokeSize)
     {
         int nRet = 0;
         wchar_t * pwszBuffer = 0;
@@ -362,6 +367,15 @@ public:
                 }
             }
 
+			if (strokeSize != 0)
+			{
+				tSize.cx += strokeSize * 2;
+				tSize.cy += strokeSize * 2;
+				rcText.left += strokeSize;
+				rcText.right += strokeSize;
+				rcText.top += strokeSize;
+				rcText.bottom += strokeSize;
+			}
             CC_BREAK_IF(! prepareBitmap(tSize.cx, tSize.cy));
 
             // draw text
@@ -369,10 +383,9 @@ public:
             HGDIOBJ hOldBmp  = SelectObject(_DC, _bmp);
 
             SetBkMode(_DC, TRANSPARENT);
-            SetTextColor(_DC, RGB(255, 255, 255)); // white color
-
-            // draw text
-            if (fixedText)
+			SetTextColor(_DC, RGB(255, 255, 255)); // white color
+			// draw text
+			if (fixedText)
             {
                 nRet = DrawTextW(_DC, fixedText, nLen, &rcText, dwFmt);
             }
@@ -438,15 +451,22 @@ Data Device::getTextureDataForText(const char * text, const FontDefinition& text
     {
         BitmapDC& dc = sharedBitmapDC();
 
-        if (! dc.setFont(textDefinition._fontName.c_str(), textDefinition._fontSize))
+
+		if (! dc.setFont(textDefinition._fontName.c_str(), textDefinition._fontSize))
         {
             log("Can't found font(%s), use system default", textDefinition._fontName.c_str());
         }
+		
+		int strokeSize = 0;
+		if (textDefinition._stroke._strokeEnabled)
+		{
+			strokeSize = (int)textDefinition._stroke._strokeSize;
+		}
 
         // draw text
         // does changing to SIZE here affects the font size by rounding from float?
         SIZE size = {(LONG) textDefinition._dimensions.width,(LONG) textDefinition._dimensions.height};
-        CC_BREAK_IF(! dc.drawText(text, size, align));
+		CC_BREAK_IF(!dc.drawText(text, size, align, strokeSize));
 
         int dataLen = size.cx * size.cy * 4;
         unsigned char* dataBuf = (unsigned char*)malloc(sizeof(unsigned char) * dataLen);
@@ -471,18 +491,153 @@ Data Device::getTextureDataForText(const char * text, const FontDefinition& text
             (LPBITMAPINFO)&bi, DIB_RGB_COLORS);
 
         COLORREF textColor = (textDefinition._fontFillColor.b << 16 | textDefinition._fontFillColor.g << 8 | textDefinition._fontFillColor.r) & 0x00ffffff;
+		COLORREF strokeColor = (textDefinition._stroke._strokeColor.b << 16 | textDefinition._stroke._strokeColor.g << 8 | textDefinition._stroke._strokeColor.r) & 0x00ffffff;
         float alpha = textDefinition._fontAlpha / 255.0f;
         COLORREF * pPixel = nullptr;
-        for (int y = 0; y < height; ++y)
-        {
-            pPixel = (COLORREF *)dataBuf + y * width;
-            for (int x = 0; x < width; ++x)
-            {
-                COLORREF& clr = *pPixel;
-                clr = ((BYTE)(GetRValue(clr) * alpha) << 24) | textColor;
-                ++pPixel;
-            }
-        }
+		COLORREF * pPixelDummy = nullptr;
+		if (strokeSize != 0)
+		{
+			unsigned char* dataBufDummy = (unsigned char*)malloc(sizeof(unsigned char)* dataLen);
+			memcpy(dataBufDummy, dataBuf, sizeof(unsigned char)* dataLen);
+			for (int y = 0; y < height; ++y)
+			{
+				pPixel = (COLORREF *)dataBuf + y * width;
+				pPixelDummy = (COLORREF *)dataBufDummy + y * width;
+				for (int x = 0; x < width; ++x)
+				{
+					COLORREF& clr = *pPixel;
+					COLORREF& clrDummy = *pPixelDummy;
+
+					if (clr == clrDummy)
+					{
+						clr = ((BYTE)(GetRValue(clrDummy) * alpha) << 24) | textColor;
+					}
+					
+					if (x > strokeSize && x < (width - strokeSize) && y > strokeSize && y < (height - strokeSize) && clrDummy != 0)
+					{
+						for (int i = 1; i < strokeSize; i++)
+						{
+							float n = std::sqrt(std::pow(strokeSize, 2) - std::pow(i, 2));
+							int m = (int)n;
+							for (int j = 1; j <= m; j++)
+							{
+								if (*(pPixelDummy - width * i - j) != 0) break;
+								*(pPixel - width * i - j) = ((BYTE)(255 * alpha) << 24) | strokeColor;
+							}
+							if (n > m)
+							{
+								m++;
+								if (*(pPixelDummy - width * i - m) == 0)
+								{
+									uint8_t currAlpha = (*(pPixel - width * i - m) >> 24) & 0xff;
+									*(pPixel - width * i - m) = ((BYTE)(std::max(currAlpha, (uint8_t)((n - m) * 255 * alpha))) << 24) | strokeColor;
+								}
+								
+							}
+						}
+						for (int i = 1; i <= strokeSize; i++)
+						{
+							const COLORREF& clrTopMid = *(pPixelDummy - width * i);
+							if (clrTopMid != 0) break;
+							*(pPixel - width * i) = ((BYTE)(255 * alpha) << 24) | strokeColor;
+						}
+						for (int i = 1; i < strokeSize; i++)
+						{
+							float n = std::sqrt(std::pow(strokeSize, 2) - std::pow(i, 2));
+							int m = (int)n;
+							for (int j = 1; j <= m; j++)
+							{
+								if (*(pPixelDummy - width * i + j) != 0) break;
+								*(pPixel - width * i + j) = ((BYTE)(255 * alpha) << 24) | strokeColor;
+							}
+							if (n > m)
+							{
+								m++;
+								if (*(pPixelDummy - width * i + m) == 0)
+								{
+									uint8_t currAlpha = (*(pPixel - width * i + m) >> 24) & 0xff;
+									*(pPixel - width * i + m) = ((BYTE)(std::max(currAlpha, (uint8_t)((n - m) * 255 * alpha))) << 24) | strokeColor;
+								}
+								
+							}
+						}
+						for (int i = 1; i <= strokeSize; i++)
+						{
+							const COLORREF& clrLeft = *(pPixelDummy - i);
+							if (clrLeft != 0) break;
+							*(pPixel - i) = ((BYTE)(255 * alpha) << 24) | strokeColor;
+						}
+						for (int i = 1; i <= strokeSize; i++)
+						{
+							const COLORREF& clrRight = *(pPixelDummy + i);
+							if (clrRight != 0) break;
+							*(pPixel + i) = ((BYTE)(255 * alpha) << 24) | strokeColor;
+						}
+						for (int i = 1; i < strokeSize; i++)
+						{
+							float n = std::sqrt(std::pow(strokeSize, 2) - std::pow(i, 2));
+							int m = (int)n;
+							for (int j = 1; j <= m; j++)
+							{
+								if (*(pPixelDummy + width * i - j) != 0) break;
+								*(pPixel + width * i - j) = ((BYTE)(255 * alpha) << 24) | strokeColor;
+							}
+							if (n > m)
+							{
+								m++;
+								if (*(pPixelDummy + width * i - m) == 0)
+								{
+									uint8_t currAlpha = (*(pPixel + width * i - m) >> 24) & 0xff;
+									*(pPixel + width * i - m) = ((BYTE)(std::max(currAlpha, (uint8_t)((n - m) * 255 * alpha))) << 24) | strokeColor;
+								}
+							}
+						}
+						for (int i = 1; i <= strokeSize; i++)
+						{
+							const COLORREF& clrBottomMid = *(pPixelDummy + width * strokeSize);
+							if (clrBottomMid != 0) break;
+							*(pPixel + width * strokeSize) = ((BYTE)(255 * alpha) << 24) | strokeColor;
+						}
+						for (int i = 1; i < strokeSize; i++)
+						{
+							float n = std::sqrt(std::pow(strokeSize, 2) - std::pow(i, 2));
+							int m = (int)n;
+							for (int j = 1; j <= m; j++)
+							{
+								if (*(pPixelDummy + width * i + j) != 0) break;
+								*(pPixel + width * i + j) = ((BYTE)(255 * alpha) << 24) | strokeColor;
+							}
+							if (n > m)
+							{
+								m++;
+								if (*(pPixelDummy + width * i + m) == 0)
+								{
+									uint8_t currAlpha = (*(pPixel + width * i + m) >> 24) & 0xff;
+									*(pPixel + width * i + m) = ((BYTE)(std::max(currAlpha, (uint8_t)((n - m) * 255 * alpha))) << 24) | strokeColor;
+								}
+							}
+						}
+					}
+
+					++pPixel;
+					++pPixelDummy;
+				}
+			}
+			delete dataBufDummy;
+		}
+		else
+		{
+			for (int y = 0; y < height; ++y)
+			{
+				pPixel = (COLORREF *)dataBuf + y * width;
+				for (int x = 0; x < width; ++x)
+				{
+					COLORREF& clr = *pPixel;
+					clr = ((BYTE)(GetRValue(clr) * alpha) << 24) | textColor;
+					++pPixel;
+				}
+			}
+		}
 
         ret.fastSet(dataBuf,dataLen);
         hasPremultipliedAlpha = false;
@@ -524,7 +679,12 @@ Size Device::getSizeWithText(const char * text, const FontDefinition& textDefini
 		nLen = MultiByteToWideChar(CP_UTF8, 0, text, nLen, pwszBuffer, nBufLen);
 
 		SIZE newSize = dc.sizeWithText(pwszBuffer, nLen, 0, 0);
-		textSize.setSize(newSize.cx, newSize.cy);
+		if (textDefinition._stroke._strokeEnabled)
+		{
+			newSize.cx += textDefinition._stroke._strokeSize * 2;
+			newSize.cy += textDefinition._stroke._strokeSize * 2;
+		}
+		textSize.setSize(newSize.cx + 2, newSize.cy + 2);
 	} while (0);
 	CC_SAFE_DELETE_ARRAY(pwszBuffer);
 
@@ -545,6 +705,11 @@ Size Device::getSizeWithText(const char16_t* text, const FontDefinition& textDef
 
 		int nLen = wcslen((const wchar_t*)text);
 		SIZE newSize = dc.sizeWithText((const wchar_t*)text, nLen, 0, 0);
+		if (textDefinition._stroke._strokeEnabled)
+		{
+			newSize.cx += textDefinition._stroke._strokeSize * 2;
+			newSize.cy += textDefinition._stroke._strokeSize * 2;
+		}
 		textSize.setSize(newSize.cx, newSize.cy);
 	} while (0);
 
