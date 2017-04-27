@@ -192,14 +192,14 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\include;$(KAIQI_PROJECT_ROOT)\include\box2d;$(KAIQI_PROJECT_ROOT)\include\sqlite;$(EngineRoot)external\unzip;$(EngineRoot)external\edtaa3func;$(KAIQI_PROJECT_ROOT)\include\tinyxml2;$(KAIQI_PROJECT_ROOT)\include\libpng;$(KAIQI_PROJECT_ROOT)\include\jpeg;$(KAIQI_PROJECT_ROOT)\include\tiff;$(KAIQI_PROJECT_ROOT)\include\webp;$(KAIQI_PROJECT_ROOT)\include;$(KAIQI_PROJECT_ROOT)\include\iconv;$(KAIQI_PROJECT_ROOT)\include\zlib;$(KAIQI_PROJECT_ROOT)\include\chipmunk;$(EngineRoot)external\xxhash;$(EngineRoot)external\ConvertUTF;$(KAIQI_PROJECT_ROOT)\include\curl;$(KAIQI_PROJECT_ROOT)\include\websockets;$(EngineRoot)external;$(EngineRoot)cocos;$(EngineRoot)cocos\editor-support;$(EngineRoot)cocos\audio\include;$(EngineRoot)extensions;$(EngineRoot);$(KAIQI_PROJECT_ROOT)\include\glfw3;$(KAIQI_PROJECT_ROOT)\include\al;$(KAIQI_PROJECT_ROOT)\include\ogg;$(KAIQI_PROJECT_ROOT)\include\mpg123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;COCOS2DXWIN32_EXPORTS;GL_GLEXT_PROTOTYPES;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;CC_3D_STATIC;IGNORE_EXPORT;CC_STUDIO_STATIC;CC_EX_STATIC;CC_GUI_STATIC;CC_ENABLE_CHIPMUNK_INTEGRATION=1;CC_STATIC;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;COCOS2DXWIN32_EXPORTS;GL_GLEXT_PROTOTYPES;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;CC_3D_STATIC;IGNORE_EXPORT;CC_STUDIO_STATIC;CC_EX_STATIC;CC_GUI_STATIC;CC_ENABLE_CHIPMUNK_INTEGRATION=1;CC_STATIC;GLEW_STATIC;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>None</DebugInformationFormat>
       <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -301,7 +301,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     </PreBuildEvent>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\include;$(KAIQI_PROJECT_ROOT)\include\sqlite;$(EngineRoot)external\unzip;$(EngineRoot)external\edtaa3func;$(KAIQI_PROJECT_ROOT)\include\tinyxml2;$(KAIQI_PROJECT_ROOT)\include\libpng;$(KAIQI_PROJECT_ROOT)\include\jpeg;$(KAIQI_PROJECT_ROOT)\include\tiff;$(KAIQI_PROJECT_ROOT)\include\webp;$(KAIQI_PROJECT_ROOT)\include;$(KAIQI_PROJECT_ROOT)\include\iconv;$(KAIQI_PROJECT_ROOT)\include\zlib;$(KAIQI_PROJECT_ROOT)\include\chipmunk;$(EngineRoot)external\xxhash;$(EngineRoot)external\ConvertUTF;$(KAIQI_PROJECT_ROOT)\include\Box2d;$(KAIQI_PROJECT_ROOT)\include\curl;$(KAIQI_PROJECT_ROOT)\include\websockets;$(EngineRoot)external;$(EngineRoot)cocos;$(EngineRoot)cocos\editor-support;$(EngineRoot)cocos\audio\include;$(EngineRoot)extensions;$(EngineRoot);$(KAIQI_PROJECT_ROOT)\include\glfw3;$(KAIQI_PROJECT_ROOT)\include\al;$(KAIQI_PROJECT_ROOT)\include\ogg;$(KAIQI_PROJECT_ROOT)\include\mpg123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_LIB;COCOS2DXWIN32_EXPORTS;GL_GLEXT_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;CC_3D_STATIC;IGNORE_EXPORT;CC_STUDIO_STATIC;CC_EX_STATIC;CC_GUI_STATIC;CC_ENABLE_CHIPMUNK_INTEGRATION=1;CC_STATIC;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_LIB;COCOS2DXWIN32_EXPORTS;GL_GLEXT_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;CC_3D_STATIC;IGNORE_EXPORT;CC_STUDIO_STATIC;CC_EX_STATIC;CC_GUI_STATIC;CC_ENABLE_CHIPMUNK_INTEGRATION=1;CC_STATIC;GLEW_STATIC;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -774,6 +774,8 @@ xcopy /Y /Q /E "$(ProjectDir)..\..\extensions\*.inl" "$(OutDir)\include-win\exte
     <ClCompile Include="..\platform\win32\CCFileUtils-win32.cpp" />
     <ClCompile Include="..\platform\win32\CCInput-win32.cpp" />
     <ClCompile Include="..\platform\win32\CCStdC-win32.cpp" />
+    <ClCompile Include="..\platform\win32\inet_ntop_win32.cpp" />
+    <ClCompile Include="..\platform\win32\inet_pton_win32.cpp" />
     <ClCompile Include="..\renderer\CCBatchCommand.cpp" />
     <ClCompile Include="..\renderer\CCCustomCommand.cpp" />
     <ClCompile Include="..\renderer\CCFrameBuffer.cpp" />
@@ -1402,6 +1404,8 @@ xcopy /Y /Q /E "$(ProjectDir)..\..\extensions\*.inl" "$(OutDir)\include-win\exte
     <ClInclude Include="..\platform\win32\CCPlatformDefine-win32.h" />
     <ClInclude Include="..\platform\win32\CCStdC-win32.h" />
     <ClInclude Include="..\platform\win32\compat\stdint.h" />
+    <ClInclude Include="..\platform\win32\inet_ntop_win32.h" />
+    <ClInclude Include="..\platform\win32\inet_pton_win32.h" />
     <ClInclude Include="..\renderer\CCBatchCommand.h" />
     <ClInclude Include="..\renderer\CCCustomCommand.h" />
     <ClInclude Include="..\renderer\CCFrameBuffer.h" />

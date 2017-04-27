@@ -970,8 +970,8 @@ std::size_t TextFieldTTF::getCursorFromPoint(const Vec2 &point)
 		fd._alignment = TextHAlignment::LEFT;
 		Size textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
 
-		float pointX = std::fmax(point.x - _textOffset.x, 0.0f);
-		pointX = std::fmin(pointX, textSize.width);
+		float pointX = std::max<float>(point.x - _textOffset.x, 0.0f);
+		pointX = std::min<float>(pointX, textSize.width);
 		if (pointX >= textSize.width)
 			return _charCount;
 
@@ -1473,7 +1473,7 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 	_textSprite->setCameraMask(getCameraMask());
 	_textSprite->setGlobalZOrder(getGlobalZOrder());
 	_textSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	_textSprite->setPosition(std::fmax(_textOffset.x, 0), _textOffset.y);
+	_textSprite->setPosition(std::max<float>(_textOffset.x, 0.0f), _textOffset.y);
 	texture->release();
 	if (_blendFuncDirty)
 	{

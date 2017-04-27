@@ -39,11 +39,11 @@
 #include <io.h>
 #include <WS2tcpip.h>
 #include <Winsock2.h>
-#if defined(__MINGW32__)
-#include "platform/win32/inet_pton_mingw.h"
-#endif
 #define bzero(a, b) memset(a, 0, b);
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#include "platform/win32/inet_pton_win32.h"
+#include "platform/win32/inet_ntop_win32.h"
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
 #include "platform/winrt/inet_ntop_winrt.h"
 #include "platform/winrt/inet_pton_winrt.h"
 #include "platform/winrt/CCWinRTUtils.h"
@@ -56,6 +56,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/ioctl.h>
+#define cc_inet_pton(af,src,dst) inet_pton(af,src,dst)
+#define cc_inet_ntop(af,addr,buf,size) inet_ntop(af,addr,buf,size)
 #endif
 
 #include "base/CCDirector.h"
@@ -78,23 +80,6 @@ static const size_t SEND_BUFSIZ = 512;
 
 /** private functions */
 namespace {
-#if defined(__MINGW32__)
-    // inet
-    const char* inet_ntop(int af, const void* src, char* dst, int cnt)
-    {
-        struct sockaddr_in srcaddr;
-        
-        memset(&srcaddr, 0, sizeof(struct sockaddr_in));
-        memcpy(&(srcaddr.sin_addr), src, sizeof(srcaddr.sin_addr));
-        
-        srcaddr.sin_family = af;
-        if (WSAAddressToStringA((struct sockaddr*) &srcaddr, sizeof(struct sockaddr_in), 0, dst, (LPDWORD) &cnt) != 0)
-        {
-            return nullptr;
-        }
-        return dst;
-    }
-#endif
     
     //
     // Free functions to log
@@ -450,12 +435,12 @@ bool Console::listenOnTCP(int port)
             if (res->ai_family == AF_INET)
             {
                 struct sockaddr_in *sin = (struct sockaddr_in*) res->ai_addr;
-                inet_pton(res->ai_family, _bindAddress.c_str(), (void*)&sin->sin_addr);
+                cc_inet_pton(res->ai_family, _bindAddress.c_str(), (void*)&sin->sin_addr);
             }
             else if (res->ai_family == AF_INET6)
             {
                 struct sockaddr_in6 *sin = (struct sockaddr_in6*) res->ai_addr;
-                inet_pton(res->ai_family, _bindAddress.c_str(), (void*)&sin->sin6_addr);
+				cc_inet_pton(res->ai_family, _bindAddress.c_str(), (void*)&sin->sin6_addr);
             }
         }
 
@@ -481,14 +466,14 @@ bool Console::listenOnTCP(int port)
     if (res->ai_family == AF_INET) {
         char buf[INET_ADDRSTRLEN] = "";
         struct sockaddr_in *sin = (struct sockaddr_in*) res->ai_addr;
-        if( inet_ntop(res->ai_family, &sin->sin_addr, buf, sizeof(buf)) != nullptr )
+        if( cc_inet_ntop(res->ai_family, &sin->sin_addr, buf, sizeof(buf)) != nullptr )
             cocos2d::log("Console: listening on  %s : %d", buf, ntohs(sin->sin_port));
         else
             perror("inet_ntop");
     } else if (res->ai_family == AF_INET6) {
         char buf[INET6_ADDRSTRLEN] = "";
         struct sockaddr_in6 *sin = (struct sockaddr_in6*) res->ai_addr;
-        if( inet_ntop(res->ai_family, &sin->sin6_addr, buf, sizeof(buf)) != nullptr )
+        if( cc_inet_ntop(res->ai_family, &sin->sin6_addr, buf, sizeof(buf)) != nullptr )
             cocos2d::log("Console: listening on  %s : %d", buf, ntohs(sin->sin6_port));
         else
             perror("inet_ntop");
