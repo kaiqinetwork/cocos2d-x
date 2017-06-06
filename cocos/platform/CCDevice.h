@@ -1,6 +1,6 @@
 /****************************************************************************
 Copyright (c) 2010-2012 cocos2d-x.org
-Copyright (c) 2013-2015 Chukong Technologies Inc.
+Copyright (c) 2013-2017 Chukong Technologies Inc.
 
 http://www.cocos2d-x.org
 
@@ -101,6 +101,8 @@ public:
 	static Size getSizeWithText(const char * text, const FontDefinition& textDefinition);
 
 	static Size getSizeWithText(const char16_t* text, const FontDefinition& textDefinition);
+	
+	static Size getSizeWithText(const char32_t* text, const FontDefinition& textDefinition);
 
 private:
     CC_DISALLOW_IMPLICIT_CONSTRUCTORS(Device);

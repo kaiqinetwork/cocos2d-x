@@ -1,6 +1,6 @@
 /****************************************************************************
 Copyright (c) 2010-2012 cocos2d-x.org
-Copyright (c) 2013-2014 Chukong Technologies Inc.
+Copyright (c) 2013-2017 Chukong Technologies Inc.
 
 http://www.cocos2d-x.org
 
@@ -29,6 +29,7 @@ THE SOFTWARE.
 #include "platform/CCDevice.h"
 #include "platform/CCFileUtils.h"
 #include "platform/CCStdC.h"
+#include "base/ccUTF8.h"
 
 NS_CC_BEGIN
 
@@ -99,7 +100,7 @@ public:
 
     }
 
-    bool setFont(const char * pFontName = nullptr, int nSize = 0)
+    bool setFont(const char * pFontName = "", int nSize = 0)
     {
         bool bRet = false;
         do
@@ -107,10 +108,10 @@ public:
             std::string fontName = pFontName;
             std::string fontPath;
             HFONT       hDefFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
-            LOGFONTA    tNewFont = {0};
-            LOGFONTA    tOldFont = {0};
-            GetObjectA(hDefFont, sizeof(tNewFont), &tNewFont);
-            if (fontName.c_str())
+            LOGFONTW    tNewFont = {0};
+            LOGFONTW    tOldFont = {0};
+            GetObjectW(hDefFont, sizeof(tNewFont), &tNewFont);
+            if (!fontName.empty())
             {
                 // create font from ttf file
                 if (FileUtils::getInstance()->getFileExtension(fontName) == ".ttf")
@@ -137,16 +138,23 @@ public:
                     }
                 }
                 tNewFont.lfCharSet = DEFAULT_CHARSET;
-                strcpy_s(tNewFont.lfFaceName, LF_FACESIZE, fontName.c_str());
+				wchar_t * pwszBuffer = utf8ToUtf16(fontName);
+				if (pwszBuffer)
+				{
+					wcscpy_s(tNewFont.lfFaceName, LF_FACESIZE, pwszBuffer);
+					delete[] pwszBuffer;
+					pwszBuffer = nullptr;
+				}
+                
             }
             if (nSize)
             {
                 tNewFont.lfHeight = -nSize;
             }
-            GetObjectA(_font,  sizeof(tOldFont), &tOldFont);
+            GetObjectW(_font,  sizeof(tOldFont), &tOldFont);
 
             if (tOldFont.lfHeight == tNewFont.lfHeight
-                && 0 == strcmp(tOldFont.lfFaceName, tNewFont.lfFaceName))
+                && 0 == wcscmp(tOldFont.lfFaceName, tNewFont.lfFaceName))
             {
                 // already has the font
                 bRet = true;
@@ -177,7 +185,7 @@ public:
             tNewFont.lfQuality = ANTIALIASED_QUALITY;
 
             // create new font
-            _font = CreateFontIndirectA(&tNewFont);
+            _font = CreateFontIndirectW(&tNewFont);
             if (! _font)
             {
                 // create failed, use default font
@@ -248,7 +256,7 @@ public:
     int drawText(const char * pszText, SIZE& tSize, Device::TextAlign eAlign, int strokeSize)
     {
         int nRet = 0;
-        wchar_t * pwszBuffer = 0;
+        wchar_t * pwszBuffer = nullptr;
         wchar_t* fixedText = nullptr;
         do
         {
@@ -646,14 +654,12 @@ Data Device::getTextureDataForText(const char * text, const FontDefinition& text
     return ret;
 }
 
-void Device::setKeepScreenOn(bool value)
+void Device::setKeepScreenOn(bool /*value*/)
 {
-    CC_UNUSED_PARAM(value);
 }
 
-void Device::vibrate(float duration)
+void Device::vibrate(float /*duration*/)
 {
-    CC_UNUSED_PARAM(duration);
 }
 
 Size Device::getSizeWithText(const char * text, const FontDefinition& textDefinition)
@@ -716,6 +722,35 @@ Size Device::getSizeWithText(const char16_t* text, const FontDefinition& textDef
 	return textSize;
 }
 
+Size Device::getSizeWithText(const char32_t* text, const FontDefinition& textDefinition)
+{
+	Size textSize;
+	do
+	{
+		BitmapDC& dc = sharedBitmapDC();
+
+		if (!dc.setFont(textDefinition._fontName.c_str(), textDefinition._fontSize))
+		{
+			log("Can't found font(%s), use system default", textDefinition._fontName.c_str());
+		}
+
+		std::u32string utf32Text(text);
+		std::u16string utf16Text;
+		if (StringUtils::UTF32ToUTF16(utf32Text, utf16Text))
+		{
+			int nLen = utf16Text.size();
+			SIZE newSize = dc.sizeWithText((const wchar_t*)utf16Text.c_str(), nLen, 0, 0);
+			if (textDefinition._stroke._strokeEnabled)
+			{
+				newSize.cx += textDefinition._stroke._strokeSize * 2;
+				newSize.cy += textDefinition._stroke._strokeSize * 2;
+			}
+			textSize.setSize(newSize.cx, newSize.cy);
+		}
+	} while (0);
+
+	return textSize;
+}
 NS_CC_END
 
 #endif // CC_TARGET_PLATFORM == CC_PLATFORM_WIN32

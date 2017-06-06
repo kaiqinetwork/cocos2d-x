@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2013-2014 Chukong Technologies Inc.
+Copyright (c) 2013-2017 Chukong Technologies Inc.
 
 http://www.cocos2d-x.org
 
@@ -761,7 +761,6 @@ public:
     /**
      * Toggle widget focus status.
      *@param focus  pass true to let the widget get focus or pass false to let the widget lose focus
-     *@return void
      */
     void setFocused(bool focus);
     
@@ -774,7 +773,6 @@ public:
     /**
      * Allow widget to accept focus.
      *@param enable pass true/false to enable/disable the focus ability of a widget
-     *@return void
      */
     void setFocusEnabled(bool enable);
     
@@ -799,10 +797,7 @@ public:
      *                  otherwise, it will return a widget or a layout.
      * @deprecated use `getCurrentFocusedWidget` instead.
      */
-    CC_DEPRECATED_ATTRIBUTE Widget* getCurrentFocusedWidget(bool isWidget){
-        CC_UNUSED_PARAM(isWidget);
-        return getCurrentFocusedWidget();
-    }
+    CC_DEPRECATED_ATTRIBUTE Widget* getCurrentFocusedWidget(bool isWidget);
 
     /**
      * Return a current focused widget in your UI scene.
@@ -830,7 +825,6 @@ public:
     /**
      *Toggle use unify size.
      *@param enable True to use unify size, false otherwise.
-     *@return void
      */
     void setUnifySizeEnabled(bool enable);
 
@@ -868,7 +862,6 @@ public:
     /**
      * Toggle layout component enable.
      *@param enable Layout Component of a widget
-     *@return void
      */
     void setLayoutComponentEnabled(bool enable);
 
@@ -902,7 +895,6 @@ CC_CONSTRUCTOR_ACCESS:
      * This method is called when a focus change event happens
      *@param widgetLostFocus  The widget which lose its focus
      *@param widgetGetFocus  The widget which get its focus
-     *@return void
      */
     void onFocusChange(Widget* widgetLostFocus, Widget* widgetGetFocus);
     
@@ -910,7 +902,6 @@ CC_CONSTRUCTOR_ACCESS:
      * Dispatch a EventFocus through a EventDispatcher
      *@param widgetLoseFocus  The widget which lose its focus
      *@param widgetGetFocus he widget which get its focus
-     *@return void
      */
     void  dispatchFocusEvent(Widget* widgetLoseFocus, Widget* widgetGetFocus);
     
@@ -920,13 +911,13 @@ protected:
      *@since v3.4
      */
     
-    GLProgramState* getNormalGLProgramState()const;
+    GLProgramState* getNormalGLProgramState(Texture2D* texture)const;
     
     /**
      * Get a disabled state GLProgramState
      *@since v3.4
      */
-    GLProgramState* getGrayGLProgramState()const;
+    GLProgramState* getGrayGLProgramState(Texture2D* texture)const;
      
     
     //call back function called when size changed.
@@ -964,8 +955,11 @@ protected:
     void updateContentSizeWithTextureSize(const Size& size);
     
     bool isAncestorsEnabled();
-    Widget* getAncensterWidget(Node* node);
+    Widget* getAncestorWidget(Node* node);
     bool isAncestorsVisible(Node* node);
+
+    /** @deprecated Use getAncestorWidget instead. */
+    CC_DEPRECATED_ATTRIBUTE Widget* getAncensterWidget(Node* node);
 
     void cleanupWidget();
     LayoutComponent* getOrCreateLayoutComponent();

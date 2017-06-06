@@ -1,6 +1,6 @@
 /****************************************************************************
  Copyright (c) 2011-2012 cocos2d-x.org
- Copyright (c) 2013-2014 Chukong Technologies Inc.
+ Copyright (c) 2013-2017 Chukong Technologies Inc.
 
  http://www.cocos2d-x.org
 
@@ -276,9 +276,9 @@
                 }
             },
             {
-                title: "UITextTest_IgnoreConentSize",
+                title: "UITextTest_IgnoreContentSize",
                 func: function(){
-                    return new UITextTest_IgnoreConentSize();
+                    return new UITextTest_IgnoreContentSize();
                 }
             },
             {
@@ -533,6 +533,12 @@
                 func: function () {
                     return new UIPageViewChildSizeTest();
                 }
+            },
+            {
+                title: "UIPageViewIndicatorTest",
+                func: function () {
+                    return new UIPageViewIndicatorTest();
+                }
             }
         ],
         "UIListView": [
@@ -669,6 +675,16 @@
                 title: "UIS9NinePatchTest",
                 func: function () {
                     return new UIS9NinePatchTest();
+                }
+            }
+        ];
+    }
+    else {
+        testingItems["UIRichText"] = [
+            {
+                title: "UIRichTextTest",
+                func: function () {
+                    return new UIRichTextTest();
                 }
             }
         ];

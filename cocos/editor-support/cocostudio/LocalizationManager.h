@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include "rapidjson/document.h"
+#include "rapidjson/document-wrapper.h"
 #include "editor-support/cocostudio/CocosStudioExport.h"
 
 namespace cocostudio {

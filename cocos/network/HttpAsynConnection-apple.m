@@ -1,5 +1,5 @@
 /****************************************************************************
- Copyright (c) 2013-2014 Chukong Technologies Inc.
+ Copyright (c) 2013-2017 Chukong Technologies Inc.
  
  http://www.cocos2d-x.org
  
@@ -187,13 +187,19 @@
         CFDataRef errDataRef = SecTrustCopyExceptions(serverTrust);
         SecTrustSetExceptions(serverTrust, errDataRef);
         SecTrustEvaluate(serverTrust, &trustResult);
-        [(id)errDataRef release];
+        CFRelease(errDataRef);
     }
     [certData release];
-    [(id)certArrayRef release];
-    [(id)certArrayRef release];
+    if (cert)
+    {
+        CFRelease(cert);
+    }
+    if (certArrayRef) 
+    {
+        CFRelease(certArrayRef);
+    }
     //Did our custom trust chain evaluate successfully?
-    return trustResult = kSecTrustResultUnspecified || trustResult == kSecTrustResultProceed;    
+    return trustResult == kSecTrustResultUnspecified || trustResult == kSecTrustResultProceed;    
 }
 
 - (void) connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
