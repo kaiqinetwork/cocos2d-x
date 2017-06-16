@@ -7,6 +7,8 @@ LOCAL_MODULE := audioengine_static
 
 LOCAL_MODULE_FILENAME := libaudioengine
 
+LOCAL_ARM_MODE := arm
+
 LOCAL_SRC_FILES := AudioEngine-inl.cpp \
                    ../AudioEngine.cpp \
                    CCThreadPool.cpp \
@@ -54,6 +56,8 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := cocosdenshion_static
 
 LOCAL_MODULE_FILENAME := libcocosdenshion
+
+LOCAL_ARM_MODE := arm
 
 LOCAL_SRC_FILES := cddSimpleAudioEngine.cpp \
                    ccdandroidUtils.cpp \
