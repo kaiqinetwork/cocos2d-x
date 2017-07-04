@@ -1031,11 +1031,12 @@ void Button::copySpecialProperties(Widget *widget)
         _disabledTextureLoaded = button->_disabledTextureLoaded;
         setupDisabledTexture(!_disabledFileName.empty());
 
-		auto hotSprite = button->_buttonHotRenderer->getSprite();
-		if (nullptr != hotSprite)
-		{
-			loadTextureHot(hotSprite->getSpriteFrame());
-		}
+		button->_buttonHotRenderer->copyTo(_buttonHotRenderer);
+		_hotFileName = button->_hotFileName;
+		_hotTextureSize = button->_hotTextureSize;
+		_hotTexType = button->_hotTexType;
+		_hotTextureLoaded = button->_hotTextureLoaded;
+
         setCapInsetsNormalRenderer(button->_capInsetsNormal);
         setCapInsetsPressedRenderer(button->_capInsetsPressed);
         setCapInsetsDisabledRenderer(button->_capInsetsDisabled);

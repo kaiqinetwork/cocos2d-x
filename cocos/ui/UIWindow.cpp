@@ -14,6 +14,16 @@ Window::~Window()
 {
 }
 
+bool Window::init()
+{
+	return Layout::init();
+}
+
+bool Window::init(const std::string& uiFileName)
+{
+	return false;
+}
+
 }
 
 NS_CC_END
