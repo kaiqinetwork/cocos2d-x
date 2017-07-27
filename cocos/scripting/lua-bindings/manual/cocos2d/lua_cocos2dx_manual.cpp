@@ -8085,6 +8085,115 @@ tolua_lerror:
 #endif
 }
 
+static int tolua_cocos2d_utils_findChild(lua_State* tolua_S)
+{
+	int argc = 0;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_Error tolua_err;
+	if (!tolua_isusertype(tolua_S, 1, "cc.Node", 0, &tolua_err) ||
+		!tolua_isstring(tolua_S, 2, 0, &tolua_err)
+		)
+		goto tolua_lerror;
+#endif
+
+	argc = lua_gettop(tolua_S) - 1;
+
+	if (1 == argc)
+	{
+		cocos2d::Node* node = static_cast<Node*>(tolua_tousertype(tolua_S, 1, nullptr));
+		std::string  name = tolua_tocppstring(tolua_S, 2, "");
+		auto obj = cocos2d::utils::findChild(node, name);
+		int ID = (obj) ? (int)obj->_ID : -1;
+		int* luaID = (obj) ? &obj->_luaID : NULL;
+		toluafix_pushusertype_ccobject(tolua_S, ID, luaID, (void*)obj, "cc.Node");
+		return 1;
+	}
+	luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "cc.utils.findChild", argc, 1);
+	return 0;
+
+#if COCOS2D_DEBUG >= 1
+tolua_lerror:
+	tolua_error(tolua_S, "#ferror in function 'tolua_cocos2d_utils_findChild'.", &tolua_err);
+	return 0;
+#endif
+}
+
+static int tolua_cocos2d_utils_createSpriteFromBase64Cached(lua_State* tolua_S)
+{
+	int argc = 0;
+	bool ok = true;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_Error tolua_err;
+	if (!tolua_isstring(tolua_S, 1, 0, &tolua_err) ||
+		!tolua_isstring(tolua_S, 2, 0, &tolua_err)
+		)
+		goto tolua_lerror;
+#endif
+
+	argc = lua_gettop(tolua_S) - 1;
+
+	if (1 == argc)
+	{
+		std::string arg0, arg1;
+		ok &= luaval_to_std_string(tolua_S, 1, &arg0, "cc.utils.createSpriteFromBase64Cached");
+		ok &= luaval_to_std_string(tolua_S, 2, &arg1, "cc.utils.createSpriteFromBase64Cached");
+		if (!ok)
+		{
+			tolua_error(tolua_S, "invalid arguments in function 'tolua_cocos2d_utils_createSpriteFromBase64Cached'", nullptr);
+			return 0;
+		}
+
+		cocos2d::Sprite* ret = cocos2d::utils::createSpriteFromBase64Cached(arg0.c_str(), arg1.c_str());
+		object_to_luaval<cocos2d::Sprite>(tolua_S, "cc.Sprite", (cocos2d::Sprite*)ret);
+		return 1;
+	}
+	luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "cc.utils.createSpriteFromBase64Cached", argc, 1);
+	return 0;
+
+#if COCOS2D_DEBUG >= 1
+tolua_lerror:
+	tolua_error(tolua_S, "#ferror in function 'tolua_cocos2d_utils_createSpriteFromBase64Cached'.", &tolua_err);
+	return 0;
+#endif
+}
+
+static int tolua_cocos2d_utils_createSpriteFromBase64(lua_State* tolua_S)
+{
+	int argc = 0;
+	bool ok = true;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_Error tolua_err;
+	if (!tolua_isstring(tolua_S, 1, 0, &tolua_err))
+		goto tolua_lerror;
+#endif
+	argc = lua_gettop(tolua_S) - 1;
+	if (0 == argc)
+	{
+		std::string arg0;
+		ok &= luaval_to_std_string(tolua_S, 1, &arg0, "cc.utils.createSpriteFromBase64");
+		if (!ok)
+		{
+			tolua_error(tolua_S, "invalid arguments in function 'tolua_cocos2d_utils_createSpriteFromBase64'", nullptr);
+			return 0;
+		}
+
+		cocos2d::Sprite* ret = cocos2d::utils::createSpriteFromBase64(arg0.c_str());
+		object_to_luaval<cocos2d::Sprite>(tolua_S, "cc.Sprite", (cocos2d::Sprite*)ret);
+		return 1;
+	}
+	luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "cc.utils.createSpriteFromBase64Cached", argc, 1);
+	return 0;
+
+#if COCOS2D_DEBUG >= 1
+tolua_lerror:
+	tolua_error(tolua_S, "#ferror in function 'tolua_cocos2d_utils_createSpriteFromBase64'.", &tolua_err);
+	return 0;
+#endif
+}
+
 int register_all_cocos2dx_module_manual(lua_State* tolua_S)
 {
     if (nullptr == tolua_S)
@@ -8097,6 +8206,9 @@ int register_all_cocos2dx_module_manual(lua_State* tolua_S)
         tolua_beginmodule(tolua_S,"utils");
             tolua_function(tolua_S, "captureScreen", tolua_cocos2d_utils_captureScreen);
             tolua_function(tolua_S, "findChildren", tolua_cocos2d_utils_findChildren);
+			tolua_function(tolua_S, "findChild", tolua_cocos2d_utils_findChild);
+			tolua_function(tolua_S, "createSpriteFromBase64Cached", tolua_cocos2d_utils_createSpriteFromBase64Cached);
+			tolua_function(tolua_S, "createSpriteFromBase64", tolua_cocos2d_utils_createSpriteFromBase64);
         tolua_endmodule(tolua_S);
     tolua_endmodule(tolua_S);
 
