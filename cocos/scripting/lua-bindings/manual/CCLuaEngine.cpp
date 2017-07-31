@@ -36,7 +36,7 @@
 #include "base/CCDirector.h"
 #include "base/CCEventCustom.h"
 
-#pragma comment(lib,"lua51.lib")
+//#pragma comment(lib,"lua51.lib")
 
 NS_CC_BEGIN
 

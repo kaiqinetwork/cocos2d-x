@@ -8126,19 +8126,20 @@ static int tolua_cocos2d_utils_createSpriteFromBase64Cached(lua_State* tolua_S)
 
 #if COCOS2D_DEBUG >= 1
 	tolua_Error tolua_err;
-	if (!tolua_isstring(tolua_S, 1, 0, &tolua_err) ||
-		!tolua_isstring(tolua_S, 2, 0, &tolua_err)
+	if (!tolua_istable(tolua_S, 1, 0, &tolua_err) ||
+		!tolua_isstring(tolua_S, 2, 0, &tolua_err) ||
+		!tolua_isstring(tolua_S, 3, 0, &tolua_err)
 		)
 		goto tolua_lerror;
 #endif
 
 	argc = lua_gettop(tolua_S) - 1;
 
-	if (1 == argc)
+	if (2 == argc)
 	{
 		std::string arg0, arg1;
-		ok &= luaval_to_std_string(tolua_S, 1, &arg0, "cc.utils.createSpriteFromBase64Cached");
-		ok &= luaval_to_std_string(tolua_S, 2, &arg1, "cc.utils.createSpriteFromBase64Cached");
+		ok &= luaval_to_std_string(tolua_S, 2, &arg0, "cc.utils.createSpriteFromBase64Cached");
+		ok &= luaval_to_std_string(tolua_S, 3, &arg1, "cc.utils.createSpriteFromBase64Cached");
 		if (!ok)
 		{
 			tolua_error(tolua_S, "invalid arguments in function 'tolua_cocos2d_utils_createSpriteFromBase64Cached'", nullptr);
@@ -8166,14 +8167,14 @@ static int tolua_cocos2d_utils_createSpriteFromBase64(lua_State* tolua_S)
 
 #if COCOS2D_DEBUG >= 1
 	tolua_Error tolua_err;
-	if (!tolua_isstring(tolua_S, 1, 0, &tolua_err))
+	if (!tolua_istable(tolua_S, 1, 0, &tolua_err) || !tolua_isstring(tolua_S, 2, 0, &tolua_err))
 		goto tolua_lerror;
 #endif
 	argc = lua_gettop(tolua_S) - 1;
-	if (0 == argc)
+	if (1 == argc)
 	{
 		std::string arg0;
-		ok &= luaval_to_std_string(tolua_S, 1, &arg0, "cc.utils.createSpriteFromBase64");
+		ok &= luaval_to_std_string(tolua_S, 2, &arg0, "cc.utils.createSpriteFromBase64");
 		if (!ok)
 		{
 			tolua_error(tolua_S, "invalid arguments in function 'tolua_cocos2d_utils_createSpriteFromBase64'", nullptr);

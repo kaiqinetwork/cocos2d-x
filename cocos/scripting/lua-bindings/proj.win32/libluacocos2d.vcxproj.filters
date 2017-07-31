@@ -10,6 +10,9 @@
     <Filter Include="script">
       <UniqueIdentifier>{af4b7d5f-f563-4069-ade8-c1a954e6fe5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="luajit">
+      <UniqueIdentifier>{cc863463-a948-487a-aacd-dc233c3e5200}</UniqueIdentifier>
+    </Filter>
     <Filter Include="xxtea">
       <UniqueIdentifier>{1fa7ff75-c142-4928-8aef-e6a2eb2b465f}</UniqueIdentifier>
     </Filter>
@@ -283,6 +286,18 @@
   <ItemGroup>
     <ClInclude Include="..\auto\lua_cocos2dx_auto.hpp">
       <Filter>auto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\external\lua\luajit\include\lauxlib.h">
+      <Filter>luajit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\external\lua\luajit\include\lua.h">
+      <Filter>luajit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\external\lua\luajit\include\luaconf.h">
+      <Filter>luajit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\external\lua\luajit\include\lualib.h">
+      <Filter>luajit</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\external\xxtea\xxtea.h">
       <Filter>xxtea</Filter>
