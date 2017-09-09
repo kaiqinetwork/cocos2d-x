@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\external\lua\cjson\fpconv.c" />
+    <ClCompile Include="..\..\..\..\external\lua\cjson\lua_cjson.c" />
+    <ClCompile Include="..\..\..\..\external\lua\cjson\strbuf.c" />
     <ClCompile Include="..\..\..\..\external\lua\luasocket\auxiliar.c" />
     <ClCompile Include="..\..\..\..\external\lua\luasocket\buffer.c" />
     <ClCompile Include="..\..\..\..\external\lua\luasocket\except.c" />
@@ -89,6 +92,9 @@
     <ClCompile Include="..\manual\ui\lua_cocos2dx_ui_manual.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\external\lua\cjson\fpconv.h" />
+    <ClInclude Include="..\..\..\..\external\lua\cjson\lua_cjson.h" />
+    <ClInclude Include="..\..\..\..\external\lua\cjson\strbuf.h" />
     <ClInclude Include="..\..\..\..\external\lua\luajit\include\lauxlib.h" />
     <ClInclude Include="..\..\..\..\external\lua\luajit\include\lua.h" />
     <ClInclude Include="..\..\..\..\external\lua\luajit\include\luaconf.h" />
