@@ -1,4 +1,4 @@
-#include "HelloWorldScene.h"
+ï»¿#include "HelloWorldScene.h"
 #include "AppMacros.h"
 #include "ui/UITextField.h"
 
@@ -7,17 +7,7 @@ USING_NS_CC;
 
 Scene* HelloWorld::scene()
 {
-    // 'scene' is an autorelease object
-    auto scene = Scene::create();
-    
-    // 'layer' is an autorelease object
-    HelloWorld *layer = HelloWorld::create();
-
-    // add layer as a child to scene
-    scene->addChild(layer);
-
-    // return the scene
-    return scene;
+     return HelloWorld::create();
 }
 
 // on "init" you need to initialize your instance
@@ -25,7 +15,7 @@ bool HelloWorld::init()
 {
     //////////////////////////////
     // 1. super init first
-    if ( !Layer::init() )
+    if ( !Scene::init() )
     {
         return false;
     }
@@ -77,7 +67,7 @@ bool HelloWorld::init()
 
 	auto textField = ui::TextField::create();
 	//textField->setFontName("fonts/HKYuanMini.ttf"); 
-	//textField->setFontName("ËÎÌå");
+	//textField->setFontName("å®‹ä½“");
 	textField->setCursorEnabled(true);
 	textField->setTextHorizontalAlignment(TextHAlignment::LEFT);
 	textField->setFontSize(10);
@@ -90,7 +80,7 @@ bool HelloWorld::init()
 
 	auto textField1 = ui::TextField::create();
 	//textField->setFontName("fonts/HKYuanMini.ttf"); 
-	textField1->setFontName("ËÎÌå");
+	textField1->setFontName("å®‹ä½“");
 	textField1->setCursorEnabled(true);
 	textField1->setTextHorizontalAlignment(TextHAlignment::CENTER);
 	textField1->ignoreContentAdaptWithSize(false);

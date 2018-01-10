@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2013-2014 Chukong Technologies Inc.
+Copyright (c) 2013-2017 Chukong Technologies Inc.
 
 http://www.cocos2d-x.org
 
@@ -36,6 +36,8 @@ THE SOFTWARE.
 #include "renderer/CCGLProgramState.h"
 #include "renderer/ccShaders.h"
 #include "2d/CCCamera.h"
+#include "2d/CCSprite.h"
+#include "ui/UIScale9Sprite.h"
 
 NS_CC_BEGIN
 
@@ -55,7 +57,7 @@ class Widget::FocusNavigationController
     }
     ~FocusNavigationController();
 protected:
-    void setFirstFocsuedWidget(Widget* widget);
+    void setFirstFocusedWidget(Widget* widget);
 
     void onKeypadKeyPressed(EventKeyboard::KeyCode, Event*);
 
@@ -75,7 +77,7 @@ Widget::FocusNavigationController::~FocusNavigationController()
     this->removeKeyboardEventListener();
 }
 
-void Widget::FocusNavigationController::onKeypadKeyPressed(EventKeyboard::KeyCode  keyCode, Event *event)
+void Widget::FocusNavigationController::onKeypadKeyPressed(EventKeyboard::KeyCode  keyCode, Event* /*event*/)
 {
     if (_enableFocusNavigation && _firstFocusedWidget)
     {
@@ -111,7 +113,7 @@ void Widget::FocusNavigationController::enableFocusNavigation(bool flag)
         this->removeKeyboardEventListener();
 }
 
-void Widget::FocusNavigationController::setFirstFocsuedWidget(Widget* widget)
+void Widget::FocusNavigationController::setFirstFocusedWidget(Widget* widget)
 {
     _firstFocusedWidget = widget;
 }
@@ -754,7 +756,7 @@ void Widget::updateChildrenDisplayedRGBA()
 }
 
 
-Widget* Widget::getAncensterWidget(Node* node)
+Widget* Widget::getAncestorWidget(Node* node)
 {
     if (nullptr == node)
     {
@@ -773,8 +775,13 @@ Widget* Widget::getAncensterWidget(Node* node)
     }
     else
     {
-        return this->getAncensterWidget(parent->getParent());
+        return this->getAncestorWidget(parent->getParent());
     }
+}
+
+Widget* Widget::getAncensterWidget(Node* node)
+{
+    return getAncestorWidget(node);
 }
 
 bool Widget::isAncestorsVisible(Node* node)
@@ -794,7 +801,7 @@ bool Widget::isAncestorsVisible(Node* node)
 
 bool Widget::isAncestorsEnabled()
 {
-    Widget* parentWidget = this->getAncensterWidget(this);
+    Widget* parentWidget = this->getAncestorWidget(this);
     if (parentWidget == nullptr)
     {
         return true;
@@ -834,7 +841,7 @@ bool Widget::isSwallowTouches()const
     return false;
 }
 
-bool Widget::onTouchBegan(Touch *touch, Event *unusedEvent)
+bool Widget::onTouchBegan(Touch *touch, Event* /*unusedEvent*/)
 {
     _hitted = false;
     if (isVisible() && isEnabled() && isAncestorsEnabled() && isAncestorsVisible(this) )
@@ -878,7 +885,7 @@ void Widget::propagateTouchEvent(cocos2d::ui::Widget::TouchEventType event, coco
     }
 }
 
-void Widget::onTouchMoved(Touch *touch, Event *unusedEvent)
+void Widget::onTouchMoved(Touch *touch, Event* /*unusedEvent*/)
 {
     _touchMovePosition = touch->getLocation();
 
@@ -895,7 +902,7 @@ void Widget::onTouchMoved(Touch *touch, Event *unusedEvent)
     moveEvent();
 }
 
-void Widget::onTouchEnded(Touch *touch, Event *unusedEvent)
+void Widget::onTouchEnded(Touch *touch, Event* /*unusedEvent*/)
 {
     _touchEndPosition = touch->getLocation();
 
@@ -921,8 +928,16 @@ void Widget::onTouchEnded(Touch *touch, Event *unusedEvent)
     }
 }
 
-void Widget::onTouchCancelled(Touch *touch, Event *unusedEvent)
+void Widget::onTouchCancelled(Touch* touch, Event* /*unusedEvent*/)
 {
+    /*
+     * Propagate touch events to its parents
+     */
+    if (_propagateTouchEvents)
+    {
+        this->propagateTouchEvent(TouchEventType::CANCELED, this, touch);
+    }
+    
 	_hitted = false;
     setHighlighted(false);
     cancelUpEvent();
@@ -1324,21 +1339,17 @@ void Widget::copyClonedWidgetChildren(Widget* model)
     }
 }
 
-GLProgramState* Widget::getNormalGLProgramState()const
+GLProgramState* Widget::getNormalGLProgramState(Texture2D* texture)const
 {
-    GLProgramState *glState = nullptr;
-    glState = GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP);
-    return glState;
+    return GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP, texture);
 }
 
-GLProgramState* Widget::getGrayGLProgramState()const
+GLProgramState* Widget::getGrayGLProgramState(Texture2D* texture)const
 {
-    GLProgramState *glState = nullptr;
-    glState = GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_GRAYSCALE);
-    return glState;
+    return GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_GRAYSCALE, texture);
 }
 
-void Widget::copySpecialProperties(Widget* model)
+void Widget::copySpecialProperties(Widget* /*model*/)
 {
 
 }
@@ -1372,6 +1383,8 @@ void Widget::copyProperties(Widget *widget)
     setFlippedY(widget->isFlippedY());
     setColor(widget->getColor());
     setOpacity(widget->getOpacity());
+    setCascadeColorEnabled(widget->isCascadeColorEnabled());
+    setCascadeOpacityEnabled(widget->isCascadeOpacityEnabled());
     _touchEventCallback = widget->_touchEventCallback;
     _touchEventListener = widget->_touchEventListener;
     _touchEventSelector = widget->_touchEventSelector;
@@ -1384,9 +1397,9 @@ void Widget::copyProperties(Widget *widget)
     copySpecialProperties(widget);
 
     Map<int, LayoutParameter*>& layoutParameterDic = widget->_layoutParameterDictionary;
-    for (auto iter = layoutParameterDic.begin(); iter != layoutParameterDic.end(); ++iter)
+    for (auto& iter : layoutParameterDic)
     {
-        setLayoutParameter(iter->second->clone());
+        setLayoutParameter(iter.second->clone());
     }
 }
 
@@ -1441,7 +1454,7 @@ void Widget::copyProperties(Widget *widget)
         float originalScale = Node::getScaleX();
         if (_flippedX)
         {
-            originalScale = originalScale * -1.0;
+            originalScale = originalScale * -1.0f;
         }
         return originalScale;
     }
@@ -1451,7 +1464,7 @@ void Widget::copyProperties(Widget *widget)
         float originalScale = Node::getScaleY();
         if (_flippedY)
         {
-            originalScale = originalScale * -1.0;
+            originalScale = originalScale * -1.0f;
         }
         return originalScale;
     }
@@ -1482,7 +1495,7 @@ void Widget::setFocused(bool focus)
     if (focus) {
         _focusedWidget = this;
         if (_focusNavigationController) {
-            _focusNavigationController->setFirstFocsuedWidget(this);
+            _focusNavigationController->setFirstFocusedWidget(this);
         }
     }
 
@@ -1590,6 +1603,10 @@ void Widget::onFocusChange(Widget* widgetLostFocus, Widget* widgetGetFocus)
         widgetGetFocus->setFocused(true);
     }
 }
+    
+Widget* Widget::getCurrentFocusedWidget(bool /*isWidget*/){
+    return getCurrentFocusedWidget();
+}
 
 Widget* Widget::getCurrentFocusedWidget()
 {
@@ -1605,7 +1622,7 @@ void Widget::enableDpadNavigation(bool enable)
             _focusNavigationController = new (std::nothrow) FocusNavigationController;
             if (_focusedWidget)
             {
-                _focusNavigationController->setFirstFocsuedWidget(_focusedWidget);
+                _focusNavigationController->setFirstFocusedWidget(_focusedWidget);
             }
         }
     }

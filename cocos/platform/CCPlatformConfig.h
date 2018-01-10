@@ -1,6 +1,6 @@
 /****************************************************************************
 Copyright (c) 2010-2012 cocos2d-x.org
-Copyright (c) 2013-2015 Chukong Technologies
+Copyright (c) 2013-2017 Chukong Technologies
 
 http://www.cocos2d-x.org
 
@@ -57,9 +57,9 @@ THE SOFTWARE.
 #define CC_TARGET_PLATFORM             CC_PLATFORM_UNKNOWN
 
 // Apple: Mac and iOS
-#if defined(__APPLE__) && !defined(ANDROID) // execlude android for binding generator.
+#if defined(__APPLE__) && !defined(ANDROID) // exclude android for binding generator.
     #include <TargetConditionals.h>
-    #if TARGET_OS_IPHONE // TARGET_OS_IPHONE inlcudes TARGET_OS_IOS TARGET_OS_TV and TARGET_OS_WATCH. see TargetConditionals.h
+    #if TARGET_OS_IPHONE // TARGET_OS_IPHONE includes TARGET_OS_IOS TARGET_OS_TV and TARGET_OS_WATCH. see TargetConditionals.h
         #undef  CC_TARGET_PLATFORM
         #define CC_TARGET_PLATFORM         CC_PLATFORM_IOS
     #elif TARGET_OS_MAC
@@ -148,6 +148,12 @@ THE SOFTWARE.
 #pragma warning (disable:4127)
 #endif
 #endif  // CC_PLATFORM_WIN32
+
+#if ((CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN))
+    #define CC_PLATFORM_MOBILE
+#else
+    #define CC_PLATFORM_PC
+#endif
 
 /// @endcond
 #endif  // __BASE_CC_PLATFORM_CONFIG_H__

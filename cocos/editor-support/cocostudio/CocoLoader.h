@@ -27,6 +27,7 @@
 
 #include <stdint.h>
 #include "rapidjson/document.h"
+#include "rapidjson/document-wrapper.h"
 #include "editor-support/cocostudio/CocosStudioExport.h"
 
 #pragma pack (4)

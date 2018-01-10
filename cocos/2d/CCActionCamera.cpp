@@ -2,7 +2,7 @@
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2010-2012 cocos2d-x.org
 Copyright (c) 2011      Zynga Inc.
-Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2013-2017 Chukong Technologies Inc.
  
 http://www.cocos2d-x.org
 
@@ -194,11 +194,11 @@ void OrbitCamera::startWithTarget(Node *target)
 
     float r, zenith, azimuth;
     this->sphericalRadius(&r, &zenith, &azimuth);
-    if( isnan(_radius) )
+    if( std::isnan(_radius) )
         _radius = r;
-    if( isnan(_angleZ) )
+    if( std::isnan(_angleZ) )
         _angleZ = (float)CC_RADIANS_TO_DEGREES(zenith);
-    if( isnan(_angleX) )
+    if( std::isnan(_angleX) )
         _angleX = (float)CC_RADIANS_TO_DEGREES(azimuth);
 
     _radZ = (float)CC_DEGREES_TO_RADIANS(_angleZ);

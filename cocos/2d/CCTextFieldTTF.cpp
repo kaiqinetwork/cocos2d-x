@@ -1,6 +1,6 @@
 /****************************************************************************
 Copyright (c) 2010-2012 cocos2d-x.org
-Copyright (c) 2013-2014 Chukong Technologies Inc.
+Copyright (c) 2013-2017 Chukong Technologies Inc.
 
 http://www.cocos2d-x.org
 
@@ -35,8 +35,8 @@ NS_CC_BEGIN
 
 #define CURSOR_TIME_SHOW_HIDE 0.5f
 #define CURSOR_DEFAULT_CHAR '|'
-
-static int _calcCharCount(const char * text)
+#define PASSWORD_STYLE_TEXT_DEFAULT "\xe2\x80\xa2"
+static std::size_t _calcCharCount(const char * text)
 {
     int n = 0;
     char ch = 0;
@@ -75,6 +75,31 @@ static std::size_t _calcCharPos(const char * text, int charCount)
 	return text - beginPtr;
 }
 
+bool TextFieldDelegate::onTextFieldAttachWithIME(TextFieldTTF* /*sender*/)
+{
+    return false;
+}
+
+bool TextFieldDelegate::onTextFieldDetachWithIME(TextFieldTTF* /*sender*/)
+{
+    return false;
+}
+
+bool TextFieldDelegate::onTextFieldInsertText(TextFieldTTF* /*sender*/, const char* /*text*/, size_t /*nLen*/)
+{
+    return false;
+}
+
+bool TextFieldDelegate::onTextFieldDeleteBackward(TextFieldTTF* /*sender*/, const char* /*delText*/, size_t /*nLen*/)
+{
+    return false;
+}
+
+bool TextFieldDelegate::onVisit(TextFieldTTF* /*sender*/, Renderer* /*renderer*/, const Mat4& /*transform*/, uint32_t /*flags*/)
+{
+    return false;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // constructor and destructor
 //////////////////////////////////////////////////////////////////////////
@@ -86,7 +111,7 @@ TextFieldTTF::TextFieldTTF()
 , _placeHolder("")   // prevent Label initWithString assertion
 , _colorText(Color4B::WHITE)
 , _secureTextEntry(false)
-,_passwordStyleText("\u25CF")
+, _passwordStyleText(PASSWORD_STYLE_TEXT_DEFAULT)
 , _cursorEnabled(false)
 , _cursorPosition(0)
 , _cursorChar(CURSOR_DEFAULT_CHAR)
@@ -166,7 +191,7 @@ bool TextFieldTTF::initWithPlaceHolder(const std::string& placeholder, const std
         // If fontName is ttf file and it corrected, use TTFConfig
         if (FileUtils::getInstance()->isFileExist(fontName))
         {
-            TTFConfig ttfConfig(fontName.c_str(), fontSize, GlyphCollection::DYNAMIC);
+            TTFConfig ttfConfig(fontName, fontSize, GlyphCollection::DYNAMIC);
             if (setTTFConfig(ttfConfig))
             {
                 break;
@@ -267,7 +292,7 @@ void TextFieldTTF::insertText(const char * text, size_t len)
             return;
         }
 
-        int countInsertChar = _calcCharCount(insert.c_str());
+        std::size_t countInsertChar = _calcCharCount(insert.c_str());
         _charCount += countInsertChar;
 		
         if (_cursorEnabled)
@@ -385,7 +410,7 @@ void TextFieldTTF::setCursorPosition(std::size_t cursorPosition)
     if (_cursorEnabled && cursorPosition <= (std::size_t)_charCount)
     {
         _cursorPosition = cursorPosition;
-        _cursorShowingTime = CURSOR_TIME_SHOW_HIDE*2.0;
+        _cursorShowingTime = CURSOR_TIME_SHOW_HIDE * 2.0f;
     }
 }
 
@@ -544,7 +569,8 @@ void TextFieldTTF::setString(const std::string &text)
 {
     std::string displayText;
 
-    int charCount = 0;
+    std::size_t charCount = 0;
+
     if (!text.empty())
     {
         _inputText = text;
@@ -742,7 +768,7 @@ void TextFieldTTF::setPasswordTextStyle(const std::string &text)
     }
 }
 
-std::string TextFieldTTF::getPasswordTextStyle()const
+const std::string& TextFieldTTF::getPasswordTextStyle() const
 {
     return _passwordStyleText;
 }
@@ -780,9 +806,9 @@ std::string TextFieldTTF::getSelectedText()
 	std::string selectedText;
 	if (_selectedTextStartPos != _selectedTextEndPos)
 	{
-		std::u16string tempStr;
-		tempStr = _utf16Text.substr(_selectedTextStartPos, _selectedTextEndPos - _selectedTextStartPos);
-		StringUtils::UTF16ToUTF8(tempStr, selectedText);
+		std::u32string tempStr;
+		tempStr = _utf32Text.substr(_selectedTextStartPos, _selectedTextEndPos - _selectedTextStartPos);
+		StringUtils::UTF32ToUTF8(tempStr, selectedText);
 	}
 	return selectedText;
 }
@@ -878,7 +904,7 @@ void TextFieldTTF::handleMouseMove(Event *unusedEvent)
 
 	EventMouse* mouseEvent = static_cast<EventMouse*>(unusedEvent);
 
-	if (mouseEvent->getMouseButton() == -1)
+	if (mouseEvent->getMouseButton() == EventMouse::MouseButton::BUTTON_UNSET)
 		return;
 
 	Vec2 pt;
@@ -941,7 +967,7 @@ void TextFieldTTF::handleMouseDblClk(Event *unusedEvent)
 	}
 	
 	EventMouse* mouseEvent = static_cast<EventMouse*>(unusedEvent);
-	if (mouseEvent->getMouseButton() == MOUSE_BUTTON_LEFT)
+	if (mouseEvent->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
 	{
 		setSelectedText(0, -1);
 	}
@@ -968,14 +994,14 @@ std::size_t TextFieldTTF::getCursorFromPoint(const Vec2 &point)
 		FontDefinition fd = _getFontDefinition();
 		fd._dimensions = Size::ZERO;
 		fd._alignment = TextHAlignment::LEFT;
-		Size textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
+		Size textSize = Texture2D::getContentSizeWithString(_utf32Text.c_str(), fd);
 
-		float pointX = std::fmax(point.x - _textOffset.x, 0.0f);
-		pointX = std::fmin(pointX, textSize.width);
+		float pointX = std::max<float>(point.x - _textOffset.x, 0.0f);
+		pointX = std::min<float>(pointX, textSize.width);
 		if (pointX >= textSize.width)
 			return _charCount;
 
-		std::u16string tempText;
+		std::u32string tempText;
 		std::size_t selectedTextStartPos = 0;
 		std::size_t selectedTextEndPos = _charCount;
 
@@ -999,7 +1025,7 @@ std::size_t TextFieldTTF::getCursorFromPoint(const Vec2 &point)
 				if (pointX >= x1 && pointX <= x2)
 				{
 					selectedTextMidPos = (selectedTextStartPos + selectedTextEndPos) / 2;
-					tempText = _utf16Text.substr(0, selectedTextMidPos);
+					tempText = _utf32Text.substr(0, selectedTextMidPos);
 					mid = Texture2D::getContentSizeWithString(tempText.c_str(), fd).width;
 					if (pointX >= mid)
 					{
@@ -1375,9 +1401,9 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 	fd._alignment = TextHAlignment::LEFT;
 	Size textSize;
 	
-	if (!_utf16Text.empty())
+	if (!_utf32Text.empty())
 	{
-		textSize = Texture2D::getContentSizeWithString(_utf16Text.c_str(), fd);
+		textSize = Texture2D::getContentSizeWithString(_utf32Text.c_str(), fd);
 	}
 	else
 	{
@@ -1393,12 +1419,12 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 	}
 	setContentSize(contentSize);
 
-	std::u16string tempText;
+	std::u32string tempText;
 	Size tempSize;
 
 	if (_cursorPosition > 0)
 	{
-		tempText = _utf16Text.substr(0, _cursorPosition);
+		tempText = _utf32Text.substr(0, _cursorPosition);
 		_cursorOffset = Texture2D::getContentSizeWithString(tempText.c_str(), fd).width;
 	}
 	else
@@ -1473,7 +1499,7 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 	_textSprite->setCameraMask(getCameraMask());
 	_textSprite->setGlobalZOrder(getGlobalZOrder());
 	_textSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	_textSprite->setPosition(std::fmax(_textOffset.x, 0), _textOffset.y);
+	_textSprite->setPosition(std::max<float>(_textOffset.x, 0.0f), _textOffset.y);
 	texture->release();
 	if (_blendFuncDirty)
 	{
@@ -1484,19 +1510,19 @@ void TextFieldTTF::createSpriteForSystemFont(const FontDefinition& fontDef)
 	_textSprite->updateDisplayedColor(_displayedColor);
 	_textSprite->updateDisplayedOpacity(_displayedOpacity);
 
-	std::u16string selectedText16 = _utf16Text.substr(_selectedTextStartPos, _selectedTextEndPos - _selectedTextStartPos);
-	if (!selectedText16.empty())
+	std::u32string selectedText32 = _utf32Text.substr(_selectedTextStartPos, _selectedTextEndPos - _selectedTextStartPos);
+	if (!selectedText32.empty())
 	{
 		Rect selectedTextRect;
 
 		if (_selectedTextStartPos > 0)
 		{
-			tempText = _utf16Text.substr(0, _selectedTextStartPos);
+			tempText = selectedText32.substr(0, _selectedTextStartPos);
 			tempSize = Texture2D::getContentSizeWithString(tempText.c_str(), fd);
 			selectedTextRect.origin.x = tempSize.width;
 		}
 
-		tempSize = Texture2D::getContentSizeWithString(selectedText16.c_str(), fd);
+		tempSize = Texture2D::getContentSizeWithString(selectedText32.c_str(), fd);
 		selectedTextRect.size.width = tempSize.width;
 		selectedTextRect.size.height = tempSize.height;
 		selectedTextRect.origin.y = 0;

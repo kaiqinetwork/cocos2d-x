@@ -10,9 +10,6 @@
     <Filter Include="script">
       <UniqueIdentifier>{af4b7d5f-f563-4069-ade8-c1a954e6fe5e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="tolua">
-      <UniqueIdentifier>{24fae6d6-ebb5-4da1-b0da-3f3845a9e9a9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="luajit">
       <UniqueIdentifier>{cc863463-a948-487a-aacd-dc233c3e5200}</UniqueIdentifier>
     </Filter>
@@ -79,25 +76,13 @@
     <Filter Include="manual\navmesh">
       <UniqueIdentifier>{fa8be49e-8b79-4dc5-8f28-febde1347eda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cjson">
+      <UniqueIdentifier>{93f82882-b08f-4c88-9ad7-016731135028}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\auto\lua_cocos2dx_auto.cpp">
       <Filter>auto</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\external\lua\tolua\tolua_event.c">
-      <Filter>tolua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\external\lua\tolua\tolua_is.c">
-      <Filter>tolua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\external\lua\tolua\tolua_map.c">
-      <Filter>tolua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\external\lua\tolua\tolua_push.c">
-      <Filter>tolua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\external\lua\tolua\tolua_to.c">
-      <Filter>tolua</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\external\xxtea\xxtea.cpp">
       <Filter>xxtea</Filter>
@@ -300,16 +285,19 @@
     <ClCompile Include="..\manual\lua_module_register.cpp">
       <Filter>manual</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\external\lua\cjson\fpconv.c">
+      <Filter>cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\external\lua\cjson\lua_cjson.c">
+      <Filter>cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\external\lua\cjson\strbuf.c">
+      <Filter>cjson</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\auto\lua_cocos2dx_auto.hpp">
       <Filter>auto</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\external\lua\tolua\tolua++.h">
-      <Filter>tolua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\external\lua\tolua\tolua_event.h">
-      <Filter>tolua</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\external\lua\luajit\include\lauxlib.h">
       <Filter>luajit</Filter>
@@ -529,6 +517,15 @@
     </ClInclude>
     <ClInclude Include="..\manual\Lua-BindingsExport.h">
       <Filter>manual</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\external\lua\cjson\fpconv.h">
+      <Filter>cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\external\lua\cjson\lua_cjson.h">
+      <Filter>cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\external\lua\cjson\strbuf.h">
+      <Filter>cjson</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

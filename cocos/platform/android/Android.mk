@@ -6,6 +6,8 @@ LOCAL_MODULE := cocos2dxandroid_static
 
 LOCAL_MODULE_FILENAME := libcocos2dandroid
 
+LOCAL_ARM_MODE := arm
+
 LOCAL_SRC_FILES := \
 CCApplication-android.cpp \
 CCCommon-android.cpp \
@@ -27,14 +29,9 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/.. \
                     $(LOCAL_PATH)/../.. \
 
-LOCAL_EXPORT_LDLIBS := -lGLESv1_CM \
-                       -lGLESv2 \
+LOCAL_EXPORT_LDLIBS := -lGLESv2 \
                        -lEGL \
                        -llog \
                        -landroid
-
-LOCAL_CPPFLAGS := -Wno-extern-c-compat
-
-LOCAL_EXPORT_CPPFLAGS := -Wno-extern-c-compat
 
 include $(BUILD_STATIC_LIBRARY)

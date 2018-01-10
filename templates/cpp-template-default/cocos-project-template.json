@@ -12,18 +12,11 @@
                "proj.win32/PROJECT_NAME.vcxproj.user",
                "proj.win32/PROJECT_NAME.sln",
                "proj.ios_mac/PROJECT_NAME.xcodeproj",
-               "proj.win8.1-universal/PROJECT_NAME.sln",
-               "proj.win8.1-universal/App.Shared/PROJECT_NAME.Shared.vcxitems",
-               "proj.win8.1-universal/App.Shared/PROJECT_NAME.Shared.vcxitems.filters",
-               "proj.win8.1-universal/App.Windows/PROJECT_NAME.Windows_TemporaryKey.pfx",
-               "proj.win8.1-universal/App.Windows/PROJECT_NAME.Windows.vcxproj",
-               "proj.win8.1-universal/App.Windows/PROJECT_NAME.Windows.vcxproj.filters",
-               "proj.win8.1-universal/App.WindowsPhone/PROJECT_NAME.WindowsPhone.vcxproj",
-               "proj.win8.1-universal/App.WindowsPhone/PROJECT_NAME.WindowsPhone.vcxproj.filters",
                "proj.win10/PROJECT_NAME.sln",
                "proj.win10/App/PROJECT_NAME.vcxproj",
                "proj.win10/App/PROJECT_NAME.vcxproj.filters",
-               "proj.win10/App/PROJECT_NAME_TemporaryKey.pfx"
+               "proj.win10/App/PROJECT_NAME_TemporaryKey.pfx",
+	            "proj.tizen/shared/res/PROJECT_NAME.png"
             ]
          },
          "project_replace_project_name":{
@@ -35,14 +28,6 @@
                "proj.win32/PROJECT_NAME.vcxproj.user",
                "proj.win32/PROJECT_NAME.sln",
                "proj.win32/main.cpp",
-               "proj.win8.1-universal/PROJECT_NAME.sln",
-               "proj.win8.1-universal/App.Shared/PROJECT_NAME.Shared.vcxitems",
-               "proj.win8.1-universal/App.Windows/PROJECT_NAME.Windows.vcxproj",
-               "proj.win8.1-universal/App.Windows/PROJECT_NAME.Windows.vcxproj.filters",
-               "proj.win8.1-universal/App.Windows/Package.appxmanifest",
-               "proj.win8.1-universal/App.WindowsPhone/PROJECT_NAME.WindowsPhone.vcxproj",
-               "proj.win8.1-universal/App.WindowsPhone/PROJECT_NAME.WindowsPhone.vcxproj.filters",
-               "proj.win8.1-universal/App.WindowsPhone/Package.appxmanifest",
                "proj.android/.project",
                "proj.android/.cproject",
                "proj.android/AndroidManifest.xml",
@@ -57,7 +42,9 @@
                "proj.win10/App/PROJECT_NAME.vcxproj",
                "proj.win10/App/PROJECT_NAME.vcxproj.filters",
                "proj.win10/App/Package.appxmanifest",
-               "CMakeLists.txt"
+               "CMakeLists.txt",
+               "proj.tizen/.project",
+               "proj.tizen/tizen-manifest.xml"
             ]
          },
          "project_replace_package_name":{
@@ -65,7 +52,8 @@
             "files":[
                "proj.android/AndroidManifest.xml",
                "proj.android-studio/app/build.gradle",
-               "proj.android-studio/app/AndroidManifest.xml"
+               "proj.android-studio/app/AndroidManifest.xml",
+	       "proj.tizen/tizen-manifest.xml"
             ]
          },
          "project_replace_mac_bundleid": {
@@ -110,16 +98,6 @@
             },
             {
                "file_path": "proj.win10/App/Package.appxmanifest",
-               "pattern": "Rotation Preference=\\\"landscape",
-               "replace_string": "Rotation Preference=\"portrait"
-            },
-            {
-               "file_path": "proj.win8.1-universal/App.Windows/Package.appxmanifest",
-               "pattern": "Rotation Preference=\\\"landscape",
-               "replace_string": "Rotation Preference=\"portrait"
-            },
-            {
-               "file_path": "proj.win8.1-universal/App.WindowsPhone/Package.appxmanifest",
                "pattern": "Rotation Preference=\\\"landscape",
                "replace_string": "Rotation Preference=\"portrait"
             }

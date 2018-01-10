@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2013-2014 Chukong Technologies Inc.
+Copyright (c) 2013-2017 Chukong Technologies Inc.
 
 http://www.cocos2d-x.org
 
@@ -196,7 +196,7 @@ bool ComAttribute::serialize(void* r)
 		{
 			filePath.assign(cocos2d::FileUtils::getInstance()->fullPathForFilename(file));
 		}
-		if (parse(filePath.c_str()))
+		if (parse(filePath))
 		{
             ret = true;
 		}
