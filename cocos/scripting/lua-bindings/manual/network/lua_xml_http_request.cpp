@@ -242,7 +242,7 @@ void LuaMinXmlHttpRequest::_sendRequest()
         /** get the response data **/
         std::vector<char> *buffer = response->getResponseData();
         
-        if (statusCode == 200)
+        if (statusCode >= 200 && statusCode <= 300)
         {
             //Succeeded
             _status = 200;

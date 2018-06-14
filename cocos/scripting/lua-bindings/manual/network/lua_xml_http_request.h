@@ -91,7 +91,7 @@ public:
     void _sendRequest();
     void setRequestHeader(const char* field, const char* value);
 
-    std::map<std::string, std::string> getHttpHeader() { return _httpHeader ;}
+    std::map<std::string, std::string>& getHttpHeader() { return _httpHeader ;}
     
     void getByteData(unsigned char* byteData);
     
