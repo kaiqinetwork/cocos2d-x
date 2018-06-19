@@ -3,7 +3,8 @@ Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2009      Valentin Milea
 Copyright (c) 2010-2012 cocos2d-x.org
 Copyright (c) 2011      Zynga Inc.
-Copyright (c) 2013-2017 Chukong Technologies Inc.
+Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -56,7 +57,8 @@ THE SOFTWARE.
 NS_CC_BEGIN
 
 // FIXME:: Yes, nodes might have a sort problem once every 30 days if the game runs at 60 FPS and each frame sprites are reordered.
-unsigned int Node::s_globalOrderOfArrival = 0;
+std::uint32_t Node::s_globalOrderOfArrival = 0;
+int Node::__attachedNodeCount = 0;
 
 // MARK: Constructor, Destructor, Init
 
@@ -73,6 +75,7 @@ Node::Node()
 , _normalizedPositionDirty(false)
 , _skewX(0.0f)
 , _skewY(0.0f)
+, _anchorPoint(0, 0)
 , _contentSize(Size::ZERO)
 , _contentSizeDirty(true)
 , _transformDirty(true)
@@ -82,8 +85,7 @@ Node::Node()
 , _transformUpdated(true)
 // children (lazy allocs)
 // lazy alloc
-, _localZOrderAndArrival(0)
-, _localZOrder(0)
+, _localZOrder$Arrival(0LL)
 , _globalZOrder(0)
 , _parent(nullptr)
 // "whole screen" objects. like Scenes and Layers, should set _ignoreAnchorPointForPosition to true
@@ -110,10 +112,13 @@ Node::Node()
 , _cascadeColorEnabled(false)
 , _cascadeOpacityEnabled(false)
 , _cameraMask(1)
+, _onEnterCallback(nullptr)
+, _onExitCallback(nullptr)
+, _onEnterTransitionDidFinishCallback(nullptr)
+, _onExitTransitionDidStartCallback(nullptr)
 #if CC_USE_PHYSICS
 , _physicsBody(nullptr)
 #endif
-, _anchorPoint(0, 0)
 {
     // set default scheduler and actionManager
     _director = Director::getInstance();
@@ -157,7 +162,7 @@ Node::~Node()
 #endif
 
     // User object has to be released before others, since userObject may have a weak reference of this node
-    // It may invoke `node->stopAllAction();` while `_actionManager` is null if the next line is after `CC_SAFE_RELEASE_NULL(_actionManager)`.
+    // It may invoke `node->stopAllActions();` while `_actionManager` is null if the next line is after `CC_SAFE_RELEASE_NULL(_actionManager)`.
     CC_SAFE_RELEASE_NULL(_userObject);
     
     // attributes
@@ -212,6 +217,16 @@ void Node::cleanup()
     this->stopAllActions();
     // timers
     this->unscheduleAllCallbacks();
+
+    // NOTE: Although it was correct that removing event listeners associated with current node in Node::cleanup.
+    // But it broke the compatibility to the versions before v3.16 .
+    // User code may call `node->removeFromParent(true)` which will trigger node's cleanup method, when the node 
+    // is added to scene again, event listeners like EventListenerTouchOneByOne will be lost. 
+    // In fact, user's code should use `node->removeFromParent(false)` in order not to do a cleanup and just remove node
+    // from its parent. For more discussion about why we revert this change is at https://github.com/cocos2d/cocos2d-x/issues/18104.
+    // We need to consider more before we want to correct the old and wrong logic code.
+    // For now, compatiblity is the most important for our users.
+//    _eventDispatcher->removeEventListenersForTarget(this);
     
     for( const auto &child: _children)
         child->cleanup();
@@ -252,7 +267,7 @@ void Node::setSkewY(float skewY)
     _transformUpdated = _transformDirty = _inverseDirty = true;
 }
 
-void Node::setLocalZOrder(int z)
+void Node::setLocalZOrder(std::int32_t z)
 {
     if (getLocalZOrder() == z)
         return;
@@ -268,15 +283,14 @@ void Node::setLocalZOrder(int z)
 
 /// zOrder setter : private method
 /// used internally to alter the zOrder variable. DON'T call this method manually
-void Node::_setLocalZOrder(int z)
+void Node::_setLocalZOrder(std::int32_t z)
 {
-    _localZOrderAndArrival = (static_cast<std::int64_t>(z) << 32) | (_localZOrderAndArrival & 0xffffffff);
     _localZOrder = z;
 }
 
 void Node::updateOrderOfArrival()
 {
-    _localZOrderAndArrival = (_localZOrderAndArrival & 0xffffffff00000000) | (++s_globalOrderOfArrival);
+    _orderOfArrival = (++s_globalOrderOfArrival);
 }
 
 void Node::setGlobalZOrder(float globalZOrder)
@@ -1292,6 +1306,10 @@ Mat4 Node::transform(const Mat4& parentTransform)
 
 void Node::onEnter()
 {
+    if (!_running)
+    {
+        ++__attachedNodeCount;
+    }
 #if CC_ENABLE_SCRIPT_BINDING
     if (_scriptType == kScriptTypeJavascript)
     {
@@ -1376,6 +1394,10 @@ void Node::onExitTransitionDidStart()
 
 void Node::onExit()
 {
+    if (_running)
+    {
+        --__attachedNodeCount;
+    }
 #if CC_ENABLE_SCRIPT_BINDING
     if (_scriptType == kScriptTypeJavascript)
     {
@@ -1498,12 +1520,12 @@ void Node::setScheduler(Scheduler* scheduler)
     }
 }
 
-bool Node::isScheduled(SEL_SCHEDULE selector)
+bool Node::isScheduled(SEL_SCHEDULE selector) const
 {
     return _scheduler->isScheduled(selector, this);
 }
 
-bool Node::isScheduled(const std::string &key)
+bool Node::isScheduled(const std::string &key) const
 {
     return _scheduler->isScheduled(key, this);
 }
@@ -2188,6 +2210,11 @@ void Node::setCameraMask(unsigned short mask, bool applyChildren)
             child->setCameraMask(mask, applyChildren);
         }
     }
+}
+
+int Node::getAttachedNodeCount()
+{
+    return __attachedNodeCount;
 }
 
 // MARK: Deprecated

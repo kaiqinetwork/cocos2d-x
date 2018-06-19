@@ -1,7 +1,8 @@
 /****************************************************************************
  Copyright (c) 2012      greathqy
  Copyright (c) 2012      cocos2d-x.org
- Copyright (c) 2013-2017 Chukong Technologies Inc.
+ Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -676,6 +677,14 @@ void HttpClient::processResponse(HttpResponse* response, char* responseMessage)
 
     responseCode = urlConnection.getResponseCode();
 
+    if (0 == responseCode)
+    {
+       response->setSucceed(false);
+       response->setErrorBuffer("connect failed");
+       response->setResponseCode(-1);
+       return;
+    }
+
     char* headers = urlConnection.getResponseHeaders();
     if (nullptr != headers)
     {
@@ -705,7 +714,7 @@ void HttpClient::processResponse(HttpResponse* response, char* responseMessage)
     char *messageInfo = urlConnection.getResponseMessage();
     if (messageInfo)
     {
-        strcpy(responseMessage, messageInfo);
+        strncpy(responseMessage, messageInfo, RESPONSE_BUFFER_SIZE-1);
         free(messageInfo);
     }
 

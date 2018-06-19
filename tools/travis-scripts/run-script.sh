@@ -16,101 +16,95 @@ function build_linux()
     cd linux-build
     cmake ../..
     echo "cpu cores: ${CPU_CORES}"
-    make -j${CPU_CORES}
+    make -j${CPU_CORES} VERBOSE=1
 }
 
 function build_mac()
 {
     NUM_OF_CORES=`getconf _NPROCESSORS_ONLN`
 
-    if [ $BUILD_CPP == 'true' ]; then
-        xctool -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "cpp-empty-test Mac" -jobs $NUM_OF_CORES -arch x86_64 -sdk macosx10.11  build
-        xctool -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "cpp-tests Mac" -jobs $NUM_OF_CORES -arch x86_64 -sdk macosx10.11  build
-    else
-        xctool -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "lua-tests Mac" -jobs $NUM_OF_CORES -arch x86_64 -sdk macosx10.11  build
-        xctool -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "js-tests Mac" -jobs $NUM_OF_CORES -arch x86_64 -sdk macosx10.11  build
-    fi
+    xcodebuild -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "build all tests Mac" -jobs $NUM_OF_CORES -arch x86_64 build | xcpretty
+    ##xcpretty has a bug, some xcodebuid fails return value would be treated as 0.
+    xcodebuild -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "build all tests Mac" -jobs $NUM_OF_CORES -arch x86_64 build
 }
 
 function build_ios()
 {
     NUM_OF_CORES=`getconf _NPROCESSORS_ONLN`
 
-    if [ $BUILD_CPP == 'true' ]; then
-        xctool -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "cpp-empty-test iOS" -jobs $NUM_OF_CORES -arch i386 -sdk iphonesimulator9.3  build
-        xctool -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "cpp-tests iOS" -jobs $NUM_OF_CORES -arch i386 -sdk iphonesimulator9.3  build
-    else
-        xctool -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "lua-tests iOS" -jobs $NUM_OF_CORES -arch i386 -sdk iphonesimulator9.3  build
-        xctool -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "js-tests iOS" -jobs $NUM_OF_CORES -arch i386 -sdk iphonesimulator9.3  build
-    fi
+    xcodebuild -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "build all tests iOS" -jobs $NUM_OF_CORES  -destination "platform=iOS Simulator,name=iPhone Retina (4-inch)" build | xcpretty
+    #the following commands must not be removed
+    xcodebuild -project $COCOS2DX_ROOT/build/cocos2d_tests.xcodeproj -scheme "build all tests iOS" -jobs $NUM_OF_CORES  -destination "platform=iOS Simulator,name=iPhone Retina (4-inch)" build
 }
 
 function build_android()
 {
     # Build all samples
     echo "Building Android samples ..."
-    export COCOS_CONSOLE_ROOT=$COCOS2DX_ROOT/tools/cocos2d-console/bin
-    export ANT_ROOT=/usr/bin
-    export ANDROID_SDK_ROOT=/usr/local/android-sdk
-    export COCOS_X_ROOT=$COCOS2DX_ROOT
-    export PATH=$ANT_ROOT:$ANDROID_SDK_ROOT:$COCOS_CONSOLE_ROOT:$PATH
-
-    cd $COCOS2DX_ROOT/build
-
-    # share the obj folder to speed up building
+    source ../environment.sh
 
     # build cpp-empty-test
-    pushd $COCOS2DX_ROOT/tests/cpp-empty-test
-    cocos compile -p android
-    popd
+    # pushd $COCOS2DX_ROOT/tests/cpp-empty-test
+    # cocos compile -p android --android-studio
+    # popd
 
     # build cpp-tests
-    src_dir=$COCOS2DX_ROOT/tests/cpp-empty-test/proj.android/obj/
-    dst_dir=$COCOS2DX_ROOT/tests/cpp-tests/proj.android/obj/
-    mkdir $dst_dir
-    cp -a $src_dir/* $dst_dir
-    pushd $COCOS2DX_ROOT/tests/cpp-tests
-    cocos compile -p android
-    popd
-
-    # build lua-tests
-    src_dir=$dst_dir
-    dst_dir=$COCOS2DX_ROOT/tests/lua-tests/project/proj.android/obj/
-    mkdir $dst_dir
-    cp -a $src_dir/* $dst_dir
-    pushd $COCOS2DX_ROOT/tests/lua-tests
-    cocos compile -p android
+    pushd $COCOS2DX_ROOT/tests/cpp-tests/proj.android
+    ./gradlew assembleDebug
     popd
 
     # build js-tests
-    src_dir=$dst_dir
-    dst_dir=$COCOS2DX_ROOT/tests/js-tests/project/proj.android/obj/
-    mkdir $dst_dir
-    cp -a $src_dir/* $dst_dir
-    pushd $COCOS2DX_ROOT/tests/js-tests
-    cocos compile -p android
+    # should uncomon it when building time not exceed time limit
+    # pushd $COCOS2DX_ROOT/tests/js-tests
+    # cocos compile -p android
+    # popd
+}
+
+function build_android_lua()
+{
+    # Build all samples
+    echo "Building Android samples lua ..."
+    source ../environment.sh
+
+    # build lua-tests
+    pushd $COCOS2DX_ROOT/tests/lua-tests/project/proj.android
+    ./gradlew assembleDebug
     popd
+
 }
 
 function genernate_binding_codes()
 {
-    # set environment variables needed by binding codes
+    if [ $TRAVIS_OS_NAME == "linux" ]; then
+        # print some log for libstdc++6
+        strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep GLIBC
+        ls -l /usr/lib/x86_64-linux-gnu/libstdc++*
+        dpkg-query -W libstdc++6
+        ldd $COCOS2DX_ROOT/tools/bindings-generator/libclang/libclang.so
+    fi
 
+    if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+        eval "$(pyenv init -)"
+    fi
+    which python
 
-    export NDK_ROOT=$HOME/bin/android-ndk
-    export PYTHON_BIN=/usr/bin/python
+    source ../environment.sh
 
     # Generate binding glue codes
 
     echo "Create auto-generated luabinding glue codes."
     pushd "$COCOS2DX_ROOT/tools/tolua"
-    ./genbindings.py
+    python ./genbindings.py
     popd
 
-    echo "Create auto-generated jsbinding glue codes."
-    pushd "$COCOS2DX_ROOT/tools/tojs"
-    ./genbindings.py
-    popd
+    # We don't support building js projects for linux platform,
+    # therefore, don't generate js-binding code for it.
+    if [ $TRAVIS_OS_NAME != "linux" ] || [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+        echo "Create auto-generated jsbinding glue codes."
+        pushd "$COCOS2DX_ROOT/tools/tojs"
+        python ./genbindings.py
+        popd
+    fi
 }
 
 function generate_pull_request_for_binding_codes_and_cocosfiles()
@@ -184,6 +178,8 @@ function generate_pull_request_for_binding_codes_and_cocosfiles()
 
 function run_pull_request()
 {
+    echo "Building pull request ..."
+
     # need to generate binding codes for all targets
     genernate_binding_codes
 
@@ -197,6 +193,11 @@ function run_pull_request()
         build_android
     fi
 
+    # android_lua
+    if [ $BUILD_TARGET == 'android_lua' ]; then
+        build_android_lua
+    fi
+
     if [ $BUILD_TARGET == 'mac' ]; then
         build_mac
     fi
@@ -208,6 +209,7 @@ function run_pull_request()
 
 function run_after_merge()
 {
+    echo "Building merge commit ..."
     # Re-generation of the javascript bindings can perform push of the new
     # version back to github.  We don't do this for pull requests, or if
     # GH_USER/GH_EMAIL/GH_PASSWORD environment variables are not set correctly
@@ -230,6 +232,32 @@ function run_after_merge()
     generate_pull_request_for_binding_codes_and_cocosfiles
 }
 
+if [ "$BUILD_TARGET" == "android_cocos_new_test" ]; then
+    source ../environment.sh
+    pushd $COCOS2DX_ROOT
+    python -u tools/cocos2d-console/bin/cocos.py --agreement n new -l cpp -p my.pack.qqqq cocos_new_test
+    popd
+    pushd $COCOS2DX_ROOT/cocos_new_test/proj.android
+    ./gradlew build
+    popd
+    exit 0
+fi
+
+if [ "$BUILD_TARGET" == "linux_cocos_new_test" ]; then
+    pushd $COCOS2DX_ROOT
+    python -u tools/cocos2d-console/bin/cocos.py --agreement n new -l cpp -p my.pack.qqqq cocos_new_test
+    popd
+    CPU_CORES=`grep -c ^processor /proc/cpuinfo`
+    echo "Building tests ..."
+    cd $COCOS2DX_ROOT/cocos_new_test
+    mkdir -p linux-build
+    cd linux-build
+    cmake ..
+    echo "cpu cores: ${CPU_CORES}"
+    make -j${CPU_CORES} VERBOSE=1
+    exit 0
+fi
+
 # build pull request
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
     run_pull_request
@@ -240,7 +268,7 @@ fi
 # - generate cocos_files.json for template
 if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     # only one job need to send PR, linux virtual machine has better performance
-    if [ $TRAVIS_OS_NAME == "linux" ] && [ $GEN_BINDING_AND_COCOSFILE == "true" ]; then
+    if [ $TRAVIS_OS_NAME == "linux" ] && [ x$GEN_BINDING_AND_COCOSFILE == x"true" ]; then
         run_after_merge
     fi
 fi

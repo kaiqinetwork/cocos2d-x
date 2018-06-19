@@ -1,6 +1,7 @@
 /****************************************************************************
 Copyright (c) 2010-2012 cocos2d-x.org
-Copyright (c) 2013-2017 Chukong Technologies Inc.
+Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -30,9 +31,11 @@ THE SOFTWARE.
 #include "platform/CCCommon.h"
 #include "platform/android/jni/JniHelper.h"
 #include "platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxHelper.h"
+#include "platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxEngineDataManager.h"
 #include "android/asset_manager.h"
 #include "android/asset_manager_jni.h"
 #include "base/ZipUtils.h"
+
 #include <stdlib.h>
 #include <sys/stat.h>
 
@@ -279,6 +282,8 @@ long FileUtilsAndroid::getFileSize(const std::string& filepath)
 
 FileUtils::Status FileUtilsAndroid::getContents(const std::string& filename, ResizableBuffer* buffer)
 {
+    EngineDataManager::onBeforeReadFile();
+
     static const std::string apkprefix("assets/");
     if (filename.empty())
         return FileUtils::Status::NotExists;

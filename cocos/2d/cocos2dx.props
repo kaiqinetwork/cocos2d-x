@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glew32-static-vc120-xp.lib;zlib.lib;libpng-static.lib;libjpeg-vc120-xp.lib;libtiff.lib;libwebp-vc110.lib;libiconv.lib;glfw3.lib;freetype-vc110.lib;winmm.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+     <AdditionalDependencies>opengl32.lib;glew32-static-vc120-xp.lib;zlib.lib;libwebp-vc110.lib;libiconv.lib;freetype-vc110.lib;winmm.lib;ws2_32.lib;libSpine.lib;libbox2d.lib;libpng.lib;libjpeg-vc120-xp.lib;libtiff.lib;libchipmunk.lib;glfw3.lib;libbullet.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>

@@ -1,5 +1,6 @@
 /****************************************************************************
- Copyright (c) 2013-2017 Chukong Technologies Inc.
+ Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -8207,7 +8208,7 @@ int register_all_cocos2dx_module_manual(lua_State* tolua_S)
         tolua_beginmodule(tolua_S,"utils");
             tolua_function(tolua_S, "captureScreen", tolua_cocos2d_utils_captureScreen);
             tolua_function(tolua_S, "findChildren", tolua_cocos2d_utils_findChildren);
-			tolua_function(tolua_S, "findChild", tolua_cocos2d_utils_findChild);
+	    tolua_function(tolua_S, "findChild", tolua_cocos2d_utils_findChild);
 			tolua_function(tolua_S, "createSpriteFromBase64Cached", tolua_cocos2d_utils_createSpriteFromBase64Cached);
 			tolua_function(tolua_S, "createSpriteFromBase64", tolua_cocos2d_utils_createSpriteFromBase64);
         tolua_endmodule(tolua_S);

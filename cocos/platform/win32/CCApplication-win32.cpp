@@ -1,6 +1,7 @@
 /****************************************************************************
 Copyright (c) 2010-2012 cocos2d-x.org
-Copyright (c) 2013-2017 Chukong Technologies Inc.
+Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -150,6 +151,11 @@ void Application::setAnimationInterval(float interval)
     _animationInterval.QuadPart = (LONGLONG)(interval * freq.QuadPart);
 }
 
+void Application::setAnimationInterval(float interval, SetIntervalReason reason)
+{
+    setAnimationInterval(interval);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // static member function
 //////////////////////////////////////////////////////////////////////////
@@ -230,6 +236,9 @@ LanguageType Application::getCurrentLanguage()
             break;
         case LANG_BULGARIAN:
             ret = LanguageType::BULGARIAN;
+            break;
+        case LANG_BELARUSIAN:
+            ret = LanguageType::BELARUSIAN;
             break;
     }
     
