@@ -80,15 +80,8 @@ _normalTextureAdaptDirty(true),
 _pressedTextureAdaptDirty(true),
 _disabledTextureAdaptDirty(true),
 _hotTextureAdaptDirty(true),
-_normalFileName(""),
-_clickedFileName(""),
-_disabledFileName(""),
-_normalTexType(TextureResType::LOCAL),
-_pressedTexType(TextureResType::LOCAL),
-_disabledTexType(TextureResType::LOCAL),
 _fontSize(10),
-_type(FontType::SYSTEM),
-_fontName("")
+_type(FontType::SYSTEM)
 {
     setTouchEnabled(true);
 	setMouseEnabled(true);

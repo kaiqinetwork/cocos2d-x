@@ -499,7 +499,7 @@ inline flatbuffers::Offset<Light3DOption> CreateLight3DOption(flatbuffers::FlatB
 
 inline const Node3DOption *GetNode3DOption(const void *buf) { return flatbuffers::GetRoot<Node3DOption>(buf); }
 
-inline bool VerifyNode3DOptionBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<Node3DOption>(); }
+inline bool VerifyNode3DOptionBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<Node3DOption>(nullptr); }
 
 inline void FinishNode3DOptionBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<Node3DOption> root) { fbb.Finish(root); }
 

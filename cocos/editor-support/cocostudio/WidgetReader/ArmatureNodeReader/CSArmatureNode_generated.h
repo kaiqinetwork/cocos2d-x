@@ -123,7 +123,7 @@ inline flatbuffers::Offset<ResourceItemData> CreateResourceItemData(flatbuffers:
 
 inline const CSArmatureNodeOption *GetCSArmatureNodeOption(const void *buf) { return flatbuffers::GetRoot<CSArmatureNodeOption>(buf); }
 
-inline bool VerifyCSArmatureNodeOptionBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<CSArmatureNodeOption>(); }
+inline bool VerifyCSArmatureNodeOptionBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<CSArmatureNodeOption>(nullptr); }
 
 inline void FinishCSArmatureNodeOptionBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<CSArmatureNodeOption> root) { fbb.Finish(root); }
 

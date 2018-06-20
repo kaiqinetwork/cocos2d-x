@@ -270,7 +270,7 @@ void FileUtilsWin32::listFilesRecursively(const std::string& dirPath, std::vecto
         tinydir_dir dir;
         std::wstring fullpathstr = StringUtf8ToWideChar(fullpath);
 
-        if (tinydir_open(&dir, &fullpathstr[0]) != -1)
+        if (tinydir_open(&dir, &fullpath[0] /*&fullpathstr[0]*/ ) != -1)
         {
             while (dir.has_next)
             {
@@ -280,11 +280,11 @@ void FileUtilsWin32::listFilesRecursively(const std::string& dirPath, std::vecto
                     // Error getting file
                     break;
                 }
-                std::string fileName = StringWideCharToUtf8(file.name);
+				std::string fileName = file.name; //StringWideCharToUtf8(file.name);
 
                 if (fileName != "." && fileName != "..")
                 {
-                    std::string filepath = StringWideCharToUtf8(file.path);
+					std::string filepath = file.path; //StringWideCharToUtf8(file.path);
                     if (file.is_dir)
                     {
                         filepath.append("/");
@@ -317,7 +317,7 @@ std::vector<std::string> FileUtilsWin32::listFiles(const std::string& dirPath) c
         tinydir_dir dir;
         std::wstring fullpathstr = StringUtf8ToWideChar(fullpath);
 
-        if (tinydir_open(&dir, &fullpathstr[0]) != -1)
+        if (tinydir_open(&dir, &fullpath[0] /*&fullpathstr[0]*/) != -1)
         {
             while (dir.has_next)
             {
@@ -328,7 +328,7 @@ std::vector<std::string> FileUtilsWin32::listFiles(const std::string& dirPath) c
                     break;
                 }
 
-                std::string filepath = StringWideCharToUtf8(file.path);
+				std::string filepath = file.path; //StringWideCharToUtf8(file.path);
                 if (file.is_dir)
                 {
                     filepath.append("/");

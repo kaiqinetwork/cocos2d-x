@@ -102,7 +102,7 @@ inline flatbuffers::Offset<LanguageSet> CreateLanguageSet(flatbuffers::FlatBuffe
 
 inline const LanguageSet *GetLanguageSet(const void *buf) { return flatbuffers::GetRoot<LanguageSet>(buf); }
 
-inline bool VerifyLanguageSetBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<LanguageSet>(); }
+inline bool VerifyLanguageSetBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<LanguageSet>(nullptr); }
 
 inline void FinishLanguageSetBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<LanguageSet> root) { fbb.Finish(root); }
 

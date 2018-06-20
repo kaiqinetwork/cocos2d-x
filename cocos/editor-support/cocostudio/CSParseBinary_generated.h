@@ -1302,7 +1302,7 @@ inline flatbuffers::Offset<TextOptions> CreateTextOptionsDirect(flatbuffers::Fla
     float shadowOffsetX = 2.0f,
     float shadowOffsetY = -2.0f,
     int32_t shadowBlurRadius = 0) {
-  return CreateTextOptions(_fbb, widgetOptions, fontResource, fontName ? _fbb.CreateString(fontName) : 0, fontSize, text ? _fbb.CreateString(text) : 0, isLocalized, areaWidth, areaHeight, hAlignment, vAlignment, touchScaleEnable, isCustomSize, outlineEnabled, outlineColor, outlineSize, shadowEnabled, shadowColor, shadowOffsetX, shadowOffsetY, shadowBlurRadius);
+	return CreateTextOptions(_fbb, widgetOptions, fontResource, fontName ? _fbb.CreateString(fontName) : 0, fontSize, text ? _fbb.CreateString(text) : 0, areaWidth, areaHeight, hAlignment, vAlignment, touchScaleEnable, isCustomSize, outlineEnabled, outlineColor, outlineSize, shadowEnabled, shadowColor, shadowOffsetX, shadowOffsetY, shadowBlurRadius, isLocalized);
 }
 
 struct TextFieldOptions FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -2767,7 +2767,7 @@ inline flatbuffers::Offset<BlendFrame> CreateBlendFrame(flatbuffers::FlatBufferB
 
 inline const CSParseBinary *GetCSParseBinary(const void *buf) { return flatbuffers::GetRoot<CSParseBinary>(buf); }
 
-inline bool VerifyCSParseBinaryBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<CSParseBinary>(); }
+inline bool VerifyCSParseBinaryBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<CSParseBinary>(nullptr); }
 
 inline void FinishCSParseBinaryBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<CSParseBinary> root) { fbb.Finish(root); }
 

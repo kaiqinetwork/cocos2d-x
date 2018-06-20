@@ -269,6 +269,22 @@ public:
             _view->onGLFWWindowFocusCallback(window, focused);
         }
     }
+	
+	static void onGLFWWindowCloseCallback(GLFWwindow* window)
+	{
+		if (_view)
+        {
+            _view->onGLFWWindowCloseCallback(window);
+        }
+	}
+
+	static void onGLFWCursorEnterCallBack(GLFWwindow* window, int enter)
+	{
+		if (_view)
+        {
+            _view->onGLFWCursorEnterCallBack(window, enter);
+        }
+	}
 
 private:
     static GLViewImpl* _view;

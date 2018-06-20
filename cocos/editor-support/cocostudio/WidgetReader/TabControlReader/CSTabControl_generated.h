@@ -226,7 +226,7 @@ inline flatbuffers::Offset<TabItemOption> CreateTabItemOption(flatbuffers::FlatB
 
 inline const TabControlOption *GetTabControlOption(const void *buf) { return flatbuffers::GetRoot<TabControlOption>(buf); }
 
-inline bool VerifyTabControlOptionBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<TabControlOption>(); }
+inline bool VerifyTabControlOptionBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<TabControlOption>(nullptr); }
 
 inline void FinishTabControlOptionBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<TabControlOption> root) { fbb.Finish(root); }
 

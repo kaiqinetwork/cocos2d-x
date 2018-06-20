@@ -155,7 +155,7 @@ inline flatbuffers::Offset<SkeletonOptions> CreateSkeletonOptions(flatbuffers::F
 
 inline const BoneOptions *GetBoneOptions(const void *buf) { return flatbuffers::GetRoot<BoneOptions>(buf); }
 
-inline bool VerifyBoneOptionsBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<BoneOptions>(); }
+inline bool VerifyBoneOptionsBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<BoneOptions>(nullptr); }
 
 inline void FinishBoneOptionsBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<BoneOptions> root) { fbb.Finish(root); }
 
