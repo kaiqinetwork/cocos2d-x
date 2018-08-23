@@ -35,6 +35,9 @@ list(APPEND lua_cocos2d_source_files
      ${cocos_root}/external/lua/luasocket/udp.c
      ${cocos_root}/external/lua/luasocket/mime.c
      ${cocos_root}/external/lua/luasocket/luasocket_scripts.c
+     ${cocos_root}/external/lua/cjson/fpconv.c
+     ${cocos_root}/external/lua/cjson/lua_cjson.c
+     ${cocos_root}/external/lua/cjson/strbuf.c
      )
 
 if(WINDOWS)

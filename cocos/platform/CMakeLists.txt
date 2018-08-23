@@ -204,6 +204,7 @@ set(COCOS_PLATFORM_HEADER
     platform/CCSAXParser.h
     platform/CCStdC.h
     platform/CCThread.h
+	platform/CCInput.h
     )
 
 set(COCOS_PLATFORM_SRC
@@ -213,6 +214,7 @@ set(COCOS_PLATFORM_SRC
     platform/CCGLView.cpp
     platform/CCFileUtils.cpp
     platform/CCImage.cpp
+	platform/CCInput.cpp
     ../external/edtaa3func/edtaa3func.cpp
     ../external/ConvertUTF/ConvertUTFWrapper.cpp
     ../external/ConvertUTF/ConvertUTF.c

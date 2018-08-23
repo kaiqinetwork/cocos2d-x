@@ -4,10 +4,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <LinkIncremental>false</LinkIncremental>
+    <_PropertySheetDisplayName>cocos2d_lib</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-     <AdditionalDependencies>opengl32.lib;glew32-static-vc120-xp.lib;zlib.lib;libwebp-vc110.lib;libiconv.lib;freetype-vc110.lib;winmm.lib;ws2_32.lib;libSpine.lib;libbox2d.lib;libpng.lib;libjpeg-vc120-xp.lib;libtiff.lib;libchipmunk.lib;glfw3.lib;libbullet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32-static-vc120-xp.lib;zlib.lib;libwebp-vc110.lib;libiconv.lib;freetype-vc110.lib;winmm.lib;ws2_32.lib;libpng.lib;libjpeg-vc140-xp.lib;libtiff-vc140.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>

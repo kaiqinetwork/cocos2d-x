@@ -178,7 +178,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>libcocos2d-static-vc120-xp-d.lib;tinyxml2-static-vc120-xp-d.lib;libgif-vc120-xp.lib;librecast-static-vc120-xp-d.lib;libbullet-static-vc120-xp-d.lib;chipmunk-static-vc120-xp.lib;libcurl-vc120-xp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcocos2d-static-vc140-xp-d.lib;tinyxml2-static-vc140-xp-d.lib;libgif-vc120-xp.lib;librecast-static-vc140-xp-d.lib;libbullet-static-vc140-xp-d.lib;chipmunk-static-vc120-xp.lib;libcurl-vc120-xp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>MSVRT.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>

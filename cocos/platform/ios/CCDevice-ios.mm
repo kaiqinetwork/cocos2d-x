@@ -618,6 +618,20 @@ void Device::vibrate(float duration)
     }
 }
 
+Size Device::getSizeWithText(const char * text, const FontDefinition& textDefinition)
+{
+	return Size::ZERO;
+}
+
+Size Device::getSizeWithText(const char16_t* text, const FontDefinition& textDefinition)
+{
+	return Size::ZERO;
+}
+
+Size Device::getSizeWithText(const char32_t* text, const FontDefinition& textDefinition)
+{
+	return Size::ZERO;
+}
 NS_CC_END
 
 #endif // CC_PLATFORM_IOS
