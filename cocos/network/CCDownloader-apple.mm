@@ -1,5 +1,6 @@
 /****************************************************************************
- Copyright (c) 2015-2017 Chukong Technologies Inc.
+ Copyright (c) 2015-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -414,9 +415,9 @@ namespace cocos2d { namespace network {
             std::string errorString;
 
             const int64_t buflen = [wrapper totalBytesReceived];
-            char buf[buflen];
+            std::vector<unsigned char> data((size_t)buflen);
+            char* buf = (char*)data.data();
             [wrapper transferDataToBuffer:buf lengthOfBuffer:buflen];
-            std::vector<unsigned char> data(buf, buf + buflen);
 
             _outer->onTaskFinish(*[wrapper get],
                                  cocos2d::network::DownloadTask::ERROR_NO_ERROR,

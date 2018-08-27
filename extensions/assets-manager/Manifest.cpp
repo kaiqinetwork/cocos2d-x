@@ -1,5 +1,6 @@
 /****************************************************************************
  Copyright (c) 2014 cocos2d-x.org
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -545,10 +546,8 @@ void Manifest::saveToFile(const std::string &filepath)
     rapidjson::StringBuffer buffer;
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
     _json.Accept(writer);
-    
-    std::ofstream output(filepath, std::ofstream::out);
-    if(!output.bad())
-        output << buffer.GetString() << std::endl;
+
+    FileUtils::getInstance()->writeStringToFile(buffer.GetString(), filepath);
 }
 
 NS_CC_EXT_END

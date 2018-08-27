@@ -1,5 +1,6 @@
 /****************************************************************************
  Copyright (c) 2013 cocos2d-x.org
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -121,6 +122,16 @@ public:
     virtual bool init() override;
     
     CREATE_FUNC(UILayoutTest_Layout_Relative_Location);
+};
+
+class UILayoutTest_Layout_Scaled_Widget : public UIScene
+{
+public:
+    UILayoutTest_Layout_Scaled_Widget();
+    ~UILayoutTest_Layout_Scaled_Widget();
+    virtual bool init() override;
+    
+    CREATE_FUNC(UILayoutTest_Layout_Scaled_Widget);
 };
 
 class UILayoutComponentTest : public UIScene

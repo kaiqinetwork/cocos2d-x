@@ -2,63 +2,79 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [v3.15](#v315)
-  - [新特性](#%E6%96%B0%E7%89%B9%E6%80%A7)
-  - [新特性详细介绍](#%E6%96%B0%E7%89%B9%E6%80%A7%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D)
-    - [全面支持Android Studio](#%E5%85%A8%E9%9D%A2%E6%94%AF%E6%8C%81android-studio)
-    - [音频模块在Android平台的改进](#%E9%9F%B3%E9%A2%91%E6%A8%A1%E5%9D%97%E5%9C%A8android%E5%B9%B3%E5%8F%B0%E7%9A%84%E6%94%B9%E8%BF%9B)
-    - [去除Windows 8.1的支持](#%E5%8E%BB%E9%99%A4windows-81%E7%9A%84%E6%94%AF%E6%8C%81)
-    - [去除32位linux支持](#%E5%8E%BB%E9%99%A432%E4%BD%8Dlinux%E6%94%AF%E6%8C%81)
-    - [其他](#%E5%85%B6%E4%BB%96)
+- [Cocos2d-x 3.17 Release Notes](#cocos2d-x-317-release-notes)
+  - [测试环境](#%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83)
+  - [版本特性](#%E7%89%88%E6%9C%AC%E7%89%B9%E6%80%A7)
+  - [详细介绍](#%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D)
+    - [支持 iPhone X](#%E6%94%AF%E6%8C%81-iphone-x)
+    - [支持 Android Studio 3.0+](#%E6%94%AF%E6%8C%81-android-studio-30)
+    - [CMake 支持全平台](#cmake-%E6%94%AF%E6%8C%81%E5%85%A8%E5%B9%B3%E5%8F%B0)
+    - [升级第三方库](#%E5%8D%87%E7%BA%A7%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93)
+    - [移除过时的内容](#%E7%A7%BB%E9%99%A4%E8%BF%87%E6%97%B6%E7%9A%84%E5%86%85%E5%AE%B9)
+    - [Bugs 修复，提高稳定性](#bugs-%E4%BF%AE%E5%A4%8D%E6%8F%90%E9%AB%98%E7%A8%B3%E5%AE%9A%E6%80%A7)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# v3.15
+# Cocos2d-x 3.17 Release Notes #
 
-## 新特性
+Cocos2d-x 3.17 版本着重于工具链的更新，和稳定性的增强。
 
-* 全面支持 __Android Studio__，包括编译、代码编辑和调试C++代码：[使用文档](https://github.com/chukong/cocos-docs/blob/v3-unified-documentation/installation/Android-Studio.md)
-* 音频模块在Android平台使用[tremolo](http://wss.co.uk/pinknoise/tremolo/)和 __MP3 Decoder Library__ 解码音频文件，使得音频模块效率更高，兼容更多的Android设备
-* __WebSockets__ 和 __SocketIO__ 支持 __SSL__
-* AssetsManagerEx更加稳定
-* 更新 __Spine runtime__ 到v3.5.35
-* 更新 __flatbuffer__ 到v1.5
-* 升级 __OpenSSL__ 到v1.1.0
-* 去除 __Windows 8.1__ 的支持
-* 去除32位linux的支持
+## 测试环境
 
+ Android 平台使用 Android Studio (3.0, 3.1, 3.1.1) 和 NDK r16 进行测试。
 
-## 新特性详细介绍
+## 版本特性
 
-### 全面支持Android Studio
+- 支持 iPhone X
+- 支持 Android Studio 3.0+
+- CMake 支持全平台，支持预编译引擎库
+- 升级 Spine runtime 至 v3.6.39
+- 升级 GLFW 至 3.2.1，并提供预编译库
+- 更新 Box2D，并提供预编译库
+- 去除 Android 的 ant 工程
+- 去除 Visual Studio 2013 的支持
 
-从 __3.15__ 版本开始，可以使用Android Studio 2.3+ 编辑、编译和调试C++代码。只需要通过Android Studio打开 __proj.android-studio__ 文件夹（比如 __tests/cpp-empty-test/proj.android-studio__ ），然后点击 __run__ 按钮就可以在Android设备或者模拟器运行、调试了。
+## 详细介绍
 
-详细的使用方法请参考[这篇文档](https://github.com/chukong/cocos-docs/blob/v3-unified-documentation/installation/Android-Studio.md)。
+### 支持 iPhone X
 
-### 音频模块在Android平台的改进
+3.17 带来对 iPhone X 的支持，包含支持全屏模式，支持自动隐藏 Home 指示器，改用 Storyboard 作为启动屏幕，和增加获取 Safe Area 的接口。在开发支持 iPhone X 的应用时，最需要了解清楚的就是 Safe Area：
 
-3.15版本之前，音频模块使用 __OpenSL ES__ 解码、播放音频文件，但是很多的Android设备厂商会修改这部分代码，导致音频模块在不同的Android设备上有兼容性问题。[该帖子](http://discuss.cocos2d-x.org/t/android-audio-decoding-issues-discussion/34610)就列出了许多音频模块的问题。
+<p align="center">
+  <img width="400" src="https://raw.githubusercontent.com/cocos2d/cocos2d-x-docs/master/en/installation/iOS-img/iPhoneXSafeArea.png">
+</p>
 
-为了解决兼容性问题，我们引入了第三方的解码库[tremolo](http://wss.co.uk/pinknoise/tremolo/)和 __MP3 Decoder Library__ 。该解码库也是Android源码使用的解码库。使用该解码库除了能解决Android设备的兼容性问题，同时还带来了不少性能提升：
+开发者可以通过调用 `Director::getSafeAreaRect()` 来获取 Safe Area 区域。
 
-![audio performance](https://raw.githubusercontent.com/minggo/Pictures/master/AudioDecodingPerfTest.png)
+### 支持 Android Studio 3.0+
 
-引入该解码库会使最终的APK包增大100K左右，和带来的好处相比还是值得的。
+Android Studio 是 Google 官方唯一支持的 Android 开发 IDE。
 
-### 去除Windows 8.1的支持
+该版本增加了对 Android Studio 3.0+ 的支持。在支持的过程中，同时将 NDK 版本从 r14 升级到 r16。对 Gradle 工程配置也进行了诸多改进，包括简化 Gradle 变量 PROP_*，将依赖声明中弃用的 `compile` 改为新的 `implementation`，增加用以削减 Release 包体积的 Proguard 文件。
 
-Windows 8.1的支持一直是微软的开发者在维护。因为市场占有率原因，微软觉得没必要继续支持Windows 8.1了。
+### CMake 支持全平台
 
-### 去除32位linux支持
+扩展 CMake 构建支持至全平台，包括 Android (NDK)、iOS、macOS、Linux、Windows（VC++ compiler）。支持将引擎部分进行预编译，并在新的构建过程中重用预编译的引擎库。通过使用预编译库，可以极大的缩短工程构建时间。
 
-目前大部分的PC都是64位了，所以我们觉得去除对32位linux的支持。去除这个支持意味着第三方库去掉了对应的32位版本，这样可以减小发行包的大小，也减少引擎维护的工作。开发者如果想支持32位版本的话，可以使用[这个仓库](https://github.com/cocos2d/cocos2d-x-3rd-party-libs-src)自己编译32位版本的第三方库。
+详细的使用方法请参考 [CMake 文档](https://github.com/cocos2d/cocos2d-x/blob/v3/cmake/README.md)
 
-### 其他
+### 升级第三方库
 
-[Android SDK Tools 25.3.0+](http://tools.android.com/recent/androidsdktoolsrevision2530feb2017)去除了 __ant脚本__ 和 __android命令__ ，使得cocos命令无法打包Android的Eclipse工程（proj.android）。为了不至于在最后生成APK时才报错，现在cocos命令检查到这个版本后直接返回错误。有两个方法可以解决这个问题：
+Spine 骨骼动画广泛用于 Cocos2d-x 开发的游戏，引擎跟进 Spine 的升级，升级 Runtime 至 3.6.39。
 
-* 从旧版本的Android SDK拷贝tools文件夹过来替换对应的目录
-* 使用Android Studio工程编译打包
+升级 GLFW 至 3.2.1 以修复支持游戏手柄时存在的问题，同时提供 GLFW 预编译库。
 
-从Android工具删除ant脚本和android的行为来看，谷歌是不希望大家继续使用Eclipse工程，所以建议大家还是使用Android Studio来编译打包吧。旧版本引擎虽然不支持Android Studio调试C++代码功能，但是编译打包还是没问题的。
+社区希望引擎升级 Box2D，可 Box2D 的新版本迟迟未发布，根据反馈 GitHub 提交 f655c603ba9d83 是稳定的，升级 Box2D 至该提交，同时提供 Box2D 的预编译库。
+
+每一次版本发布，都会附带特定版本的第三方预编译库，如果由于项目需要想对第三方库进行定制，请参考: [第三方库文档](https://github.com/cocos2d/cocos2d-x-3rd-party-libs-src/blob/v3/README.md)
+
+### 移除过时的内容
+
+由于 Google 官方自 [Android SDK Tools 25.3.0](http://tools.android.com/recent/androidsdktoolsrevision2530feb2017) 就已放弃 ant 支持。移除旧有的 `proj.android` ant 工程，新的 `proj.android` 是 Android Studio 工程。[NDK r16](https://developer.android.com/ndk/guides/abis) 弃用了 armeabi，引擎调整默认的编译架构从 armeabi 为 armeabi-v7a。
+
+在 win32 平台，越来越多的开发者已经使用 Visual Studio 2015/2017 进行开发，移除对年代久远的 2013 的支持。现存的工程配置适合于 2015 ，如果需要使用 2017，可打开现有的 sln 文件，调整配置，或使用 CMake。
+
+### Bugs 修复，提高稳定性
+
+改版本包含 51 项 bugs 修复和 33 项小改进，不再列举，请参考 [Changelog](https://github.com/cocos2d/cocos2d-x/blob/v3/CHANGELOG)。
+

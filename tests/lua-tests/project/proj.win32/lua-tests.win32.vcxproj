@@ -21,6 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4E6A7A0E-DDD8-4BAA-8B22-C964069364ED}</ProjectGuid>
     <ProjectName>lua-tests</ProjectName>
+    <WindowsTargetPlatformVersion>3.17</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -37,7 +38,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static_Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0'">v120</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v120_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
@@ -199,7 +200,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;$(KAIQI_PROJECT_ROOT)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcocos2d-static-vc120-xp-d.lib;libluacocos2d-static-vc120-xp-d.lib;tolua++-vc120-xp-d.lib;websockets-static-vc120-xp.lib;chipmunk-static-vc120-xp.lib;tinyxml2-static-vc120-xp-d.lib;libbox2d-vc120-xp-d.lib;libSpine-static-vc120-xp-d.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc120-xp.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;libmpg123-vc110.lib;libluajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp-d.lib;libluacocos2d-static-vc140-xp-d.lib;tolua++-vc120-xp-d.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp-d.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp-d.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc140-xp-d.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;libluajit.lib;legacy_stdio_definitions.lib;libbullet-static-vc140-xp-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;MSVCRT</IgnoreSpecificDefaultLibraries>
     </Link>
     <ResourceCompile>

@@ -2,6 +2,7 @@
  Copyright (c) 2010-2012 cocos2d-x.org
  Copyright (c) 2012 James Chen
  Copyright (c) 2013-2015 zilongshanren
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
  
@@ -34,7 +35,11 @@
 
 static const int CC_EDIT_BOX_PADDING = 5;
 
-#if CC_TARGET_PLATFORM == CC_PLATFORM_WINRT
+static cocos2d::Size applyPadding(const cocos2d::Size& sizeToCorrect) {
+    return cocos2d::Size(sizeToCorrect.width - CC_EDIT_BOX_PADDING * 2, sizeToCorrect.height);
+}
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #define PASSWORD_CHAR "*"
 #else
 #define PASSWORD_CHAR "\u25CF"
@@ -51,12 +56,13 @@ EditBoxImplCommon::EditBoxImplCommon(EditBox* pEditText)
 , _editBoxInputMode(EditBox::InputMode::SINGLE_LINE)
 , _editBoxInputFlag(EditBox::InputFlag::INITIAL_CAPS_ALL_CHARACTERS)
 , _keyboardReturnType(EditBox::KeyboardReturnType::DEFAULT)
+, _alignment(TextHAlignment::LEFT)
 , _fontSize(-1)
 , _placeholderFontSize(-1)
 , _colText(Color3B::WHITE)
 , _colPlaceHolder(Color3B::GRAY)
 , _maxLength(-1)
-, _alignment(TextHAlignment::LEFT)
+, _editingMode(false)
 {
 }
 
@@ -95,7 +101,7 @@ void EditBoxImplCommon::initInactiveLabels(const Size& size)
     
     _labelPlaceHolder = Label::create();
     _labelPlaceHolder->setAnchorPoint(Vec2(0, 1.0f));
-    _labelPlaceHolder->setColor(Color3B::GRAY);
+    _labelPlaceHolder->setTextColor(Color4B::GRAY);
     _labelPlaceHolder->enableWrap(false);
     _editBox->addChild(_labelPlaceHolder, kLabelZOrder);
     
@@ -143,12 +149,11 @@ void EditBoxImplCommon::setInactiveText(const char* pText)
         _label->setString(pText);
     }
     // Clip the text width to fit to the text box
-    float fMaxWidth = _editBox->getContentSize().width;
-    float fMaxHeight = _editBox->getContentSize().height;
+    const auto maxSize = applyPadding(_editBox->getContentSize());
     Size labelSize = _label->getContentSize();
-    if(labelSize.width > fMaxWidth || labelSize.height > fMaxHeight)
+    if(labelSize.width > maxSize.width || labelSize.height > maxSize.height)
     {
-        _label->setDimensions(fMaxWidth, fMaxHeight);
+        _label->setDimensions(maxSize.width, maxSize.height);
     }
 }
     
@@ -200,7 +205,7 @@ void EditBoxImplCommon::setInputMode(EditBox::InputMode inputMode)
 {
     _editBoxInputMode = inputMode;
     this->setNativeInputMode(inputMode);
-    this->placeInactiveLabels(_editBox->getContentSize());
+    this->placeInactiveLabels(applyPadding(_editBox->getContentSize()));
 }
 
 void EditBoxImplCommon::setMaxLength(int maxLength)
@@ -213,6 +218,7 @@ void EditBoxImplCommon::setTextHorizontalAlignment(cocos2d::TextHAlignment align
 {
     _alignment = alignment;
     this->setNativeTextHorizontalAlignment(alignment);
+    refreshLabelAlignment();
 }
 
 void EditBoxImplCommon::setInputFlag(EditBox::InputFlag inputFlag)
@@ -232,16 +238,14 @@ void EditBoxImplCommon::refreshInactiveText()
     setInactiveText(_text.c_str());
 
     refreshLabelAlignment();
-
-    if(_text.size() == 0)
-    {
-        _label->setVisible(false);
-        _labelPlaceHolder->setVisible(true);
-    }
-    else
-    {
-        _label->setVisible(true);
-        _labelPlaceHolder->setVisible(false);
+    if (!_editingMode) {
+        if (_text.size() == 0) {
+            _label->setVisible(false);
+            _labelPlaceHolder->setVisible(true);
+        } else {
+            _label->setVisible(true);
+            _labelPlaceHolder->setVisible(false);
+        }
     }
 }
 
@@ -253,9 +257,11 @@ void EditBoxImplCommon::refreshLabelAlignment()
 
 void EditBoxImplCommon::setText(const char* text)
 {
-    this->setNativeText(text);
-    _text = text;
-    refreshInactiveText();
+    if (nullptr != text) {
+        this->setNativeText(text);
+        _text = text;
+        refreshInactiveText();
+    }
 }
 
 void EditBoxImplCommon::setPlaceHolder(const char* pText)
@@ -263,9 +269,8 @@ void EditBoxImplCommon::setPlaceHolder(const char* pText)
     if (pText != NULL)
     {
         _placeHolder = pText;
-        _labelPlaceHolder->setString(_placeHolder);
-
         this->setNativePlaceHolder(pText);
+        _labelPlaceHolder->setString(_placeHolder);
     }
 }
 
@@ -282,9 +287,9 @@ void EditBoxImplCommon::setVisible(bool visible)
 
 void EditBoxImplCommon::setContentSize(const Size& size)
 {
-    _contentSize = size;
-    CCLOG("[Edit text] content size = (%f, %f)", size.width, size.height);
-    placeInactiveLabels(size);
+    _contentSize = applyPadding(size);
+    CCLOG("[Edit text] content size = (%f, %f)", _contentSize.width, _contentSize.height);
+    placeInactiveLabels(_contentSize);
 }
 
 void EditBoxImplCommon::draw(Renderer* /*renderer*/, const Mat4& /*transform*/, uint32_t flags)
@@ -308,7 +313,7 @@ void EditBoxImplCommon::openKeyboard()
 {
     _label->setVisible(false);
     _labelPlaceHolder->setVisible(false);
-
+    _editingMode = true;
     this->setNativeVisible(true);
     this->nativeOpenKeyboard();
 }
@@ -316,12 +321,13 @@ void EditBoxImplCommon::openKeyboard()
 void EditBoxImplCommon::closeKeyboard()
 {
     this->nativeCloseKeyboard();
+    _editingMode = false;
 }
 
 void EditBoxImplCommon::onEndEditing(const std::string& /*text*/)
 {
+    _editingMode = false;
     this->setNativeVisible(false);
-    
     refreshInactiveText();
 }
     
@@ -354,7 +360,19 @@ void EditBoxImplCommon::editBoxEditingDidEnd(const std::string& text, EditBoxDel
     if (pDelegate != nullptr)
     {
         pDelegate->editBoxEditingDidEndWithAction(_editBox, action);
+#if defined(__GNUC__) && ((__GNUC__ >= 4) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 1)))
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif _MSC_VER >= 1400 //vs 2005 or higher
+#pragma warning (push)
+#pragma warning (disable: 4996)
+#endif
         pDelegate->editBoxEditingDidEnd(_editBox);
+#if defined(__GNUC__) && ((__GNUC__ >= 4) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 1)))
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
+#elif _MSC_VER >= 1400 //vs 2005 or higher
+#pragma warning (pop)
+#endif
+        
         pDelegate->editBoxReturn(_editBox);
     }
     
