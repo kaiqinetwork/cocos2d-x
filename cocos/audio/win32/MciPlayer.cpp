@@ -25,6 +25,7 @@
 #include "audio/win32/MciPlayer.h"
 #include <tchar.h>
 #include "platform/CCFileUtils.h"
+#include <digitalv.h>
 
 #define WIN_CLASS_NAME        "CocosDenshionCallbackWnd"
 #define BREAK_IF(cond)      if (cond) break;
@@ -241,6 +242,36 @@ void MciPlayer::_SendGenericCommand( int nCommand, DWORD_PTR param1 /*= 0*/, DWO
         return;
     }
     mciSendCommand(_dev, nCommand, param1, parma2);
+}
+
+void MciPlayer::SetVolume(UINT volume)
+{
+	if (!_dev)
+	{
+		return;
+	}
+
+	MCI_DGV_SETAUDIO_PARMS mciParams = { 0 };
+	mciParams.dwItem = MCI_DGV_SETAUDIO_VOLUME;
+	mciParams.dwValue = volume;
+	DWORD dwReturn = mciSendCommand(_dev, MCI_SETAUDIO, MCI_DGV_SETAUDIO_ITEM | MCI_DGV_SETAUDIO_VALUE, (DWORD)&mciParams);
+	if (dwReturn)
+	{
+		TCHAR errMsg[128];
+		mciGetErrorString(dwReturn, errMsg, 128);
+		printf("%s", errMsg);
+	}
+}
+
+UINT MciPlayer::GetVolume() const
+{
+	if (!_dev)
+		return 0;
+	MCI_STATUS_PARMS mciParams = { 0 };
+	mciParams.dwItem = MCI_DGV_STATUS_VOLUME;
+	DWORD dwReturn = mciSendCommand(_dev, MCI_STATUS, MCI_STATUS_ITEM, (DWORD)&mciParams);
+	return mciParams.dwReturn;
+
 }
 
 
