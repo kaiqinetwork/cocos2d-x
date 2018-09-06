@@ -259,7 +259,7 @@ public:
 protected:
 	Sprite* getCursorSprite();
 
-	virtual void createSpriteForSystemFont(const FontDefinition& fontDef);
+	virtual void createSpriteForSystemFont(const FontDefinition& fontDef) override;
 
     //////////////////////////////////////////////////////////////////////////
     // IMEDelegate interface
