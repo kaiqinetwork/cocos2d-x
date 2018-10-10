@@ -652,9 +652,9 @@ public:
      */
     void setCursorFromPoint(const Vec2 &point, const Camera* camera);
     
-	virtual void onMouseDown(Event *unusedEvent);
-	virtual void onMouseMove(Event *unusedEvent);
-	virtual void onMouseDblClk(Event *unusedEvent);
+	virtual void onMouseDown(Event *unusedEvent) override;
+	virtual void onMouseMove(Event *unusedEvent) override;
+	virtual void onMouseDblClk(Event *unusedEvent) override;
 
 CC_CONSTRUCTOR_ACCESS:
     virtual bool init() override;

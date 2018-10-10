@@ -85,6 +85,10 @@ public:
     */
     UINT GetSoundID();
 
+	void SetVolume(UINT volume);
+
+	UINT GetVolume() const;
+
 private:
     friend LRESULT WINAPI _SoundPlayProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 

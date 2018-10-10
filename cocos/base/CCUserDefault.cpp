@@ -49,6 +49,8 @@ NS_CC_BEGIN
 static tinyxml2::XMLElement* getXMLNodeForKey(const char* pKey, tinyxml2::XMLElement** rootNode, tinyxml2::XMLDocument **doc)
 {
     tinyxml2::XMLElement* curNode = nullptr;
+	*rootNode = nullptr;
+	*doc = nullptr;
 
     // check the key value
     if (! pKey)
