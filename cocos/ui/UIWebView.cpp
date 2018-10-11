@@ -24,9 +24,19 @@
  ****************************************************************************/
 #include "platform/CCPlatformConfig.h"
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN)
+#if defined(CC_PLATFORM_MOBILE) || (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) && !defined(CC_PLATFORM_OS_TVOS)
 
-#include "ui/UIWebViewImpl-android.h"
-#include "ui/UIWebView-inl.h"
+#include "UIWebView-inl.h"
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#include "UIWebViewImpl-win.h"
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "UIWebViewImpl-android.h"
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+#include "UIWebViewImpl-ios.h"
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN)
+#include "UIWebViewImpl-tizen.h"
+#endif
 
 #endif
+

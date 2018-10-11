@@ -29,7 +29,16 @@
 #include "platform/CCGLView.h"
 #include "base/CCDirector.h"
 #include "platform/CCFileUtils.h"
-#include "ui/UIWebViewImpl-tizen.h"
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#include "UIWebViewImpl-win.h"
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "UIWebViewImpl-android.h"
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+#include "UIWebViewImpl-ios.h"
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN)
+#include "UIWebViewImpl-tizen.h"
+#endif
 
 NS_CC_BEGIN
 namespace experimental{

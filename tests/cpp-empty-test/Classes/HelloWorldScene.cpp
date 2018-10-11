@@ -25,6 +25,7 @@
 #include "HelloWorldScene.h"
 #include "AppMacros.h"
 #include "ui/UITextField.h"
+#include "ui/UIWebView.h"
 
 USING_NS_CC;
 
@@ -122,6 +123,20 @@ bool HelloWorld::init()
 
     Rect safeArea = Director::getInstance()->getSafeAreaRect();
     drawNode->drawRect(safeArea.origin, safeArea.origin + safeArea.size, Color4F::BLUE);
+
+	auto webView = experimental::ui::WebView::create();
+	webView->setContentSize(Size(200, 100));
+	webView->setPosition(Vec2(visibleSize.width / 4, visibleSize.height / 2) + origin);
+	addChild(webView);
+
+	webView->loadURL("http://www.k7.cn");
+
+	auto webView2 = experimental::ui::WebView::create();
+	webView2->setContentSize(Size(200, 100));
+	webView2->setPosition(Vec2(visibleSize.width * 3 / 4, visibleSize.height / 2) + origin);
+	addChild(webView2);
+
+	webView2->loadURL("http://www.baidu.com");
 
     return true;
 }

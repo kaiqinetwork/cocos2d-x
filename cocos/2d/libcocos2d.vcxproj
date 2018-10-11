@@ -23,7 +23,7 @@
     <ProjectGuid>{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}</ProjectGuid>
     <RootNamespace>cocos2d-x.win32</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -37,7 +37,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0'">v141</PlatformToolset>
-    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v141_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static_Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -70,7 +70,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0'">v141</PlatformToolset>
-    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v141_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -87,8 +87,8 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="cocos2dx_lib-3.15.props" />
-    <Import Project="cocos2d_headers-3.15.props" />
+    <Import Project="cocos2dx_lib.props" />
+    <Import Project="cocos2d_headers.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static_Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -317,7 +317,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\openssl\prebuilt\win32\*.*" "$(OutDir)"
       </Command>
     </PreBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\include;$(KAIQI_PROJECT_ROOT)\include\sqlite;$(EngineRoot)external\unzip;$(EngineRoot)external\edtaa3func;$(KAIQI_PROJECT_ROOT)\include\tinyxml2;$(KAIQI_PROJECT_ROOT)\include\libpng;$(KAIQI_PROJECT_ROOT)\include\jpeg;$(KAIQI_PROJECT_ROOT)\include\tiff;$(KAIQI_PROJECT_ROOT)\include\webp;$(KAIQI_PROJECT_ROOT)\include;$(KAIQI_PROJECT_ROOT)\include\iconv;$(KAIQI_PROJECT_ROOT)\include\zlib;$(KAIQI_PROJECT_ROOT)\include\chipmunk;$(EngineRoot)external\xxhash;$(EngineRoot)external\ConvertUTF;$(KAIQI_PROJECT_ROOT)\include\Box2d;$(KAIQI_PROJECT_ROOT)\include\curl;$(KAIQI_PROJECT_ROOT)\include\websockets;$(EngineRoot)external;$(EngineRoot)cocos;$(EngineRoot)cocos\editor-support;$(EngineRoot)cocos\audio\include;$(EngineRoot)extensions;$(EngineRoot);$(KAIQI_PROJECT_ROOT)\include\glfw3;$(KAIQI_PROJECT_ROOT)\include\al;$(KAIQI_PROJECT_ROOT)\include\ogg;$(KAIQI_PROJECT_ROOT)\include\mpg123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\include;$(KAIQI_PROJECT_ROOT)\include\box2d;$(KAIQI_PROJECT_ROOT)\include\sqlite;$(EngineRoot)external\unzip;$(EngineRoot)external\edtaa3func;$(KAIQI_PROJECT_ROOT)\include\tinyxml2;$(KAIQI_PROJECT_ROOT)\include\libpng;$(KAIQI_PROJECT_ROOT)\include\jpeg;$(KAIQI_PROJECT_ROOT)\include\tiff;$(KAIQI_PROJECT_ROOT)\include\webp;$(KAIQI_PROJECT_ROOT)\include;$(KAIQI_PROJECT_ROOT)\include\iconv;$(KAIQI_PROJECT_ROOT)\include\zlib;$(KAIQI_PROJECT_ROOT)\include\chipmunk;$(EngineRoot)external\xxhash;$(EngineRoot)external\ConvertUTF;$(KAIQI_PROJECT_ROOT)\include\curl;$(KAIQI_PROJECT_ROOT)\include\websockets;$(EngineRoot)external;$(EngineRoot)cocos;$(EngineRoot)cocos\editor-support;$(EngineRoot)cocos\audio\include;$(EngineRoot)extensions;$(EngineRoot);$(KAIQI_PROJECT_ROOT)\include\glfw3;$(KAIQI_PROJECT_ROOT)\include\al;$(KAIQI_PROJECT_ROOT)\include\ogg;$(KAIQI_PROJECT_ROOT)\include\mpg123;$(KAIQI_PROJECT_ROOT)\include\openssl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_LIB;COCOS2DXWIN32_EXPORTS;GL_GLEXT_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;CC_3D_STATIC;IGNORE_EXPORT;CC_STUDIO_STATIC;CC_EX_STATIC;CC_GUI_STATIC;CC_ENABLE_CHIPMUNK_INTEGRATION=1;CC_STATIC;GLEW_STATIC;CURL_STATICLIB;WINVER=0x0501;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>

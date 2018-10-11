@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4E6A7A0E-DDD8-4BAA-8B22-C964069364ED}</ProjectGuid>
     <ProjectName>lua-tests</ProjectName>
-    <WindowsTargetPlatformVersion>3.17</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -33,7 +33,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0'">v141</PlatformToolset>
-    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v141_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static_Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -43,6 +43,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v120_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -53,7 +54,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0'">v141</PlatformToolset>
-    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v141_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static_Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -63,14 +64,15 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v120_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\..\cocos\2d\cocos2d_headers-3.15.props" />
-    <Import Project="..\..\..\..\cocos\2d\cocos2dx_lib-3.15.props" />
+    <Import Project="..\..\..\..\cocos\2d\cocos2d_headers.props" />
+    <Import Project="..\..\..\..\cocos\2d\cocos2dx_lib.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static_Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -182,7 +184,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static_Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Classes;$(EngineRoot)cocos\scripting\lua-bindings\auto;$(EngineRoot)cocos\scripting\lua-bindings\manual;$(EngineRoot)cocos\audio\include;$(KAIQI_PROJECT_ROOT)\include\luajit;$(KAIQI_PROJECT_ROOT)\include\tolua++;$(KAIQI_PROJECT_ROOT)\include\chipmunk;$(EngineRoot)external;$(EngineRoot)extensions;$(EngineRoot);$(KAIQI_PROJECT_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Classes;$(EngineRoot)cocos\scripting\lua-bindings\auto;$(EngineRoot)cocos\scripting\lua-bindings\manual;$(EngineRoot)cocos\audio\include;$(KAIQI_PROJECT_ROOT)\include-dev\luajit;$(KAIQI_PROJECT_ROOT)\include-dev\tolua++;$(KAIQI_PROJECT_ROOT)\include-dev\chipmunk;$(EngineRoot)external;$(EngineRoot)extensions;$(EngineRoot);$(KAIQI_PROJECT_ROOT)\include-dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -199,7 +201,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;$(KAIQI_PROJECT_ROOT)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;$(KAIQI_PROJECT_ROOT)\lib-dev;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp-d.lib;libluacocos2d-static-vc140-xp-d.lib;tolua++-vc120-xp-d.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp-d.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp-d.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc140-xp-d.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;libluajit.lib;legacy_stdio_definitions.lib;libbullet-static-vc140-xp-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;MSVCRT</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -296,7 +298,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static_Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Classes;$(EngineRoot)cocos\scripting\lua-bindings\auto;$(EngineRoot)cocos\scripting\lua-bindings\manual;$(EngineRoot)cocos\audio\include;$(KAIQI_PROJECT_ROOT)\include\luajit;$(KAIQI_PROJECT_ROOT)\include\tolua++;$(KAIQI_PROJECT_ROOT)\include\chipmunk;$(EngineRoot)external;$(EngineRoot)extensions;$(EngineRoot);$(KAIQI_PROJECT_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Classes;$(EngineRoot)cocos\scripting\lua-bindings\auto;$(EngineRoot)cocos\scripting\lua-bindings\manual;$(EngineRoot)cocos\audio\include;$(KAIQI_PROJECT_ROOT)\include-dev\luajit;$(KAIQI_PROJECT_ROOT)\include-dev\tolua++;$(KAIQI_PROJECT_ROOT)\include-dev\chipmunk;$(EngineRoot)external;$(EngineRoot)extensions;$(EngineRoot);$(KAIQI_PROJECT_ROOT)\include-dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -311,8 +313,8 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
     <Link>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;$(KAIQI_PROJECT_ROOT)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcocos2d-static-vc120-xp.lib;libluacocos2d-static-vc120-xp.lib;tolua++-vc120-xp-d.lib;websockets-static-vc120-xp.lib;chipmunk-static-vc120-xp.lib;tinyxml2-static-vc120-xp.lib;libbox2d-vc120-xp.lib;libSpine-static-vc120-xp.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc120-xp.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;libmpg123-vc110.lib;libluajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;$(KAIQI_PROJECT_ROOT)\lib-dev;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp.lib;libluacocos2d-static-vc140-xp.lib;tolua++-vc140-xp.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc140-xp.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;libluajit.lib;legacy_stdio_definitions.lib;libbullet-static-vc140-xp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>

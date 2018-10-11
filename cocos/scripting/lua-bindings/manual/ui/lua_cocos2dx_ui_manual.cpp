@@ -29,6 +29,9 @@
 #include "scripting/lua-bindings/manual/ui/lua_cocos2dx_experimental_video_manual.hpp"
 #include "scripting/lua-bindings/auto/lua_cocos2dx_experimental_webview_auto.hpp"
 #include "scripting/lua-bindings/manual/ui/lua_cocos2dx_experimental_webview_manual.hpp"
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#include "scripting/lua-bindings/auto/lua_cocos2dx_experimental_webview_auto.hpp"
+#include "scripting/lua-bindings/manual/ui/lua_cocos2dx_experimental_webview_manual.hpp"
 #endif
 
 #include "scripting/lua-bindings/manual/tolua_fix.h"
@@ -1186,7 +1189,10 @@ int register_ui_module(lua_State* L)
         register_all_cocos2dx_experimental_video(L);
         register_all_cocos2dx_experimental_video_manual(L);
         register_all_cocos2dx_experimental_webview(L);
-        register_all_cocos2dx_experimental_webview_manual(L);
+		register_all_cocos2dx_experimental_webview_manual(L);
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+		register_all_cocos2dx_experimental_webview(L);
+		register_all_cocos2dx_experimental_webview_manual(L);
 #endif
         extendEventListenerFocusEvent(L);
     }

@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string>
 
+#include "platform/CCStdC.h"
+
 #if _MSC_VER >= 1600 || defined(__MINGW32__)
 #include <stdint.h>
 #else
@@ -26,15 +28,17 @@ namespace cocos2d {
 	}
 }
 
+class Win32WebControl;
+
 namespace cocos2d {
 	namespace experimental {
 		namespace ui {
 
-			class WebViewImpl
-			{
-			public:
-				WebViewImpl(WebView *webView);
-				virtual ~WebViewImpl();
+            class WebViewImpl
+            {
+            public:
+                WebViewImpl(cocos2d::experimental::ui::WebView *webView);
+                virtual ~WebViewImpl();
 
 				void setJavascriptInterfaceScheme(const std::string &scheme);
 
@@ -43,6 +47,8 @@ namespace cocos2d {
 				void loadHTMLString(const std::string &string, const std::string &baseURL);
 
 				void loadURL(const std::string &url);
+
+				void loadURL(const std::string& url, bool cleanCachedData);
 
 				void loadFile(const std::string &fileName);
 
@@ -61,17 +67,25 @@ namespace cocos2d {
 				void evaluateJS(const std::string &js);
 
 				void setScalesPageToFit(const bool scalesPageToFit);
+				void setOpacityWebView(float opacity);
+
+				float getOpacityWebView()const;
+
+				void setBackgroundTransparent();
 
 				virtual void draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, uint32_t flags);
 
 				virtual void setVisible(bool visible);
 
-			private:
-				WebView *_webView;
-			};
+				void setBounces(bool bounces);
 
-		} // namespace ui
-	} // namespace experimental
+            private:
+                bool _createSucceeded;
+                Win32WebControl *_systemWebControl;
+                WebView *_webView;
+            };
+        } // namespace ui
+    } // namespace experimental
 } //cocos2d
 
 #endif
