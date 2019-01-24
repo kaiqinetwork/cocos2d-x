@@ -738,53 +738,29 @@ inline flatbuffers::Offset<GameMapOptions> CreateGameMapOptions(flatbuffers::Fla
   return builder_.Finish();
 }
 
-struct ButtonOptions FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_WIDGETOPTIONS = 4,
-    VT_NORMALDATA = 6,
-    VT_PRESSEDDATA = 8,
-    VT_DISABLEDDATA = 10,
-    VT_FONTRESOURCE = 12,
-    VT_TEXT = 14,
-    VT_FONTNAME = 16,
-    VT_FONTSIZE = 18,
-    VT_TEXTCOLOR = 20,
-    VT_CAPINSETS = 22,
-    VT_SCALE9SIZE = 24,
-    VT_SCALE9ENABLED = 26,
-    VT_DISPLAYSTATE = 28,
-    VT_OUTLINEENABLED = 30,
-    VT_OUTLINECOLOR = 32,
-    VT_OUTLINESIZE = 34,
-    VT_SHADOWENABLED = 36,
-    VT_SHADOWCOLOR = 38,
-    VT_SHADOWOFFSETX = 40,
-    VT_SHADOWOFFSETY = 42,
-    VT_SHADOWBLURRADIUS = 44,
-	VT_ISLOCALIZED = 46
-  };
-  const WidgetOptions *widgetOptions() const { return GetPointer<const WidgetOptions *>(VT_WIDGETOPTIONS); }
-  const ResourceData *normalData() const { return GetPointer<const ResourceData *>(VT_NORMALDATA); }
-  const ResourceData *pressedData() const { return GetPointer<const ResourceData *>(VT_PRESSEDDATA); }
-  const ResourceData *disabledData() const { return GetPointer<const ResourceData *>(VT_DISABLEDDATA); }
-  const ResourceData *fontResource() const { return GetPointer<const ResourceData *>(VT_FONTRESOURCE); }
-  const flatbuffers::String *text() const { return GetPointer<const flatbuffers::String *>(VT_TEXT); }
-  bool isLocalized() const { return GetField<uint8_t>(VT_ISLOCALIZED, 0) != 0; }
-  const flatbuffers::String *fontName() const { return GetPointer<const flatbuffers::String *>(VT_FONTNAME); }
-  int32_t fontSize() const { return GetField<int32_t>(VT_FONTSIZE, 0); }
-  const Color *textColor() const { return GetStruct<const Color *>(VT_TEXTCOLOR); }
-  const CapInsets *capInsets() const { return GetStruct<const CapInsets *>(VT_CAPINSETS); }
-  const FlatSize *scale9Size() const { return GetStruct<const FlatSize *>(VT_SCALE9SIZE); }
-  bool scale9Enabled() const { return GetField<uint8_t>(VT_SCALE9ENABLED, 0) != 0; }
-  bool displaystate() const { return GetField<uint8_t>(VT_DISPLAYSTATE, 1) != 0; }
-  bool outlineEnabled() const { return GetField<uint8_t>(VT_OUTLINEENABLED, 0) != 0; }
-  const Color *outlineColor() const { return GetStruct<const Color *>(VT_OUTLINECOLOR); }
-  int32_t outlineSize() const { return GetField<int32_t>(VT_OUTLINESIZE, 1); }
-  bool shadowEnabled() const { return GetField<uint8_t>(VT_SHADOWENABLED, 0) != 0; }
-  const Color *shadowColor() const { return GetStruct<const Color *>(VT_SHADOWCOLOR); }
-  float shadowOffsetX() const { return GetField<float>(VT_SHADOWOFFSETX, 2.0f); }
-  float shadowOffsetY() const { return GetField<float>(VT_SHADOWOFFSETY, -2.0f); }
-  int32_t shadowBlurRadius() const { return GetField<int32_t>(VT_SHADOWBLURRADIUS, 0); }
+struct ButtonOptions : private flatbuffers::Table {
+  const WidgetOptions *widgetOptions() const { return GetPointer<const WidgetOptions *>(4); }
+  const ResourceData *normalData() const { return GetPointer<const ResourceData *>(6); }
+  const ResourceData *pressedData() const { return GetPointer<const ResourceData *>(8); }
+  const ResourceData *disabledData() const { return GetPointer<const ResourceData *>(10); }
+  const ResourceData *fontResource() const { return GetPointer<const ResourceData *>(12); }
+  const flatbuffers::String *text() const { return GetPointer<const flatbuffers::String *>(14); }
+  const flatbuffers::String *fontName() const { return GetPointer<const flatbuffers::String *>(16); }
+  int32_t fontSize() const { return GetField<int32_t>(18, 0); }
+  const Color *textColor() const { return GetStruct<const Color *>(20); }
+  const CapInsets *capInsets() const { return GetStruct<const CapInsets *>(22); }
+  const FlatSize *scale9Size() const { return GetStruct<const FlatSize *>(24); }
+  uint8_t scale9Enabled() const { return GetField<uint8_t>(26, 0); }
+  uint8_t displaystate() const { return GetField<uint8_t>(28, 1); }
+  uint8_t outlineEnabled() const { return GetField<uint8_t>(30, 0); }
+  const Color *outlineColor() const { return GetStruct<const Color *>(32); }
+  int32_t outlineSize() const { return GetField<int32_t>(34, 1); }
+  uint8_t shadowEnabled() const { return GetField<uint8_t>(36, 0); }
+  const Color *shadowColor() const { return GetStruct<const Color *>(38); }
+  float shadowOffsetX() const { return GetField<float>(40, 2); }
+  float shadowOffsetY() const { return GetField<float>(42, -2); }
+  int32_t shadowBlurRadius() const { return GetField<int32_t>(44, 0); }
+  uint8_t isLocalized() const { return GetField<uint8_t>(46, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* widgetOptions */) &&
@@ -1124,57 +1100,27 @@ inline flatbuffers::Offset<TextBMFontOptions> CreateTextBMFontOptions(flatbuffer
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<TextBMFontOptions> CreateTextBMFontOptionsDirect(flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<WidgetOptions> widgetOptions = 0,
-    flatbuffers::Offset<ResourceData> fileNameData = 0,
-    const char *text = nullptr,
-    bool isLocalized = false) {
-  return CreateTextBMFontOptions(_fbb, widgetOptions, fileNameData, text ? _fbb.CreateString(text) : 0, isLocalized);
-}
-
-struct TextOptions FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_WIDGETOPTIONS = 4,
-    VT_FONTRESOURCE = 6,
-    VT_FONTNAME = 8,
-    VT_FONTSIZE = 10,
-    VT_TEXT = 12,
-    VT_AREAWIDTH = 14,
-    VT_AREAHEIGHT = 16,
-    VT_HALIGNMENT = 18,
-    VT_VALIGNMENT = 20,
-    VT_TOUCHSCALEENABLE = 22,
-	VT_ISCUSTOMSIZE = 24,
-	VT_OUTLINEENABLED = 26,
-    VT_OUTLINECOLOR = 28,
-    VT_OUTLINESIZE = 30,
-    VT_SHADOWENABLED = 32,
-    VT_SHADOWCOLOR = 34,
-    VT_SHADOWOFFSETX = 36,
-    VT_SHADOWOFFSETY = 38,
-    VT_SHADOWBLURRADIUS = 40,
-	VT_ISLOCALIZED = 42
-  };
-  const WidgetOptions *widgetOptions() const { return GetPointer<const WidgetOptions *>(VT_WIDGETOPTIONS); }
-  const ResourceData *fontResource() const { return GetPointer<const ResourceData *>(VT_FONTRESOURCE); }
-  const flatbuffers::String *fontName() const { return GetPointer<const flatbuffers::String *>(VT_FONTNAME); }
-  int32_t fontSize() const { return GetField<int32_t>(VT_FONTSIZE, 0); }
-  const flatbuffers::String *text() const { return GetPointer<const flatbuffers::String *>(VT_TEXT); }
-  bool isLocalized() const { return GetField<uint8_t>(VT_ISLOCALIZED, 0) != 0; }
-  int32_t areaWidth() const { return GetField<int32_t>(VT_AREAWIDTH, 0); }
-  int32_t areaHeight() const { return GetField<int32_t>(VT_AREAHEIGHT, 0); }
-  int32_t hAlignment() const { return GetField<int32_t>(VT_HALIGNMENT, 0); }
-  int32_t vAlignment() const { return GetField<int32_t>(VT_VALIGNMENT, 0); }
-  bool touchScaleEnable() const { return GetField<uint8_t>(VT_TOUCHSCALEENABLE, 0) != 0; }
-  bool isCustomSize() const { return GetField<uint8_t>(VT_ISCUSTOMSIZE, 0) != 0; }
-  bool outlineEnabled() const { return GetField<uint8_t>(VT_OUTLINEENABLED, 0) != 0; }
-  const Color *outlineColor() const { return GetStruct<const Color *>(VT_OUTLINECOLOR); }
-  int32_t outlineSize() const { return GetField<int32_t>(VT_OUTLINESIZE, 1); }
-  bool shadowEnabled() const { return GetField<uint8_t>(VT_SHADOWENABLED, 0) != 0; }
-  const Color *shadowColor() const { return GetStruct<const Color *>(VT_SHADOWCOLOR); }
-  float shadowOffsetX() const { return GetField<float>(VT_SHADOWOFFSETX, 2.0f); }
-  float shadowOffsetY() const { return GetField<float>(VT_SHADOWOFFSETY, -2.0f); }
-  int32_t shadowBlurRadius() const { return GetField<int32_t>(VT_SHADOWBLURRADIUS, 0); }
+struct TextOptions : private flatbuffers::Table {
+  const WidgetOptions *widgetOptions() const { return GetPointer<const WidgetOptions *>(4); }
+  const ResourceData *fontResource() const { return GetPointer<const ResourceData *>(6); }
+  const flatbuffers::String *fontName() const { return GetPointer<const flatbuffers::String *>(8); }
+  int32_t fontSize() const { return GetField<int32_t>(10, 0); }
+  const flatbuffers::String *text() const { return GetPointer<const flatbuffers::String *>(12); }
+  int32_t areaWidth() const { return GetField<int32_t>(14, 0); }
+  int32_t areaHeight() const { return GetField<int32_t>(16, 0); }
+  int32_t hAlignment() const { return GetField<int32_t>(18, 0); }
+  int32_t vAlignment() const { return GetField<int32_t>(20, 0); }
+  uint8_t touchScaleEnable() const { return GetField<uint8_t>(22, 0); }
+  uint8_t isCustomSize() const { return GetField<uint8_t>(24, 0); }
+  uint8_t outlineEnabled() const { return GetField<uint8_t>(26, 0); }
+  const Color *outlineColor() const { return GetStruct<const Color *>(28); }
+  int32_t outlineSize() const { return GetField<int32_t>(30, 1); }
+  uint8_t shadowEnabled() const { return GetField<uint8_t>(32, 0); }
+  const Color *shadowColor() const { return GetStruct<const Color *>(34); }
+  float shadowOffsetX() const { return GetField<float>(36, 2); }
+  float shadowOffsetY() const { return GetField<float>(38, -2); }
+  int32_t shadowBlurRadius() const { return GetField<int32_t>(40, 0); }
+  uint8_t isLocalized() const { return GetField<uint8_t>(42, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* widgetOptions */) &&
@@ -1281,61 +1227,21 @@ inline flatbuffers::Offset<TextOptions> CreateTextOptions(flatbuffers::FlatBuffe
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<TextOptions> CreateTextOptionsDirect(flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<WidgetOptions> widgetOptions = 0,
-    flatbuffers::Offset<ResourceData> fontResource = 0,
-    const char *fontName = nullptr,
-    int32_t fontSize = 0,
-    const char *text = nullptr,
-    bool isLocalized = false,
-    int32_t areaWidth = 0,
-    int32_t areaHeight = 0,
-    int32_t hAlignment = 0,
-    int32_t vAlignment = 0,
-    bool touchScaleEnable = false,
-    bool isCustomSize = false,
-    bool outlineEnabled = false,
-    const Color *outlineColor = 0,
-    int32_t outlineSize = 1,
-    bool shadowEnabled = false,
-    const Color *shadowColor = 0,
-    float shadowOffsetX = 2.0f,
-    float shadowOffsetY = -2.0f,
-    int32_t shadowBlurRadius = 0) {
-	return CreateTextOptions(_fbb, widgetOptions, fontResource, fontName ? _fbb.CreateString(fontName) : 0, fontSize, text ? _fbb.CreateString(text) : 0, areaWidth, areaHeight, hAlignment, vAlignment, touchScaleEnable, isCustomSize, outlineEnabled, outlineColor, outlineSize, shadowEnabled, shadowColor, shadowOffsetX, shadowOffsetY, shadowBlurRadius, isLocalized);
-}
-
-struct TextFieldOptions FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
-    VT_WIDGETOPTIONS = 4,
-    VT_FONTRESOURCE = 6,
-    VT_FONTNAME = 8,
-    VT_FONTSIZE = 10,
-    VT_TEXT = 12,
-    VT_PLACEHOLDER = 14,
-    VT_PASSWORDENABLED = 16,
-    VT_PASSWORDSTYLETEXT = 18,
-    VT_MAXLENGTHENABLED = 20,
-    VT_MAXLENGTH = 22,
-    VT_AREAWIDTH = 24,
-    VT_AREAHEIGHT = 26,
-    VT_ISCUSTOMSIZE = 28,
-	VT_ISLOCALIZED = 30
-  };
-  const WidgetOptions *widgetOptions() const { return GetPointer<const WidgetOptions *>(VT_WIDGETOPTIONS); }
-  const ResourceData *fontResource() const { return GetPointer<const ResourceData *>(VT_FONTRESOURCE); }
-  const flatbuffers::String *fontName() const { return GetPointer<const flatbuffers::String *>(VT_FONTNAME); }
-  int32_t fontSize() const { return GetField<int32_t>(VT_FONTSIZE, 0); }
-  const flatbuffers::String *text() const { return GetPointer<const flatbuffers::String *>(VT_TEXT); }
-  bool isLocalized() const { return GetField<uint8_t>(VT_ISLOCALIZED, 0) != 0; }
-  const flatbuffers::String *placeHolder() const { return GetPointer<const flatbuffers::String *>(VT_PLACEHOLDER); }
-  bool passwordEnabled() const { return GetField<uint8_t>(VT_PASSWORDENABLED, 0) != 0; }
-  const flatbuffers::String *passwordStyleText() const { return GetPointer<const flatbuffers::String *>(VT_PASSWORDSTYLETEXT); }
-  bool maxLengthEnabled() const { return GetField<uint8_t>(VT_MAXLENGTHENABLED, 0) != 0; }
-  int32_t maxLength() const { return GetField<int32_t>(VT_MAXLENGTH, 0); }
-  int32_t areaWidth() const { return GetField<int32_t>(VT_AREAWIDTH, 0); }
-  int32_t areaHeight() const { return GetField<int32_t>(VT_AREAHEIGHT, 0); }
-  bool isCustomSize() const { return GetField<uint8_t>(VT_ISCUSTOMSIZE, 0) != 0; }
+struct TextFieldOptions : private flatbuffers::Table {
+  const WidgetOptions *widgetOptions() const { return GetPointer<const WidgetOptions *>(4); }
+  const ResourceData *fontResource() const { return GetPointer<const ResourceData *>(6); }
+  const flatbuffers::String *fontName() const { return GetPointer<const flatbuffers::String *>(8); }
+  int32_t fontSize() const { return GetField<int32_t>(10, 0); }
+  const flatbuffers::String *text() const { return GetPointer<const flatbuffers::String *>(12); }
+  const flatbuffers::String *placeHolder() const { return GetPointer<const flatbuffers::String *>(14); }
+  uint8_t passwordEnabled() const { return GetField<uint8_t>(16, 0); }
+  const flatbuffers::String *passwordStyleText() const { return GetPointer<const flatbuffers::String *>(18); }
+  uint8_t maxLengthEnabled() const { return GetField<uint8_t>(20, 0); }
+  int32_t maxLength() const { return GetField<int32_t>(22, 0); }
+  int32_t areaWidth() const { return GetField<int32_t>(24, 0); }
+  int32_t areaHeight() const { return GetField<int32_t>(26, 0); }
+  uint8_t isCustomSize() const { return GetField<uint8_t>(28, 0); }
+  uint8_t isLocalized() const { return GetField<uint8_t>(30, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* widgetOptions */) &&
@@ -2767,7 +2673,7 @@ inline flatbuffers::Offset<BlendFrame> CreateBlendFrame(flatbuffers::FlatBufferB
 
 inline const CSParseBinary *GetCSParseBinary(const void *buf) { return flatbuffers::GetRoot<CSParseBinary>(buf); }
 
-inline bool VerifyCSParseBinaryBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<CSParseBinary>(nullptr); }
+inline bool VerifyCSParseBinaryBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<CSParseBinary>(); }
 
 inline void FinishCSParseBinaryBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<CSParseBinary> root) { fbb.Finish(root); }
 

@@ -314,7 +314,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;$(KAIQI_PROJECT_ROOT)\lib-dev;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp.lib;libluacocos2d-static-vc140-xp.lib;tolua++-vc140-xp.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc140-xp.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;libluajit.lib;legacy_stdio_definitions.lib;libbullet-static-vc140-xp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp.lib;libluacocos2d-static-vc140-xp.lib;tolua++-vc140-xp.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc140-xp.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;libluajit.lib;legacy_stdio_definitions.lib;libbullet-static-vc140-xp.lib;libpng-static-vc140.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>

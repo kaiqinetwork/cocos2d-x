@@ -239,7 +239,7 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/../external \
                     $(LOCAL_PATH)/../external/unzip \
                     $(LOCAL_PATH)/../external/chipmunk/include/chipmunk \
-                    $(LOCAL_PATH)/../external/bullet/include/bullet \
+                    $(LOCAL_PATH)/../external/bullet \
                     $(LOCAL_PATH)/../external/xxhash \
                     $(LOCAL_PATH)/../external/nslog \
                     $(LOCAL_PATH)/../external/poly2tri \
@@ -251,7 +251,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/../external \
                     $(LOCAL_PATH)/../external/unzip \
                     $(LOCAL_PATH)/../external/chipmunk/include/chipmunk \
-                    $(LOCAL_PATH)/../external/bullet/include/bullet \
+                    $(LOCAL_PATH)/../external/bullet \
                     $(LOCAL_PATH)/../external/edtaa3func \
                     $(LOCAL_PATH)/../external/xxhash \
                     $(LOCAL_PATH)/../external/ConvertUTF \
@@ -276,6 +276,7 @@ LOCAL_STATIC_LIBRARIES += cocos_ssl_static
 LOCAL_STATIC_LIBRARIES += recast_static
 LOCAL_STATIC_LIBRARIES += bullet_static
 LOCAL_STATIC_LIBRARIES += tinyxml2_static
+LOCAL_STATIC_LIBRARIES += tolua++_static
 
 LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dxandroid_static
 LOCAL_WHOLE_STATIC_LIBRARIES += cpufeatures
@@ -313,6 +314,7 @@ include $(BUILD_STATIC_LIBRARY)
 #==============================================================
 $(call import-add-path,$(LOCAL_PATH))
 $(call import-add-path,$(LOCAL_PATH)/../external)
+$(call import-add-path,$(LOCAL_PATH)/../external/bullet)
 $(call import-module,android/cpufeatures)
 $(call import-module,freetype2/prebuilt/android)
 $(call import-module,platform/android)
@@ -331,10 +333,11 @@ $(call import-module,network)
 $(call import-module,ui)
 $(call import-module,extensions)
 $(call import-module,Box2D/prebuilt/android)
-$(call import-module,bullet/prebuilt/android)
+$(call import-module,bullet)
 $(call import-module,recast)
-# $(call import-module,curl/prebuilt/android)
+$(call import-module,curl/prebuilt/android)
 $(call import-module,websockets/prebuilt/android)
 $(call import-module,openssl/prebuilt/android)
 $(call import-module,flatbuffers)
 $(call import-module,tinyxml2/prebuilt/android)
+$(call import-module,lua/tolua/prebuilt/android)
