@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4E6A7A0E-DDD8-4BAA-8B22-C964069364ED}</ProjectGuid>
     <ProjectName>lua-tests</ProjectName>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -168,15 +168,15 @@
       <DllDataFileName>
       </DllDataFileName>
     </Midl>
-    <PreBuildEvent>
-      <Command>xcopy "$(ProjectDir)..\..\res" "$(OutDir)res" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\src" "$(OutDir)src" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\..\..\tests\cpp-tests\Resources" "$(OutDir)res" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\..\..\cocos\scripting\lua-bindings\script" "$(OutDir)src\cocos" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\..\..\external\lua\luasocket\script" "$(OutDir)script" /D /E /I /F /Y
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)..\..\res" "$(OutDir)Resources\res\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\src" "$(OutDir)Resources\src\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\tests\cpp-tests\Resources" "$(OutDir)Resources\res\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\cocos\scripting\lua-bindings\script" "$(OutDir)Resources\src\cocos\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\external\lua\luasocket\script" "$(OutDir)Resources\script\" /D /E /I /F /Y
 xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <Message>copy files</Message>
-    </PreBuildEvent>
+    </PostBuildEvent>
     <PreLinkEvent>
       <Command>
       </Command>
@@ -202,7 +202,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;$(KAIQI_PROJECT_ROOT)\lib-dev;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp-d.lib;libluacocos2d-static-vc140-xp-d.lib;tolua++-vc120-xp-d.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp-d.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp-d.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc140-xp-d.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;libluajit.lib;legacy_stdio_definitions.lib;libbullet-static-vc140-xp-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp-d.lib;libluacocos2d-static-vc140-xp-d.lib;tolua++-vc140-xp.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp-d.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp-d.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc140-xp-d.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;lua51.lib;libbullet-static-vc140-xp-d.lib;libpng-static-vc140.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;MSVCRT</IgnoreSpecificDefaultLibraries>
     </Link>
     <ResourceCompile>
@@ -223,18 +223,24 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       </DllDataFileName>
     </Midl>
     <PreBuildEvent>
-      <Command>xcopy "$(ProjectDir)..\..\res" "$(OutDir)res" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\src" "$(OutDir)src" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\..\..\tests\cpp-tests\Resources" "$(OutDir)res" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\..\..\cocos\scripting\lua-bindings\script" "$(OutDir)src\cocos" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\..\..\external\lua\luasocket\script" "$(OutDir)script" /D /E /I /F /Y
-xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
-      <Message>copy files</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PreBuildEvent>
     <PreLinkEvent>
       <Command>
       </Command>
     </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)..\..\res" "$(OutDir)Resources\res\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\src" "$(OutDir)Resources\src\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\tests\cpp-tests\Resources" "$(OutDir)Resources\res\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\cocos\scripting\lua-bindings\script" "$(OutDir)Resources\src\cocos\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\external\lua\luasocket\script" "$(OutDir)Resources\script\" /D /E /I /F /Y
+xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
+      <Message>copy files</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -275,21 +281,21 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <DllDataFileName>
       </DllDataFileName>
     </Midl>
-    <PreBuildEvent>
+    <PostBuildEvent>
       <Command>
       </Command>
       <Message>copy files</Message>
-    </PreBuildEvent>
+    </PostBuildEvent>
     <PreLinkEvent>
       <Command>
       </Command>
     </PreLinkEvent>
     <CustomBuildStep>
-      <Command>xcopy "$(ProjectDir)..\..\res" "$(OutDir)res" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\src" "$(OutDir)src" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\..\..\tests\cpp-tests\Resources" "$(OutDir)res" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\..\..\cocos\scripting\lua-bindings\script" "$(OutDir)src\cocos" /D /E /I /F /Y
-xcopy "$(ProjectDir)..\..\..\..\external\lua\luasocket\script" "$(OutDir)script" /D /E /I /F /Y
+      <Command>xcopy "$(ProjectDir)..\..\res" "$(OutDir)Resources\res\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\src" "$(OutDir)Resources\src\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\tests\cpp-tests\Resources" "$(OutDir)Resources\res\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\cocos\scripting\lua-bindings\script" "$(OutDir)Resources\src\cocos\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\external\lua\luasocket\script" "$(OutDir)Resources\script\" /D /E /I /F /Y
 xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
     </CustomBuildStep>
     <CustomBuildStep>
@@ -314,7 +320,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;$(KAIQI_PROJECT_ROOT)\lib-dev;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp.lib;libluacocos2d-static-vc140-xp.lib;tolua++-vc140-xp.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc140-xp.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;libluajit.lib;legacy_stdio_definitions.lib;libbullet-static-vc140-xp.lib;libpng-static-vc140.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp.lib;libluacocos2d-static-vc140-xp.lib;tolua++-vc140-xp.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc140-xp.lib;libgif-vc120-xp.lib;version.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;lua51.lib;libbullet-static-vc140-xp.lib;libpng-static-vc140.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -338,7 +344,8 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
     <PreBuildEvent>
       <Command>
       </Command>
-      <Message>copy files</Message>
+      <Message>
+      </Message>
     </PreBuildEvent>
     <PreLinkEvent>
       <Command>
@@ -355,6 +362,15 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
     <CustomBuildStep>
       <Outputs>xxx.txt</Outputs>
     </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)..\..\res" "$(OutDir)Resources\res\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\src" "$(OutDir)Resources\src\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\tests\cpp-tests\Resources" "$(OutDir)Resources\res\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\cocos\scripting\lua-bindings\script" "$(OutDir)Resources\src\cocos\" /D /E /I /F /Y
+xcopy "$(ProjectDir)..\..\..\..\external\lua\luasocket\script" "$(OutDir)Resources\script\" /D /E /I /F /Y
+xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
+      <Message>copy files</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />

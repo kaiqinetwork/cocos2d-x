@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 12.0.21005.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpp-tests", "..\tests\cpp-tests\proj.win32\cpp-tests.vcxproj", "{76A39BB2-9B84-4C65-98A5-654D86B86F2A}"
 EndProject
@@ -64,10 +64,12 @@ Global
 		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Release|ARM.ActiveCfg = Release|Win32
 		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Release|Win32.ActiveCfg = Release|Win32
 		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Release|Win32.Build.0 = Release|Win32
-		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Static_Debug|ARM.ActiveCfg = Static_Debug|Win32
+		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Static_Debug|ARM.ActiveCfg = Release|Win32
+		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Static_Debug|ARM.Build.0 = Release|Win32
 		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
 		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
-		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Static_Release|ARM.ActiveCfg = Static_Release|Win32
+		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Static_Release|ARM.ActiveCfg = Release|Win32
+		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Static_Release|ARM.Build.0 = Release|Win32
 		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
 		{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}.Static_Release|Win32.Build.0 = Static_Release|Win32
 		{9F2D6CE6-C893-4400-B50C-6DB70CC2562F}.Debug|ARM.ActiveCfg = Debug|Win32
@@ -100,12 +102,14 @@ Global
 		{41E34993-647E-4282-8384-4AB1AE31A452}.Release|ARM.ActiveCfg = Release|Win32
 		{41E34993-647E-4282-8384-4AB1AE31A452}.Release|Win32.ActiveCfg = Release|Win32
 		{41E34993-647E-4282-8384-4AB1AE31A452}.Release|Win32.Build.0 = Release|Win32
-		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Debug|ARM.ActiveCfg = Static_Debug|Win32
-		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
-		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
-		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Release|ARM.ActiveCfg = Static_Release|Win32
-		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
-		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Release|Win32.Build.0 = Static_Release|Win32
+		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Debug|ARM.ActiveCfg = Release|Win32
+		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Debug|ARM.Build.0 = Release|Win32
+		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Debug|Win32.ActiveCfg = Debug|Win32
+		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Debug|Win32.Build.0 = Debug|Win32
+		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Release|ARM.ActiveCfg = Release|Win32
+		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Release|ARM.Build.0 = Release|Win32
+		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Release|Win32.ActiveCfg = Release|Win32
+		{41E34993-647E-4282-8384-4AB1AE31A452}.Static_Release|Win32.Build.0 = Release|Win32
 		{13E55395-94A2-4CD9-BFC2-1A051F80C17D}.Debug|ARM.ActiveCfg = Debug|Win32
 		{13E55395-94A2-4CD9-BFC2-1A051F80C17D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{13E55395-94A2-4CD9-BFC2-1A051F80C17D}.Debug|Win32.Build.0 = Debug|Win32
@@ -151,6 +155,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B7C2A162-DEC9-4418-972E-240AB3CBFCAE} = {92D54E36-7916-48EF-A951-224DD3B25442}
 		{41E34993-647E-4282-8384-4AB1AE31A452} = {92D54E36-7916-48EF-A951-224DD3B25442}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5E043102-337C-4EDD-B6BF-2DA9C3D0CF4F}
 	EndGlobalSection
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
 		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}

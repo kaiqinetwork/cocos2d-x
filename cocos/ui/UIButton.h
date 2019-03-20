@@ -362,9 +362,10 @@ protected:
 	void hotTextureScaleChangedWithSize();
     
     virtual void adaptRenderers() override;
-    void updateTitleLocation();
+    virtual void updateTitleLocation();
     void updateContentSize();
-    void createTitleRenderer();
+    virtual void createTitleRenderer();
+    bool createTitleRendererIfNull();
 
     virtual Widget* createCloneInstance() override;
     virtual void copySpecialProperties(Widget* model) override;
@@ -409,15 +410,6 @@ protected:
 	TextureResType _hotTexType;
 
 private:
-    enum class FontType
-    {
-        SYSTEM,
-        TTF,
-        BMFONT
-    };
-
-    int _fontSize;
-    FontType _type;
     std::string _fontName;
 };
 

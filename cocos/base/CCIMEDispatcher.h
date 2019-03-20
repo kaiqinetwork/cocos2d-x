@@ -80,6 +80,11 @@ public:
      * @lua NA
      */
     const std::string& getContentText();
+ 
+    /**
+    *@brief Returns if any delegate is attached with IME.
+    */
+    bool isAnyDelegateAttachedWithIME() const;
 
 	std::string getSelectedText();
 

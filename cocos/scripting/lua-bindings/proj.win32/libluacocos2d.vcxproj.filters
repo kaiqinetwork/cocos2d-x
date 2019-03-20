@@ -285,6 +285,9 @@
     <ClCompile Include="..\manual\lua_module_register.cpp">
       <Filter>manual</Filter>
     </ClCompile>
+    <ClCompile Include="..\manual\network\lua_downloader.cpp">
+      <Filter>manual\network</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\external\lua\cjson\fpconv.c">
       <Filter>cjson</Filter>
     </ClCompile>
@@ -517,6 +520,9 @@
     </ClInclude>
     <ClInclude Include="..\manual\Lua-BindingsExport.h">
       <Filter>manual</Filter>
+    </ClInclude>
+    <ClInclude Include="..\manual\network\lua_downloader.h">
+      <Filter>manual\network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\external\lua\cjson\fpconv.h">
       <Filter>cjson</Filter>

@@ -80,6 +80,7 @@
     <ClCompile Include="..\manual\navmesh\lua_cocos2dx_navmesh_conversions.cpp" />
     <ClCompile Include="..\manual\navmesh\lua_cocos2dx_navmesh_manual.cpp" />
     <ClCompile Include="..\manual\network\lua_cocos2dx_network_manual.cpp" />
+    <ClCompile Include="..\manual\network\lua_downloader.cpp" />
     <ClCompile Include="..\manual\network\lua_extensions.c" />
     <ClCompile Include="..\manual\network\Lua_web_socket.cpp" />
     <ClCompile Include="..\manual\network\lua_xml_http_request.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="..\manual\navmesh\lua_cocos2dx_navmesh_conversions.h" />
     <ClInclude Include="..\manual\navmesh\lua_cocos2dx_navmesh_manual.h" />
     <ClInclude Include="..\manual\network\lua_cocos2dx_network_manual.h" />
+    <ClInclude Include="..\manual\network\lua_downloader.h" />
     <ClInclude Include="..\manual\network\lua_extensions.h" />
     <ClInclude Include="..\manual\network\Lua_web_socket.h" />
     <ClInclude Include="..\manual\network\lua_xml_http_request.h" />
@@ -239,7 +241,7 @@
     <ProjectGuid>{9F2D6CE6-C893-4400-B50C-6DB70CC2562F}</ProjectGuid>
     <RootNamespace>libluacocos2d</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -334,6 +336,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static_Release|Win32'">
     <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
@@ -374,7 +377,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\..\external\lua\luajit\prebuilt\win32\*.*" "$
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static_Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(EngineRoot);$(EngineRoot)cocos\2d;$(EngineRoot)cocos\base;$(EngineRoot)cocos\3d;$(EngineRoot)cocos\physics3d;$(EngineRoot)cocos\audio\include;$(EngineRoot)cocos\ui;$(EngineRoot)cocos\navmesh;$(KAIQI_PROJECT_ROOT)\include\luajit;$(EngineRoot)external\lua\tolua;$(KAIQI_PROJECT_ROOT)\include\websockets;$(EngineRoot)extensions;$(EngineRoot)cocos\editor-support;$(EngineRoot)cocos\editor-support\cocostudio;$(EngineRoot)cocos\editor-support\cocostudio\ActionTimeline;$(EngineRoot)cocos\editor-support\spine;$(EngineRoot)cocos\editor-support\cocosbuilder;$(EngineRoot)cocos\scripting\lua-bindings\manual;$(EngineRoot)cocos\scripting\lua-bindings\auto;$(EngineRoot)cocos\scripting\lua-bindings\manual\extension;$(EngineRoot)cocos\scripting\lua-bindings\manual\cocostudio;$(EngineRoot)cocos\scripting\lua-bindings\manual\ui;$(EngineRoot)cocos\scripting\lua-bindings\manual\cocos2d;$(EngineRoot)cocos\scripting\lua-bindings\manual\navmesh;$(EngineRoot)external\lua;$(KAIQI_PROJECT_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot);$(EngineRoot)cocos\2d;$(EngineRoot)cocos\base;$(EngineRoot)cocos\3d;$(EngineRoot)cocos\physics3d;$(EngineRoot)cocos\audio\include;$(EngineRoot)cocos\ui;$(EngineRoot)cocos\navmesh;$(KAIQI_PROJECT_ROOT)\include-dev\luajit;$(EngineRoot)external\lua\tolua;$(KAIQI_PROJECT_ROOT)\include-dev\websockets;$(EngineRoot)extensions;$(EngineRoot)cocos\editor-support;$(EngineRoot)cocos\editor-support\cocostudio;$(EngineRoot)cocos\editor-support\cocostudio\ActionTimeline;$(EngineRoot)cocos\editor-support\spine;$(EngineRoot)cocos\editor-support\cocosbuilder;$(EngineRoot)cocos\scripting\lua-bindings\manual;$(EngineRoot)cocos\scripting\lua-bindings\auto;$(EngineRoot)cocos\scripting\lua-bindings\manual\extension;$(EngineRoot)cocos\scripting\lua-bindings\manual\cocostudio;$(EngineRoot)cocos\scripting\lua-bindings\manual\ui;$(EngineRoot)cocos\scripting\lua-bindings\manual\cocos2d;$(EngineRoot)cocos\scripting\lua-bindings\manual\navmesh;$(EngineRoot)external\lua;$(KAIQI_PROJECT_ROOT)\include-dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;CC_3D_STATIC;IGNORE_EXPORT;CC_STUDIO_STATIC;CC_EX_STATIC;CC_GUI_STATIC;CC_ENABLE_CHIPMUNK_INTEGRATION=1;CC_STATIC;GLEW_STATIC;_USRLUASTATIC;_WIN32_WINNT=0x0501;LUASOCKET_INET_PTON;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -450,7 +453,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\..\external\lua\luajit\prebuilt\win32\*.*" "$
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <DebugInformationFormat>None</DebugInformationFormat>
       <DisableSpecificWarnings>4800;4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>false</WholeProgramOptimization>

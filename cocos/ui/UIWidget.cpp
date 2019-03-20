@@ -776,7 +776,7 @@ Widget* Widget::getAncestorWidget(Node* node)
     }
     else
     {
-        return this->getAncestorWidget(parent->getParent());
+        return this->getAncestorWidget(parent);
     }
 }
 
