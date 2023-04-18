@@ -31,6 +31,8 @@
 #else // from our embedded sources
 #include "unzip.h"
 #endif
+#include "ioapi_mem.h"
+#include <memory>
 
 #include <zlib.h>
 #include <assert.h>
@@ -42,6 +44,7 @@
 #include "platform/CCFileUtils.h"
 #include <map>
 
+// minizip 1.2.0 is same with other platforms
 // FIXME: Other platforms should use upstream minizip like mingw-w64  
 #ifdef MINIZIP_FROM_SYSTEM
 #define unzGoToFirstFile64(A,B,C,D) unzGoToFirstFile2(A,B,C,D, NULL, 0, NULL, 0)
@@ -267,7 +270,7 @@ int ZipUtils::inflateGZipFile(const char *path, unsigned char **out)
     unsigned int totalBufferSize = bufferSize;
     
     *out = (unsigned char*)malloc( bufferSize );
-    if( ! out )
+    if(*out == NULL)
     {
         CCLOG("cocos2d: ZipUtils: out of memory");
         return -1;
@@ -511,6 +514,7 @@ class ZipFilePrivate
 {
 public:
     unzFile zipFile;
+    std::unique_ptr<ourmemory_s> memfs;
     
     // std::unordered_map is faster if available on the platform
     typedef std::unordered_map<std::string, struct ZipEntryInfo> FileListContainer;
@@ -523,7 +527,7 @@ ZipFile *ZipFile::createWithBuffer(const void* buffer, uLong size)
     if (zip && zip->initWithBuffer(buffer, size)) {
         return zip;
     } else {
-        if (zip) delete zip;
+        delete zip;
         return nullptr;
     }
 }
@@ -627,7 +631,7 @@ std::vector<std::string> ZipFile::listFiles(const std::string &pathname) const
         if(filename.substr(0, dirname.length()) == dirname)
         {
             std::string suffix = filename.substr(dirname.length());
-            auto pos = suffix.find("/");
+            auto pos = suffix.find('/');
             if (pos == std::string::npos)
             {
                 fileSet.insert(suffix);

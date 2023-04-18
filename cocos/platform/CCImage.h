@@ -162,6 +162,8 @@ public:
      @param    isToRGB        whether the image is saved as RGB format.
      */
     bool saveToFile(const std::string &filename, bool isToRGB = true);
+    void premultiplyAlpha();
+    void reversePremultipliedAlpha();
 
 protected:
 #if CC_USE_WIC
@@ -184,8 +186,6 @@ protected:
 
     bool saveImageToPNG(const std::string& filePath, bool isToRGB = true);
     bool saveImageToJPG(const std::string& filePath);
-    
-    void premultipliedAlpha();
     
 protected:
     /**

@@ -307,7 +307,7 @@ bool GLViewImpl::initWithRect(const std::string& viewName, Rect rect, float fram
     _mainWindow = glfwCreateWindow(neededWidth, neededHeight, _viewName.c_str(), _monitor, nullptr);
 	if (!_mainWindow)
 	{
-		MessageBox("Window creation will fail if the Microsoft GDI software OpenGL implementation is the only one available.", "Create Window failed");
+        ccMessageBox("Window creation will fail if the Microsoft GDI software OpenGL implementation is the only one available.", "Create Window failed");
 		return false;
 	}
 
@@ -320,7 +320,7 @@ bool GLViewImpl::initWithRect(const std::string& viewName, Rect rect, float fram
             message.append(_glfwError);
         }
 
-        MessageBox(message.c_str(), "Error launch application");
+        ccMessageBox(message.c_str(), "Error launch application");
         return false;
     }
 
@@ -371,7 +371,7 @@ bool GLViewImpl::initWithRect(const std::string& viewName, Rect rect, float fram
         sprintf(strComplain,
                 "OpenGL 1.5 or higher is required (your version is %s). Please upgrade the driver of your video card.",
                 glVersion);
-        MessageBox(strComplain, "OpenGL version too old");
+        ccMessageBox(strComplain, "OpenGL version too old");
         return false;
     }
 
@@ -505,7 +505,7 @@ void GLViewImpl::setIcon(const std::vector<std::string>& filelist) const {
     GLFWwindow* window = this->getWindow();
     glfwSetWindowIcon(window, iconsCount, images);
 
-    CC_SAFE_DELETE(images);
+    CC_SAFE_DELETE_ARRAY(images);
     for (auto& icon: icons) {
         CC_SAFE_DELETE(icon);
     }
@@ -1122,7 +1122,7 @@ bool GLViewImpl::initGlew()
     GLenum GlewInitResult = glewInit();
     if (GLEW_OK != GlewInitResult)
     {
-        MessageBox((char *)glewGetErrorString(GlewInitResult), "OpenGL error");
+        ccMessageBox((char *)glewGetErrorString(GlewInitResult), "OpenGL error");
         return false;
     }
 
@@ -1147,7 +1147,7 @@ bool GLViewImpl::initGlew()
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
     if(glew_dynamic_binding() == false)
     {
-        MessageBox("No OpenGL framebuffer support. Please upgrade the driver of your video card.", "OpenGL error");
+        ccMessageBox("No OpenGL framebuffer support. Please upgrade the driver of your video card.", "OpenGL error");
         return false;
     }
 #endif

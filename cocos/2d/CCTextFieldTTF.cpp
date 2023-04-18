@@ -146,7 +146,7 @@ TextFieldTTF * TextFieldTTF::textFieldWithPlaceHolder(const std::string& placeho
     if(ret && ret->initWithPlaceHolder("", dimensions, alignment, fontName, fontSize))
     {
         ret->autorelease();
-        if (placeholder.size()>0)
+        if (!placeholder.empty())
         {
             ret->setPlaceHolder(placeholder);
         }
@@ -162,7 +162,7 @@ TextFieldTTF * TextFieldTTF::textFieldWithPlaceHolder(const std::string& placeho
     if(ret && ret->initWithPlaceHolder("", fontName, fontSize))
     {
         ret->autorelease();
-        if (placeholder.size()>0)
+        if (!placeholder.empty())
         {
             ret->setPlaceHolder(placeholder);
         }

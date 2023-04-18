@@ -68,7 +68,6 @@ elseif(APPLE)
             proj.mac/Icon.icns
             proj.mac/Info.plist
             proj.mac/Prefix.pch
-            proj.mac/en.lproj/MainMenu.xib
             proj.mac/en.lproj/InfoPlist.strings
             )
         list(APPEND GAME_SOURCE
@@ -487,9 +486,8 @@ if(LINUX OR WINDOWS)
     cocos_copy_target_res(${APP_NAME} COPY_TO ${APP_RES_DIR} FOLDERS ${GAME_RES_FOLDER})
 endif()
 
-if(WINDOWS)
-    # precompiled header. Compilation time speedup ~4x.
-    target_sources(${APP_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Classes/precheader.cpp")
-    set_target_properties(${APP_NAME} PROPERTIES COMPILE_FLAGS "/Yuprecheader.h /FIprecheader.h")
-    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/Classes/precheader.cpp" PROPERTIES COMPILE_FLAGS "/Ycprecheader.h")
+if(${CMAKE_VERSION} VERSION_GREATER "3.16.0")
+    message("CMake 3.16 target_precompile_headers")
+    target_precompile_headers(${APP_NAME} PRIVATE
+       "$<$<COMPILE_LANGUAGE:CXX>:precheader.h>")
 endif()

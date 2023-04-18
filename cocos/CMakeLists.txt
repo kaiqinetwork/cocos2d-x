@@ -30,7 +30,7 @@
 # build jscocos2d if BUILD_JS_LIBS=ON
 
 # The version number
-set(COCOS2D_X_VERSION 3.17.1)
+set(COCOS2D_X_VERSION 3.17.2)
 
 set(COCOS_CORE_LIB cocos2d)
 
@@ -162,11 +162,8 @@ if(XCODE OR VS)
     cocos_mark_code_files("cocos2d")
 endif()
 
-if(WINDOWS)
-    # precompiled header. Compilation time speedup ~4x.
-    target_sources(cocos2d PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/precheader.cpp")
-    set_target_properties(cocos2d PROPERTIES COMPILE_FLAGS "/Yuprecheader.h /FIprecheader.h")
-    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/precheader.cpp" PROPERTIES COMPILE_FLAGS "/Ycprecheader.h")
-    # compile c as c++. needed for precompiled header
-    set_source_files_properties(${COCOS_SPINE_SRC} base/ccFPSImages.c PROPERTIES LANGUAGE CXX)
+if(${CMAKE_VERSION} VERSION_GREATER "3.16.0")
+    message("CMake 3.16 target_precompile_headers")
+    target_precompile_headers(cocos2d PRIVATE
+       "$<$<COMPILE_LANGUAGE:CXX>:cocos2d.h>")
 endif()

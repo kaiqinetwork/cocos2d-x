@@ -32,6 +32,8 @@ THE SOFTWARE.
 #include "platform/CCStdC.h"
 #include "base/ccUTF8.h"
 
+#include <thread>
+
 NS_CC_BEGIN
 
 int Device::getDPI()
@@ -172,12 +174,12 @@ public:
             if (fontPath.size() > 0)
             {
                 _curFontPath = fontPath;
-                wchar_t * pwszBuffer = utf8ToUtf16(_curFontPath);
+                wchar_t * pwszBuffer = utf8ToUtf16(fontPath);
                 if (pwszBuffer)
                 {
                     if (AddFontResourceW(pwszBuffer))
                     {
-                        SendMessage(_wnd, WM_FONTCHANGE, 0, 0);
+                        PostMessage(_wnd, WM_FONTCHANGE, 0, 0);
                     }
                     delete[] pwszBuffer;
                     pwszBuffer = nullptr;

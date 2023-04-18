@@ -40,7 +40,7 @@ EventMouse::EventMouse(MouseEventType mouseEventCode)
 , _startPointCaptured(false)
 , _mods(0)
 {
-};
+}
 
 // returns the current touch location in screen coordinates
 Vec2 EventMouse::getLocationInView() const 
