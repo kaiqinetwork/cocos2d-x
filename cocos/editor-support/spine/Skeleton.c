@@ -621,13 +621,13 @@ int spSkeleton_composeSkinByNameList(spSkeleton* self, const char** skinNameList
 		spSkin* skin;
 		const char* skinName = skinNameList[i];
 		if (!skinName) {
-			spComposedSkin_dispose(composedSkin);
+			spSkin_dispose(composedSkin);
 			return 0;
 		}
 
 		skin = spSkeletonData_findSkin(self->data, skinName);
 		if (!skin) {
-			spComposedSkin_dispose(composedSkin);
+			spSkin_dispose(composedSkin);
 			return 0;
 		}
 		spSkeleton_attachSkin(self, skin, composedSkin);
