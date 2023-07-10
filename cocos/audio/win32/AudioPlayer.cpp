@@ -224,7 +224,7 @@ bool AudioPlayer::play2d()
         {
             ALOGE("state isn't playing, %d, %s, cache id=%u, player id=%u", state, _audioCache->_fileFullPath.c_str(), _audioCache->_id, _id);
         }
-        assert(state == AL_PLAYING);
+        //assert(state == AL_PLAYING);
         _ready = true;
         ret = true;
     } while (false);

@@ -788,4 +788,7 @@ bool SkeletonRenderer::isOpacityModifyRGB () const {
 	return _premultipliedAlpha;
 }
 
+int SkeletonRenderer::composeSkin(const char** skinNameList, int num) {
+	return spSkeleton_composeSkinByNameList(_skeleton, skinNameList, num) ? true : false;
+}
 }

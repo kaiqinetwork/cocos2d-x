@@ -581,3 +581,63 @@ spPathConstraint* spSkeleton_findPathConstraint (const spSkeleton* self, const c
 void spSkeleton_update (spSkeleton* self, float deltaTime) {
 	self->time += deltaTime;
 }
+
+
+void spSkeleton_attachSkin(spSkeleton* self, spSkin* attachSkin, spSkin* composedSkin) {
+	if (attachSkin) {
+		int i;
+		for (i = 0; i < self->slotsCount; ++i) {
+			spSlot* slot = self->slots[i];
+			if (slot->data->attachmentName) {
+				spAttachment* attachment = spSkin_getAttachment(attachSkin, i, slot->data->attachmentName);
+				spAttachment* hadAttachment = spSkin_getAttachment(composedSkin, i, slot->data->attachmentName);//若有附件冲突，添加的冲突附件隶属于先附加皮肤//
+				if (attachment && !hadAttachment) {
+					spSkin_addAttachment(composedSkin, i, slot->data->attachmentName, attachment);  //添加附件//
+					// spSlot_setAttachment(slot, attachment);		//直接设置为被添加的附件//
+				}
+			}
+		}
+	}
+}
+
+int spSkeleton_composeSkinByNameList(spSkeleton* self, const char** skinNameList, int num) {
+	if (!skinNameList) {
+		return 0;
+	}
+
+	char* tempName = "_COMPOSEDSKIN";
+
+	if (self->composedSkin) { //说明存在之前合成的皮肤，释放并初始化它//
+		CONST_CAST(spSkin*, self->skin) = 0;
+		spSkin_dispose(self->composedSkin);
+		CONST_CAST(spSkin*, self->composedSkin) = 0;
+	}
+
+	spSkin* composedSkin = 0;
+	CONST_CAST(spSkin*, composedSkin) = spSkin_create(tempName);
+
+	int i;
+	for (i = 0; i < num; ++i) {
+		spSkin* skin;
+		const char* skinName = skinNameList[i];
+		if (!skinName) {
+			spComposedSkin_dispose(composedSkin);
+			return 0;
+		}
+
+		skin = spSkeletonData_findSkin(self->data, skinName);
+		if (!skin) {
+			spComposedSkin_dispose(composedSkin);
+			return 0;
+		}
+		spSkeleton_attachSkin(self, skin, composedSkin);
+	}
+
+	if (composedSkin) {
+		CONST_CAST(spSkin*, self->composedSkin) = composedSkin;
+		CONST_CAST(spSkin*, self->skin) = self->composedSkin;
+	}
+	spSkeleton_setSkin(self, composedSkin);
+
+	return 1;
+}

@@ -64,6 +64,7 @@ typedef struct spSkeleton {
 	spPathConstraint** pathConstraints;
 
 	spSkin* const skin;
+	spSkin* const composedSkin;
 	spColor color;
 	float time;
 	int/*bool*/flipX, flipY;
@@ -86,6 +87,7 @@ typedef struct spSkeleton {
 		transformConstraints(0),
 
 		skin(0),
+		composedSkin(0),
 		color(),
 		time(0),
 		flipX(0),
@@ -146,6 +148,10 @@ SP_API spTransformConstraint* spSkeleton_findTransformConstraint (const spSkelet
 SP_API spPathConstraint* spSkeleton_findPathConstraint (const spSkeleton* self, const char* constraintName);
 
 SP_API void spSkeleton_update (spSkeleton* self, float deltaTime);
+
+SP_API void spSkeleton_attachSkin(spSkeleton* self, spSkin* attachSkin, spSkin* composedSkin);
+
+SP_API int spSkeleton_composeSkinByNameList(spSkeleton* self, const char** skinNameList, int num);
 
 #ifdef SPINE_SHORT_NAMES
 typedef spSkeleton Skeleton;
