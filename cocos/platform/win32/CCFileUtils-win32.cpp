@@ -269,15 +269,15 @@ std::string FileUtilsWin32::getFullPathForFilenameWithinDirectory(const std::str
     return FileUtils::getFullPathForFilenameWithinDirectory(unixDirectory, unixFilename);
 }
 
-void FileUtilsWin32::listFilesRecursively(const std::string& dirPath, std::vector<std::string> *files) const
+void FileUtilsWin32::listFilesRecursively(const std::string& dirPath, std::vector<std::string>* files) const
 {
     std::string fullpath = fullPathForFilename(dirPath);
     if (isDirectoryExist(fullpath))
     {
         tinydir_dir dir;
-        std::wstring fullpathstr = StringUtf8ToWideChar(fullpath);
+        std::string fullpathstr = UTF8StringToMultiByte(fullpath);
 
-        if (tinydir_open(&dir, &fullpath[0] /*&fullpathstr[0]*/ ) != -1)
+        if (tinydir_open(&dir, &fullpathstr[0]) != -1)
         {
             while (dir.has_next)
             {
@@ -287,11 +287,11 @@ void FileUtilsWin32::listFilesRecursively(const std::string& dirPath, std::vecto
                     // Error getting file
                     break;
                 }
-				std::string fileName = file.name; //StringWideCharToUtf8(file.name);
+                std::string fileName = MultiByteToUTF8String(file.name);
 
                 if (fileName != "." && fileName != "..")
                 {
-					std::string filepath = file.path; //StringWideCharToUtf8(file.path);
+                    std::string filepath = MultiByteToUTF8String(file.path);
                     if (file.is_dir)
                     {
                         filepath.append("/");
@@ -315,6 +315,52 @@ void FileUtilsWin32::listFilesRecursively(const std::string& dirPath, std::vecto
     }
 }
 
+//void FileUtilsWin32::listFilesRecursively(const std::string& dirPath, std::vector<std::string> *files) const
+//{
+//    std::string fullpath = fullPathForFilename(dirPath);
+//    if (isDirectoryExist(fullpath))
+//    {
+//        tinydir_dir dir;
+//        std::wstring fullpathstr = StringUtf8ToWideChar(fullpath);
+//
+//        if (tinydir_open(&dir, &fullpath[0] /*&fullpathstr[0]*/ ) != -1)
+//        {
+//            while (dir.has_next)
+//            {
+//                tinydir_file file;
+//                if (tinydir_readfile(&dir, &file) == -1)
+//                {
+//                    // Error getting file
+//                    break;
+//                }
+//				std::string fileName = file.name; //StringWideCharToUtf8(file.name);
+//
+//                if (fileName != "." && fileName != "..")
+//                {
+//					std::string filepath = file.path; //StringWideCharToUtf8(file.path);
+//                    if (file.is_dir)
+//                    {
+//                        filepath.append("/");
+//                        files->push_back(filepath);
+//                        listFilesRecursively(filepath, files);
+//                    }
+//                    else
+//                    {
+//                        files->push_back(filepath);
+//                    }
+//                }
+//
+//                if (tinydir_next(&dir) == -1)
+//                {
+//                    // Error getting next file
+//                    break;
+//                }
+//            }
+//        }
+//        tinydir_close(&dir);
+//    }
+//}
+
 long FileUtilsWin32::getFileSize(const std::string &filepath) const
 {
     struct _stat tmp;
@@ -331,10 +377,9 @@ std::vector<std::string> FileUtilsWin32::listFiles(const std::string& dirPath) c
     std::vector<std::string> files;
     if (isDirectoryExist(fullpath))
     {
+        std::string fullpathstr = UTF8StringToMultiByte(fullpath);
         tinydir_dir dir;
-        std::wstring fullpathstr = StringUtf8ToWideChar(fullpath);
-
-        if (tinydir_open(&dir, &fullpath[0] /*&fullpathstr[0]*/) != -1)
+        if (tinydir_open(&dir, &fullpathstr[0]) != -1)
         {
             while (dir.has_next)
             {
@@ -345,7 +390,7 @@ std::vector<std::string> FileUtilsWin32::listFiles(const std::string& dirPath) c
                     break;
                 }
 
-				std::string filepath = file.path; //StringWideCharToUtf8(file.path);
+				std::string filepath = MultiByteToUTF8String(file.path); //StringWideCharToUtf8(file.path);
                 if (file.is_dir)
                 {
                     filepath.append("/");
