@@ -212,6 +212,15 @@ EventDispatcher::EventDispatcher()
     _internalCustomListenerIDs.insert(EVENT_COME_TO_FOREGROUND);
     _internalCustomListenerIDs.insert(EVENT_COME_TO_BACKGROUND);
     _internalCustomListenerIDs.insert(EVENT_RENDERER_RECREATED);
+    _internalCustomListenerIDs.insert(Director::EVENT_BEFORE_SET_NEXT_SCENE);
+    _internalCustomListenerIDs.insert(Director::EVENT_AFTER_SET_NEXT_SCENE);
+    _internalCustomListenerIDs.insert(Director::EVENT_PROJECTION_CHANGED);
+    _internalCustomListenerIDs.insert(Director::EVENT_AFTER_DRAW);
+    _internalCustomListenerIDs.insert(Director::EVENT_AFTER_VISIT);
+    _internalCustomListenerIDs.insert(Director::EVENT_BEFORE_UPDATE);
+    _internalCustomListenerIDs.insert(Director::EVENT_AFTER_UPDATE);
+    _internalCustomListenerIDs.insert(Director::EVENT_RESET);
+    _internalCustomListenerIDs.insert(Director::EVENT_BEFORE_DRAW);
 }
 
 EventDispatcher::~EventDispatcher()
