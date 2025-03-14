@@ -22,7 +22,7 @@
     <ProjectGuid>{76A39BB2-9B84-4C65-98A5-654D86B86F2A}</ProjectGuid>
     <RootNamespace>test_win32</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -189,7 +189,7 @@ xcopy "$(OutDir)..\*.dll" "$(OutDir)" /D /Y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp-d.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp-d.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp-d.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;libcurl-static-vc140-xp-d.lib;libgif-vc120-xp.lib;librecast-static-vc140-xp-d.lib;libbullet-static-vc140-xp-d.lib;version.lib;tolua++-vc120-xp-d.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmpg123-vc110.lib;libcocos2d-static-vc140-xp-d.lib;websockets-static-vc140-xp.lib;chipmunk-static-vc140-xp.lib;tinyxml2-static-vc140-xp-d.lib;libbox2d-vc140-xp-d.lib;libSpine-static-vc140-xp-d.lib;OpenAL32-vc110.lib;libogg-static-vc120-xp.lib;libvorbis-vc100.lib;libvorbisfile-vc100.lib;ws2_32.lib;Crypt32.lib;libcurl-static-vc140-xp-d.lib;libgif-vc120-xp.lib;librecast-static-vc140-xp-d.lib;libbullet-static-vc140-xp-d.lib;version.lib;tolua++-vc120-xp-d.lib;wldap32.lib;libssl-vc120-xp.lib;libcrypto-vc120-xp.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>

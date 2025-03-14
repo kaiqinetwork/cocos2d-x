@@ -183,3 +183,5 @@ temp/
 # external libs zip
 *.zip
 **/simulator/
+build/Static_Debug.win32
+cocos/2d/Static_Debug.win32

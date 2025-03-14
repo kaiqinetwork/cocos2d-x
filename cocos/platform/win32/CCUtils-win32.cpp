@@ -106,4 +106,32 @@ std::string UTF8StringToMultiByte(const std::string& strUtf8)
     return ret;
 }
 
+std::string MultiByteToUTF8String(const std::string& multiByte)
+{
+    std::string ret;
+    if (!multiByte.empty())
+    {
+        std::wstring strWideChar;
+        int nNum = MultiByteToWideChar(CP_ACP, 0, multiByte.c_str(), -1, nullptr, 0);
+        if (nNum)
+        {
+            WCHAR* wideCharString = new WCHAR[nNum + 1];
+            wideCharString[0] = 0;
+
+            nNum = MultiByteToWideChar(CP_ACP, 0, multiByte.c_str(), -1, wideCharString, nNum + 1);
+
+            strWideChar = wideCharString;
+            delete[] wideCharString;
+
+            ret = StringWideCharToUtf8(strWideChar);
+        }
+        else
+        {
+            CCLOG("Wrong convert to Ansi code:0x%x", GetLastError());
+        }
+    }
+
+    return ret;
+}
+
 NS_CC_END

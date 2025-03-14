@@ -1333,8 +1333,9 @@ void Node::onEnter()
     
     _isTransitionFinished = false;
     
-    for( const auto &child: _children)
+    for (const auto& child : _children) {
         child->onEnter();
+    }
     
     this->resume();
     
