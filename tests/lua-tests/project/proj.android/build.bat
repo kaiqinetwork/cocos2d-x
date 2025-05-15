@@ -1,0 +1,1 @@
+cocos compile -p android --app-abi arm64-v8a --android-studio --ap android-21  -m release
