@@ -65,7 +65,7 @@ LOCAL_SRC_FILES := ../manual/CCLuaBridge.cpp \
 #cjson
 LOCAL_SRC_FILES += ../../../../external/lua/cjson/fpconv.c \
                    ../../../../external/lua/cjson/lua_cjson.c \
-                   ../../../../external/lua/cjson/strbuf.c \	
+                   ../../../../external/lua/cjson/strbuf.c
 
 #Component
 LOCAL_SRC_FILES += ../manual/CCComponentLua.cpp \
@@ -126,6 +126,9 @@ LOCAL_SRC_FILES += ../manual/ui/lua_cocos2dx_experimental_webview_manual.cpp \
                    ../auto/lua_cocos2dx_experimental_video_auto.cpp \
                    ../auto/lua_cocos2dx_ui_auto.cpp \
                    ../auto/lua_cocos2dx_experimental_webview_auto.cpp
+
+#fairygui
+LOCAL_SRC_FILES += ../manual/fairygui/lua_fairygui.cpp \
 
 #extension
 LOCAL_SRC_FILES += ../manual/extension/lua_cocos2dx_extension_manual.cpp \

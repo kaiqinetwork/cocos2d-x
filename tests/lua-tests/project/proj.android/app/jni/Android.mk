@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := lua_tests_shared
+LOCAL_MODULE := lua_tests
 
 LOCAL_MODULE_FILENAME := liblua_tests
 

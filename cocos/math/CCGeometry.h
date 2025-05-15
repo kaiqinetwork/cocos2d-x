@@ -63,9 +63,15 @@ public:
      */
     Size();
     Size(float width, float height);
+    Size(const Size& other);
     explicit Size(const Vec2& point);
     /**@}*/
 
+    /**
+     * @js NA
+     * @lua NA
+     */
+    Size& operator= (const Size& other);
     /**
      * @js NA
      * @lua NA
@@ -131,6 +137,17 @@ public:
      * @js NA
      */
     Rect(const Vec2& pos, const Size& dimension);
+    /**
+    Copy constructor.
+     * @js NA
+     * @lua NA
+     */
+    Rect(const Rect& other);
+    /**
+     * @js NA
+     * @lua NA
+     */
+    Rect& operator= (const Rect& other);
     /**
     Set the x, y, width and height of Rect.
      * @js NA

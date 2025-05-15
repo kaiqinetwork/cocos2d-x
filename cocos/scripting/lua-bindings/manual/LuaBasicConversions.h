@@ -116,6 +116,7 @@ extern bool luaval_to_ulong(lua_State* L,int lo, unsigned long* outValue, const 
  */
 extern bool luaval_to_ushort(lua_State* L, int lo, unsigned short* outValue, const char* funcName = "");
 
+extern bool luaval_to_float(lua_State* L, int lo, float* outValue, const char* funcName = "");
 /**
  * Get a int value from the given acceptable index of stack.
  * If the value at the given acceptable index of stack is a number or a string convertible to a number it returns true, otherwise returns false.

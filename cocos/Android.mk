@@ -314,6 +314,7 @@ LOCAL_STATIC_LIBRARIES += cc3d
 LOCAL_STATIC_LIBRARIES += ccnet
 LOCAL_STATIC_LIBRARIES += audio
 LOCAL_STATIC_LIBRARIES += spine
+LOCAL_STATIC_LIBRARIES += fairygui_static
 
 include $(BUILD_STATIC_LIBRARY)
 #==============================================================
@@ -331,6 +332,7 @@ $(call import-module,audio/android)
 $(call import-module,editor-support/cocosbuilder)
 $(call import-module,editor-support/cocostudio)
 $(call import-module,editor-support/spine)
+$(call import-module,editor-support/fairygui)
 $(call import-module,network)
 $(call import-module,ui)
 $(call import-module,extensions)

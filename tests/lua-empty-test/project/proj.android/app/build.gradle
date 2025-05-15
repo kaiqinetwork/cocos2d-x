@@ -4,7 +4,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion PROP_COMPILE_SDK_VERSION.toInteger()
-
+    namespace 'org.cocos2dx.lua_empty_test'
     defaultConfig {
         applicationId "org.cocos2dx.lua_empty_test"
         minSdkVersion PROP_MIN_SDK_VERSION
@@ -22,7 +22,7 @@ android {
                     def module_paths = [project.file("../../../../..").absolutePath,
                                         project.file("../../../../../cocos").absolutePath,
                                         project.file("../../../../../external").absolutePath]
-                    if (OperatingSystem.current().isWindows()) {
+                    if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
                         module_paths = module_paths.collect {it.replaceAll('\\\\', '/')}
                         arguments 'NDK_MODULE_PATH=' + module_paths.join(";")
                     }
@@ -89,12 +89,6 @@ android {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig signingConfigs.release
             }
-
-            externalNativeBuild {
-                ndkBuild {
-                    arguments 'NDK_DEBUG=0'
-                }
-            }
         }
 
         debug {
@@ -104,11 +98,19 @@ android {
             externalNativeBuild {
                 ndkBuild {
                     arguments 'NDK_DEBUG=1'
+                    arguments 'NDK_OUT=D:/DevTools/cocos2d-kaiqi/tests/lua-empty-test/project/proj.android/app/build/intermediates/cxx/Release/655i6s2q/obj'
+                    arguments 'NDK_LIBS_OUT=D:/DevTools/cocos2d-kaiqi/tests/lua-empty-test/project/proj.android/app/build/intermediates/cxx/Debug/655i6s2q/lib'
                 }
             }
         }
     }
     buildToolsVersion '27.0.3'
+
+    buildFeatures {
+        aidl true
+    }
+
+    ndkVersion "20.1.5948944"
 }
 
 def getCocosCommandPath() {
@@ -144,6 +146,7 @@ def compileLua(srcDir, dstDir, doCompile, is64bit, doEncrypt) {
         compileArgs << '--disable-compile'
     }
     else if (is64bit) {
+        compileArgs << '--luajit21'
         compileArgs << '--bytecode-64bit'
     }
 

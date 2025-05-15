@@ -96,7 +96,7 @@ android {
                 }
             }
         }
-
+d
         debug {
             debuggable true
             jniDebuggable true
@@ -107,6 +107,10 @@ android {
                 }
             }
         }
+    }
+
+    buildFeatures {
+        aidl true
     }
 }
 
@@ -143,6 +147,7 @@ def compileLua(srcDir, dstDir, doCompile, is64bit, doEncrypt) {
         compileArgs << '--disable-compile'
     }
     else if (is64bit) {
+        compileArgs << '--luajit21'
         compileArgs << '--bytecode-64bit'
     }
 
