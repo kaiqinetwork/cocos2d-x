@@ -189,7 +189,7 @@ namespace cocos2d {
 
         jmethodID methodID = env->GetStaticMethodID(classID, methodName, paramCode);
         if (! methodID) {
-            LOGE("Failed to find static method id of %s", methodName);
+            LOGE("Failed to find static method id of %s %s %s", className, methodName, paramCode);
             env->ExceptionClear();
             return false;
         }
