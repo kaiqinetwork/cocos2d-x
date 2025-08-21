@@ -12,7 +12,7 @@ enum {
     HT_UICONFIG_MUSIC = 1000, // FairyGUI lua binding handler type begin
     HT_GLIST_RENDERER,
     HT_GLIST_PROVIDER,
-    HT_GTREE_RENDERER,
+	HT_GTREE_RENDERER,
     HT_GTREE_WILLEXPAND,
     HT_GOBJECT_CLICKED,
 };
