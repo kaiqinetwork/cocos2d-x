@@ -33,23 +33,7 @@
 using namespace spine;
 USING_NS_CC;
 
-LuaSkeletonAnimation::LuaSkeletonAnimation ()
-: spine::SkeletonAnimation()
-{
-	
-}
-
-
 LuaSkeletonAnimation::~LuaSkeletonAnimation()
 {
     ScriptHandlerMgr::getInstance()->removeObjectAllHandlers((void*)this);
-}
-
-LuaSkeletonAnimation* LuaSkeletonAnimation::createWithFile (const char* skeletonDataFile, const char* atlasFile, float scale)
-{
-	LuaSkeletonAnimation* node = new (std::nothrow) LuaSkeletonAnimation();
-    spAtlas* atlas = spAtlas_createFromFile(atlasFile, nullptr);
-    node->initWithJsonFile(skeletonDataFile, atlas, scale);
-	node->autorelease();
-	return node;
 }

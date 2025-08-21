@@ -303,6 +303,9 @@
     <ClCompile Include="..\manual\fairygui\lua_fairygui.cpp">
       <Filter>manual\fairygui</Filter>
     </ClCompile>
+    <ClCompile Include="..\manual\spine\lua_spSkeletonData.cpp">
+      <Filter>manual\spine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\auto\lua_cocos2dx_auto.hpp">
@@ -541,6 +544,9 @@
     </ClInclude>
     <ClInclude Include="..\manual\fairygui\lua_fairygui.hpp">
       <Filter>manual\fairygui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\manual\spine\lua_spSkeletonData.hpp">
+      <Filter>manual\spine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
