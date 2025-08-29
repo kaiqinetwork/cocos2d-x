@@ -103,6 +103,9 @@ void FUILabel::applyTextFormat()
     else
         disableEffect(LabelEffect::BOLD);
 
+    if (_currentLabelType != LabelType::STRING_TEXTURE) {
+        setAdditionalKerning(_textFormat->letterSpacing);
+    }
     setLineSpacing(_textFormat->lineSpacing);
     setHorizontalAlignment(_textFormat->align);
     setVerticalAlignment(_textFormat->verticalAlign);
@@ -116,6 +119,8 @@ void FUILabel::applyTextFormat()
         enableShadow((Color4B)(_grayed ? toGrayed(_textFormat->shadowColor) : _textFormat->shadowColor), _textFormat->shadowOffset);
     else if (!_textFormat->bold)
         disableEffect(LabelEffect::SHADOW);
+
+
 }
 
 bool FUILabel::setBMFontFilePath(const std::string& bmfontFilePath, const Vec2& imageOffset, float fontSize)

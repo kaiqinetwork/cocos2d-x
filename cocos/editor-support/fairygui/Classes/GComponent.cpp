@@ -31,6 +31,7 @@ _hitArea(nullptr)
 
 GComponent::~GComponent()
 {
+    CCLOG("GComponent ~GComponent id：%s", id.c_str());
     for (auto& child : _children)
         child->_parent = nullptr;
     _children.clear();
