@@ -69,7 +69,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 #endif
     FileUtils::getInstance()->addSearchPath("src");
     FileUtils::getInstance()->addSearchPath("res");
-    engine->executeString("require 'hello.lua'");
+    engine->executeString("require 'hello3.lua'");
 
     return true;
 }
@@ -91,4 +91,22 @@ void AppDelegate::applicationWillEnterForeground()
 void AppDelegate::applicationWillClose()
 {
 
+}
+
+void AppDelegate::applicationScreenSizeChanged(int newWidth, int newHeight)
+{
+    auto director = cocos2d::Director::getInstance();
+    auto glview = director->getOpenGLView();
+    if (glview != NULL) {
+        Size nowFrameSize = glview->getFrameSize();
+        if(nowFrameSize.width == newWidth && nowFrameSize.height == newHeight){
+            return;
+        }
+        // Set ResolutionPolicy to a proper value. here use the original value when the game is started.
+        ResolutionPolicy resolutionPolicy = glview->getResolutionPolicy();
+        Size designSize = glview->getDesignResolutionSize();
+        glview->setFrameSize(newWidth, newHeight);
+        // Set the design resolution to a proper value. here use the original value when the game is started.
+        glview->setDesignResolutionSize(designSize.width, designSize.height, resolutionPolicy);
+    }
 }

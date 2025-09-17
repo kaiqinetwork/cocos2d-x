@@ -98,8 +98,8 @@ android {
             externalNativeBuild {
                 ndkBuild {
                     arguments 'NDK_DEBUG=1'
-                    arguments 'NDK_OUT=D:/DevTools/cocos2d-kaiqi/tests/lua-empty-test/project/proj.android/app/build/intermediates/cxx/Release/655i6s2q/obj'
-                    arguments 'NDK_LIBS_OUT=D:/DevTools/cocos2d-kaiqi/tests/lua-empty-test/project/proj.android/app/build/intermediates/cxx/Debug/655i6s2q/lib'
+                    arguments 'NDK_OUT=D:/DevTools/cocos2d-kaiqi/tests/lua-empty-test/project/proj.android/app/build/intermediates/cxx/Release/6d1e3t41/obj'
+                    arguments 'NDK_LIBS_OUT=D:/DevTools/cocos2d-kaiqi/tests/lua-empty-test/project/proj.android/app/build/intermediates/cxx/Debug/6d1e3t41/lib'
                 }
             }
         }

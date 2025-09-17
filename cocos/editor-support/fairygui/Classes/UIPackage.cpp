@@ -623,6 +623,9 @@ void UIPackage::loadAtlas(PackageItem* item)
     Texture2D* tex = new Texture2D();
     tex->initWithImage(image);
     item->texture = tex;
+#if CC_ENABLE_CACHE_TEXTURE_DATA
+    VolatileTextureMgr::addImageTexture(tex, item->file);
+#endif
     delete image;
 
     string alphaFilePath;
@@ -650,6 +653,9 @@ void UIPackage::loadAtlas(PackageItem* item)
         tex = new Texture2D();
         tex->initWithImage(image);
         item->texture->setAlphaTexture(tex);
+#if CC_ENABLE_CACHE_TEXTURE_DATA
+        VolatileTextureMgr::addImageTexture(tex, item->file);
+#endif
         tex->release();
 #endif
         delete image;
