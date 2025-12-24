@@ -132,18 +132,27 @@ void AudioEngineInterruptionListenerCallback(void* user_data, UInt32 interruptio
 
     if ([notification.name isEqualToString:AVAudioSessionInterruptionNotification])
     {
+        // ------新加的代码------
+       if (@available(iOS 14.5, *)) {
+           NSInteger _reason = [[[notification userInfo] objectForKey:AVAudioSessionInterruptionReasonKey] integerValue];
+           if (_reason == AVAudioSessionInterruptionReasonAppWasSuspended){
+               ALOGD("AVAudioSessionInterruptionReasonAppWasSuspended");
+               return;
+           }
+       } else if (@available(iOS 10.3, *)) {
+           BOOL isSuspend = [[[notification userInfo] objectForKey:AVAudioSessionInterruptionWasSuspendedKey] boolValue];
+           if (isSuspend) {
+               ALOGD("AVAudioSessionInterruptionWasSuspendedKey");
+               return;
+           }
+       }
         NSInteger reason = [[[notification userInfo] objectForKey:AVAudioSessionInterruptionTypeKey] integerValue];
         if (reason == AVAudioSessionInterruptionTypeBegan)
         {
+            ALOGD("AVAudioSessionInterruptionTypeBegan");
             isAudioSessionInterrupted = true;
-
-            if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive)
-            {
-                ALOGD("AVAudioSessionInterruptionTypeBegan, application != UIApplicationStateActive, alcMakeContextCurrent(nullptr)");
-                alcMakeContextCurrent(nullptr);
-            }
-            else
-            {
+            alcMakeContextCurrent(nullptr);
+            if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
                 ALOGD("AVAudioSessionInterruptionTypeBegan, application == UIApplicationStateActive, pauseOnResignActive = true");
                 pauseOnResignActive = true;
             }
@@ -151,27 +160,14 @@ void AudioEngineInterruptionListenerCallback(void* user_data, UInt32 interruptio
 
         if (reason == AVAudioSessionInterruptionTypeEnded)
         {
+            ALOGD("AVAudioSessionInterruptionTypeEnded");
             isAudioSessionInterrupted = false;
 
-            if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive)
-            {
-                ALOGD("AVAudioSessionInterruptionTypeEnded, application == UIApplicationStateActive, alcMakeContextCurrent(s_ALContext)");
-                NSError *error = nil;
-                [[AVAudioSession sharedInstance] setActive:YES error:&error];
-                if(error != nil){
-                    ALOGE("AVAudioSessionInterruptionTypeEnded, AVAudioSession setActive fail, %d",(int)error.code);
-                    return;
-                }
-                
-                alcMakeContextCurrent(s_ALContext);
-                if (Director::getInstance()->isPaused())
-                {
-                    ALOGD("AVAudioSessionInterruptionTypeEnded, director was paused, try to resume it.");
-                    Director::getInstance()->resume();
-                }
-            }
-            else
-            {
+            NSError *error = nil;
+            [[AVAudioSession sharedInstance] setActive:YES error:&error];
+            alcMakeContextCurrent(s_ALContext);
+
+            if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
                 ALOGD("AVAudioSessionInterruptionTypeEnded, application != UIApplicationStateActive, resumeOnBecomingActive = true");
                 resumeOnBecomingActive = true;
             }
@@ -210,7 +206,7 @@ void AudioEngineInterruptionListenerCallback(void* user_data, UInt32 interruptio
         else if (isAudioSessionInterrupted)
         {
             ALOGD("Audio session is still interrupted, pause director!");
-            Director::getInstance()->pause();
+            //Director::getInstance()->pause();
         }
     }
 }

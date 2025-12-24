@@ -275,12 +275,36 @@
 		15EFA64E198B3342000C57D3 /* lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ABCA1E718CD8F470087CE3A /* lua.h */; };
 		15EFA64F198B3342000C57D3 /* luaconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ABCA1E818CD8F470087CE3A /* luaconf.h */; };
 		15EFA650198B3342000C57D3 /* lualib.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ABCA1E918CD8F470087CE3A /* lualib.h */; };
-		39323D22210EC0A300944FEE /* fpconv.c in Sources */ = {isa = PBXBuildFile; fileRef = 39323D1C210EC0A300944FEE /* fpconv.c */; };
-		39323D23210EC0A300944FEE /* fpconv.h in Headers */ = {isa = PBXBuildFile; fileRef = 39323D1D210EC0A300944FEE /* fpconv.h */; };
-		39323D24210EC0A300944FEE /* lua_cjson.c in Sources */ = {isa = PBXBuildFile; fileRef = 39323D1E210EC0A300944FEE /* lua_cjson.c */; };
-		39323D25210EC0A300944FEE /* lua_cjson.h in Headers */ = {isa = PBXBuildFile; fileRef = 39323D1F210EC0A300944FEE /* lua_cjson.h */; };
-		39323D26210EC0A300944FEE /* strbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 39323D20210EC0A300944FEE /* strbuf.c */; };
-		39323D27210EC0A300944FEE /* strbuf.h in Headers */ = {isa = PBXBuildFile; fileRef = 39323D21210EC0A300944FEE /* strbuf.h */; };
+		3931CA4B2DD5C07400F84372 /* lua_fairygui.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3931CA482DD5C07400F84372 /* lua_fairygui.hpp */; };
+		3931CA4C2DD5C07400F84372 /* lua_fairygui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3931CA492DD5C07400F84372 /* lua_fairygui.cpp */; };
+		3931CA4D2DD5C07400F84372 /* lua_fairygui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3931CA492DD5C07400F84372 /* lua_fairygui.cpp */; };
+		3931CA4E2DD5C07400F84372 /* lua_fairygui.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3931CA482DD5C07400F84372 /* lua_fairygui.hpp */; };
+		3931CA4F2DD5C07400F84372 /* lua_fairygui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3931CA492DD5C07400F84372 /* lua_fairygui.cpp */; };
+		3931CA502DD5C07400F84372 /* lua_fairygui.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3931CA482DD5C07400F84372 /* lua_fairygui.hpp */; };
+		398FC1AD2E58696C001577D6 /* lua_spSkeletonData.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 398FC1AB2E58696C001577D6 /* lua_spSkeletonData.hpp */; };
+		398FC1AE2E58696C001577D6 /* lua_spSkeletonData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 398FC1AC2E58696C001577D6 /* lua_spSkeletonData.cpp */; };
+		398FC1AF2E58696C001577D6 /* lua_spSkeletonData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 398FC1AC2E58696C001577D6 /* lua_spSkeletonData.cpp */; };
+		398FC1B02E58696C001577D6 /* lua_spSkeletonData.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 398FC1AB2E58696C001577D6 /* lua_spSkeletonData.hpp */; };
+		398FC1B12E58696C001577D6 /* lua_spSkeletonData.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 398FC1AB2E58696C001577D6 /* lua_spSkeletonData.hpp */; };
+		398FC1B22E58696C001577D6 /* lua_spSkeletonData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 398FC1AC2E58696C001577D6 /* lua_spSkeletonData.cpp */; };
+		39B47D142D84176D0063DD63 /* fpconv.c in Sources */ = {isa = PBXBuildFile; fileRef = 39B47D0E2D84176D0063DD63 /* fpconv.c */; };
+		39B47D152D84176D0063DD63 /* lua_cjson.c in Sources */ = {isa = PBXBuildFile; fileRef = 39B47D102D84176D0063DD63 /* lua_cjson.c */; };
+		39B47D162D84176D0063DD63 /* strbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 39B47D122D84176D0063DD63 /* strbuf.c */; };
+		39B47D172D84176D0063DD63 /* lua_cjson.h in Headers */ = {isa = PBXBuildFile; fileRef = 39B47D0F2D84176D0063DD63 /* lua_cjson.h */; };
+		39B47D182D84176D0063DD63 /* strbuf.h in Headers */ = {isa = PBXBuildFile; fileRef = 39B47D112D84176D0063DD63 /* strbuf.h */; };
+		39B47D192D84176D0063DD63 /* fpconv.h in Headers */ = {isa = PBXBuildFile; fileRef = 39B47D0D2D84176D0063DD63 /* fpconv.h */; };
+		39B47D1A2D84176D0063DD63 /* fpconv.c in Sources */ = {isa = PBXBuildFile; fileRef = 39B47D0E2D84176D0063DD63 /* fpconv.c */; };
+		39B47D1B2D84176D0063DD63 /* lua_cjson.c in Sources */ = {isa = PBXBuildFile; fileRef = 39B47D102D84176D0063DD63 /* lua_cjson.c */; };
+		39B47D1C2D84176D0063DD63 /* strbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 39B47D122D84176D0063DD63 /* strbuf.c */; };
+		39B47D1D2D84176D0063DD63 /* lua_cjson.h in Headers */ = {isa = PBXBuildFile; fileRef = 39B47D0F2D84176D0063DD63 /* lua_cjson.h */; };
+		39B47D1E2D84176D0063DD63 /* strbuf.h in Headers */ = {isa = PBXBuildFile; fileRef = 39B47D112D84176D0063DD63 /* strbuf.h */; };
+		39B47D1F2D84176D0063DD63 /* fpconv.h in Headers */ = {isa = PBXBuildFile; fileRef = 39B47D0D2D84176D0063DD63 /* fpconv.h */; };
+		39B47D202D84176D0063DD63 /* fpconv.c in Sources */ = {isa = PBXBuildFile; fileRef = 39B47D0E2D84176D0063DD63 /* fpconv.c */; };
+		39B47D212D84176D0063DD63 /* lua_cjson.c in Sources */ = {isa = PBXBuildFile; fileRef = 39B47D102D84176D0063DD63 /* lua_cjson.c */; };
+		39B47D222D84176D0063DD63 /* strbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 39B47D122D84176D0063DD63 /* strbuf.c */; };
+		39B47D232D84176D0063DD63 /* lua_cjson.h in Headers */ = {isa = PBXBuildFile; fileRef = 39B47D0F2D84176D0063DD63 /* lua_cjson.h */; };
+		39B47D242D84176D0063DD63 /* strbuf.h in Headers */ = {isa = PBXBuildFile; fileRef = 39B47D112D84176D0063DD63 /* strbuf.h */; };
+		39B47D252D84176D0063DD63 /* fpconv.h in Headers */ = {isa = PBXBuildFile; fileRef = 39B47D0D2D84176D0063DD63 /* fpconv.h */; };
 		3E2BDB0519C5E5FE0055CDCD /* lua_cocos2dx_audioengine_auto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E2BDB0319C5E5FE0055CDCD /* lua_cocos2dx_audioengine_auto.cpp */; };
 		3E2BDB0619C5E5FE0055CDCD /* lua_cocos2dx_audioengine_auto.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3E2BDB0419C5E5FE0055CDCD /* lua_cocos2dx_audioengine_auto.hpp */; };
 		3E2BDB0A19C5E6100055CDCD /* lua_cocos2dx_audioengine_manual.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E2BDB0819C5E6100055CDCD /* lua_cocos2dx_audioengine_manual.cpp */; };
@@ -600,12 +624,17 @@
 		1ABCA1FF18CD8F6E0087CE3A /* tolua++.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "tolua++.h"; path = "../../../../external/lua/tolua/tolua++.h"; sourceTree = "<group>"; };
 		2905FACE18CF12E600240AA3 /* lua_cocos2dx_ui_auto.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lua_cocos2dx_ui_auto.cpp; sourceTree = "<group>"; };
 		2905FACF18CF12E600240AA3 /* lua_cocos2dx_ui_auto.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = lua_cocos2dx_ui_auto.hpp; sourceTree = "<group>"; };
-		39323D1C210EC0A300944FEE /* fpconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fpconv.c; sourceTree = "<group>"; };
-		39323D1D210EC0A300944FEE /* fpconv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fpconv.h; sourceTree = "<group>"; };
-		39323D1E210EC0A300944FEE /* lua_cjson.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lua_cjson.c; sourceTree = "<group>"; };
-		39323D1F210EC0A300944FEE /* lua_cjson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lua_cjson.h; sourceTree = "<group>"; };
-		39323D20210EC0A300944FEE /* strbuf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strbuf.c; sourceTree = "<group>"; };
-		39323D21210EC0A300944FEE /* strbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strbuf.h; sourceTree = "<group>"; };
+		3931CA482DD5C07400F84372 /* lua_fairygui.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lua_fairygui.hpp; sourceTree = "<group>"; };
+		3931CA492DD5C07400F84372 /* lua_fairygui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lua_fairygui.cpp; sourceTree = "<group>"; };
+		398FC1AB2E58696C001577D6 /* lua_spSkeletonData.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lua_spSkeletonData.hpp; sourceTree = "<group>"; };
+		398FC1AC2E58696C001577D6 /* lua_spSkeletonData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lua_spSkeletonData.cpp; sourceTree = "<group>"; };
+		39B47D0C2D84176D0063DD63 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		39B47D0D2D84176D0063DD63 /* fpconv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fpconv.h; sourceTree = "<group>"; };
+		39B47D0E2D84176D0063DD63 /* fpconv.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fpconv.c; sourceTree = "<group>"; };
+		39B47D0F2D84176D0063DD63 /* lua_cjson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lua_cjson.h; sourceTree = "<group>"; };
+		39B47D102D84176D0063DD63 /* lua_cjson.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lua_cjson.c; sourceTree = "<group>"; };
+		39B47D112D84176D0063DD63 /* strbuf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = strbuf.h; sourceTree = "<group>"; };
+		39B47D122D84176D0063DD63 /* strbuf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = strbuf.c; sourceTree = "<group>"; };
 		3E2BDB0319C5E5FE0055CDCD /* lua_cocos2dx_audioengine_auto.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lua_cocos2dx_audioengine_auto.cpp; sourceTree = "<group>"; };
 		3E2BDB0419C5E5FE0055CDCD /* lua_cocos2dx_audioengine_auto.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = lua_cocos2dx_audioengine_auto.hpp; sourceTree = "<group>"; };
 		3E2BDB0819C5E6100055CDCD /* lua_cocos2dx_audioengine_manual.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lua_cocos2dx_audioengine_manual.cpp; sourceTree = "<group>"; };
@@ -773,6 +802,8 @@
 		15C1BD141986526C00A46ACC /* spine */ = {
 			isa = PBXGroup;
 			children = (
+				398FC1AB2E58696C001577D6 /* lua_spSkeletonData.hpp */,
+				398FC1AC2E58696C001577D6 /* lua_spSkeletonData.cpp */,
 				15C1BD151986526C00A46ACC /* lua_cocos2dx_spine_manual.cpp */,
 				15C1BD161986526C00A46ACC /* lua_cocos2dx_spine_manual.hpp */,
 				15C1BD171986526C00A46ACC /* LuaSkeletonAnimation.cpp */,
@@ -852,6 +883,7 @@
 		1AACE75B18BC45C200215002 /* manual */ = {
 			isa = PBXGroup;
 			children = (
+				3931CA4A2DD5C07400F84372 /* fairygui */,
 				150983D41B1C3F2D007F3818 /* navmesh */,
 				15A561E91B00A3D0005D4720 /* physics3d */,
 				3E2BDB0719C5E6100055CDCD /* audioengine */,
@@ -909,7 +941,7 @@
 		1ABCA1E218CD8F230087CE3A /* external */ = {
 			isa = PBXGroup;
 			children = (
-				39323D1B210EC0A300944FEE /* cjson */,
+				39B47D132D84176D0063DD63 /* cjson */,
 				1ABCA1E318CD8F2D0087CE3A /* luajit */,
 				1ABCA20E18CD8F7D0087CE3A /* luasocket */,
 				1ABCA1E418CD8F330087CE3A /* tolua */,
@@ -1012,19 +1044,29 @@
 			path = ../../../../external/lua/luasocket;
 			sourceTree = "<group>";
 		};
-		39323D1B210EC0A300944FEE /* cjson */ = {
+		3931CA4A2DD5C07400F84372 /* fairygui */ = {
 			isa = PBXGroup;
 			children = (
-				39323D1C210EC0A300944FEE /* fpconv.c */,
-				39323D1D210EC0A300944FEE /* fpconv.h */,
-				39323D1E210EC0A300944FEE /* lua_cjson.c */,
-				39323D1F210EC0A300944FEE /* lua_cjson.h */,
-				39323D20210EC0A300944FEE /* strbuf.c */,
-				39323D21210EC0A300944FEE /* strbuf.h */,
+				3931CA482DD5C07400F84372 /* lua_fairygui.hpp */,
+				3931CA492DD5C07400F84372 /* lua_fairygui.cpp */,
+			);
+			path = fairygui;
+			sourceTree = "<group>";
+		};
+		39B47D132D84176D0063DD63 /* cjson */ = {
+			isa = PBXGroup;
+			children = (
+				39B47D0C2D84176D0063DD63 /* CMakeLists.txt */,
+				39B47D0D2D84176D0063DD63 /* fpconv.h */,
+				39B47D0E2D84176D0063DD63 /* fpconv.c */,
+				39B47D0F2D84176D0063DD63 /* lua_cjson.h */,
+				39B47D102D84176D0063DD63 /* lua_cjson.c */,
+				39B47D112D84176D0063DD63 /* strbuf.h */,
+				39B47D122D84176D0063DD63 /* strbuf.c */,
 			);
 			name = cjson;
-			path = ../../../../external/lua/cjson;
-			sourceTree = "<group>";
+			path = "/Users/k7-mac-004/Work/cocos2d-k7/external/lua/cjson";
+			sourceTree = "<absolute>";
 		};
 		3E2BDB0719C5E6100055CDCD /* audioengine */ = {
 			isa = PBXGroup;
@@ -1060,10 +1102,12 @@
 				15AC69DE1987711400D17520 /* lauxlib.h in Headers */,
 				155C7E1419A71CA800F08B25 /* Lua_web_socket.h in Headers */,
 				ADD1C0D61C196B9500733781 /* lua_module_register.h in Headers */,
+				3931CA4E2DD5C07400F84372 /* lua_fairygui.hpp in Headers */,
 				15AC69DF1987711400D17520 /* lua.h in Headers */,
 				15AC69E01987711400D17520 /* luaconf.h in Headers */,
 				155C7DF819A71C4400F08B25 /* lua_cocos2dx_cocosdenshion_manual.h in Headers */,
 				15415AAF19A71A53004F1E71 /* except.h in Headers */,
+				398FC1AD2E58696C001577D6 /* lua_spSkeletonData.hpp in Headers */,
 				150906F319D556D1002C4D97 /* lua_cocos2dx_audioengine_manual.h in Headers */,
 				ED1AA90B215DF5F3004ABA9F /* lua_downloader.h in Headers */,
 				155C7E0419A71C6D00F08B25 /* lua_cocos2dx_cocosbuilder_manual.h in Headers */,
@@ -1081,6 +1125,9 @@
 				15C1C2EC19874CBE00A46ACC /* LuaBasicConversions.h in Headers */,
 				15415AB319A71A53004F1E71 /* inet.h in Headers */,
 				15C1C2ED19874CBE00A46ACC /* CCLuaObjcBridge.h in Headers */,
+				39B47D232D84176D0063DD63 /* lua_cjson.h in Headers */,
+				39B47D242D84176D0063DD63 /* strbuf.h in Headers */,
+				39B47D252D84176D0063DD63 /* fpconv.h in Headers */,
 				15C1C2EE19874CBE00A46ACC /* tolua_fix.h in Headers */,
 				155C7E2019A71CCC00F08B25 /* LuaSkeletonAnimation.h in Headers */,
 				150983D91B1C3F3E007F3818 /* lua_cocos2dx_navmesh_manual.h in Headers */,
@@ -1135,12 +1182,13 @@
 				BA0CBB611BB0756F00003364 /* CCComponentLua.h in Headers */,
 				15415AAC19A71A53004F1E71 /* buffer.h in Headers */,
 				15EFA650198B3342000C57D3 /* lualib.h in Headers */,
-				39323D25210EC0A300944FEE /* lua_cjson.h in Headers */,
 				155C7E1519A71CAA00F08B25 /* Lua_web_socket.h in Headers */,
+				3931CA502DD5C07400F84372 /* lua_fairygui.hpp in Headers */,
 				15EFA64B198B3320000C57D3 /* tolua_event.h in Headers */,
 				15A561EF1B00A3F1005D4720 /* lua_cocos2dx_physics3d_manual.h in Headers */,
 				15EFA64C198B3320000C57D3 /* tolua++.h in Headers */,
 				155C7DF919A71C4500F08B25 /* lua_cocos2dx_cocosdenshion_manual.h in Headers */,
+				398FC1B12E58696C001577D6 /* lua_spSkeletonData.hpp in Headers */,
 				15415AB019A71A53004F1E71 /* except.h in Headers */,
 				ED1AA90C215DF5F3004ABA9F /* lua_downloader.h in Headers */,
 				3E2BDB0B19C5E6100055CDCD /* lua_cocos2dx_audioengine_manual.h in Headers */,
@@ -1158,7 +1206,9 @@
 				15EFA63F198B32BB000C57D3 /* Cocos2dxLuaLoader.h in Headers */,
 				15EFA640198B32BB000C57D3 /* LuaBasicConversions.h in Headers */,
 				150983D31B1C0554007F3818 /* lua_cocos2dx_navmesh_auto.hpp in Headers */,
-				39323D27210EC0A300944FEE /* strbuf.h in Headers */,
+				39B47D1D2D84176D0063DD63 /* lua_cjson.h in Headers */,
+				39B47D1E2D84176D0063DD63 /* strbuf.h in Headers */,
+				39B47D1F2D84176D0063DD63 /* fpconv.h in Headers */,
 				15415AB419A71A53004F1E71 /* inet.h in Headers */,
 				15EFA641198B32BB000C57D3 /* CCLuaObjcBridge.h in Headers */,
 				15EFA642198B32BB000C57D3 /* tolua_fix.h in Headers */,
@@ -1185,7 +1235,6 @@
 				155C7E0119A71C6300F08B25 /* CCBProxy.h in Headers */,
 				15A561E81B00A09A005D4720 /* lua_cocos2dx_physics3d_auto.hpp in Headers */,
 				15415AC819A71A53004F1E71 /* select.h in Headers */,
-				39323D23210EC0A300944FEE /* fpconv.h in Headers */,
 				155C7E1D19A71CC300F08B25 /* lua_cocos2dx_spine_manual.hpp in Headers */,
 				15EFA624198B2E74000C57D3 /* lua_cocos2dx_physics_auto.hpp in Headers */,
 				3E2BDB0619C5E5FE0055CDCD /* lua_cocos2dx_audioengine_auto.hpp in Headers */,
@@ -1215,10 +1264,12 @@
 				507B431B1C31FA0C0067B53E /* buffer.h in Headers */,
 				507B431C1C31FA0C0067B53E /* lualib.h in Headers */,
 				507B431D1C31FA0C0067B53E /* Lua_web_socket.h in Headers */,
+				3931CA4B2DD5C07400F84372 /* lua_fairygui.hpp in Headers */,
 				507B431E1C31FA0C0067B53E /* tolua_event.h in Headers */,
 				507B431F1C31FA0C0067B53E /* lua_cocos2dx_physics3d_manual.h in Headers */,
 				507B43201C31FA0C0067B53E /* tolua++.h in Headers */,
 				507B43211C31FA0C0067B53E /* lua_cocos2dx_cocosdenshion_manual.h in Headers */,
+				398FC1B02E58696C001577D6 /* lua_spSkeletonData.hpp in Headers */,
 				507B43221C31FA0C0067B53E /* except.h in Headers */,
 				ED1AA90D215DF5F3004ABA9F /* lua_downloader.h in Headers */,
 				507B43231C31FA0C0067B53E /* lua_cocos2dx_audioengine_manual.h in Headers */,
@@ -1236,6 +1287,9 @@
 				507B432F1C31FA0C0067B53E /* Cocos2dxLuaLoader.h in Headers */,
 				507B43301C31FA0C0067B53E /* LuaBasicConversions.h in Headers */,
 				507B43311C31FA0C0067B53E /* lua_cocos2dx_navmesh_auto.hpp in Headers */,
+				39B47D172D84176D0063DD63 /* lua_cjson.h in Headers */,
+				39B47D182D84176D0063DD63 /* strbuf.h in Headers */,
+				39B47D192D84176D0063DD63 /* fpconv.h in Headers */,
 				507B43321C31FA0C0067B53E /* inet.h in Headers */,
 				507B43331C31FA0C0067B53E /* CCLuaObjcBridge.h in Headers */,
 				507B43341C31FA0C0067B53E /* tolua_fix.h in Headers */,
@@ -1337,6 +1391,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 1551A334158F2AB200E66CFE;
@@ -1370,6 +1425,9 @@
 				15AC69D91987710400D17520 /* tolua_event.c in Sources */,
 				15AC69DA1987710400D17520 /* tolua_is.c in Sources */,
 				15415ACD19A71A53004F1E71 /* tcp.c in Sources */,
+				39B47D202D84176D0063DD63 /* fpconv.c in Sources */,
+				39B47D212D84176D0063DD63 /* lua_cjson.c in Sources */,
+				39B47D222D84176D0063DD63 /* strbuf.c in Sources */,
 				15AC69DB1987710400D17520 /* tolua_map.c in Sources */,
 				ADD1C0D51C196B9500733781 /* lua_module_register.cpp in Sources */,
 				15415AD519A71A53004F1E71 /* udp.c in Sources */,
@@ -1379,6 +1437,7 @@
 				15AC69DC1987710400D17520 /* tolua_push.c in Sources */,
 				15AC69DD1987710400D17520 /* tolua_to.c in Sources */,
 				15415AAD19A71A53004F1E71 /* except.c in Sources */,
+				398FC1AE2E58696C001577D6 /* lua_spSkeletonData.cpp in Sources */,
 				15415ABD19A71A53004F1E71 /* mime.c in Sources */,
 				15C1C2E519874C9200A46ACC /* CCLuaObjcBridge.mm in Sources */,
 				155C7E1619A71CAD00F08B25 /* lua_xml_http_request.cpp in Sources */,
@@ -1386,6 +1445,7 @@
 				15C1C2E219874BA100A46ACC /* LuaBasicConversions.cpp in Sources */,
 				F4FE0D5719ECD00100B8B12B /* luasocket_scripts.c in Sources */,
 				15415AC519A71A53004F1E71 /* select.c in Sources */,
+				3931CA4D2DD5C07400F84372 /* lua_fairygui.cpp in Sources */,
 				155C7DFE19A71C5A00F08B25 /* CCBProxy.cpp in Sources */,
 				1595523A1A25E1C5001E9FC9 /* lua_cocos2dx_csloader_auto.cpp in Sources */,
 				15415AD919A71A53004F1E71 /* unix.c in Sources */,
@@ -1447,6 +1507,7 @@
 				15B575501A6F4D1500041C20 /* lua-cocos-studio-conversions.cpp in Sources */,
 				15EFA647198B3311000C57D3 /* tolua_is.c in Sources */,
 				15EFA648198B3311000C57D3 /* tolua_map.c in Sources */,
+				3931CA4F2DD5C07400F84372 /* lua_fairygui.cpp in Sources */,
 				15EFA649198B3311000C57D3 /* tolua_push.c in Sources */,
 				15EFA64A198B3311000C57D3 /* tolua_to.c in Sources */,
 				15415AC219A71A53004F1E71 /* options.c in Sources */,
@@ -1463,7 +1524,6 @@
 				15EFA637198B328B000C57D3 /* LuaBasicConversions.cpp in Sources */,
 				15EFA638198B328B000C57D3 /* CCLuaObjcBridge.mm in Sources */,
 				155C7E1719A71CAF00F08B25 /* lua_xml_http_request.cpp in Sources */,
-				39323D26210EC0A300944FEE /* strbuf.c in Sources */,
 				15415ACE19A71A53004F1E71 /* tcp.c in Sources */,
 				15415AD219A71A53004F1E71 /* timeout.c in Sources */,
 				F4FE0D5819ECD00100B8B12B /* luasocket_scripts.c in Sources */,
@@ -1483,9 +1543,11 @@
 				155C7DF319A71C3400F08B25 /* lua_cocos2dx_3d_manual.cpp in Sources */,
 				15415ADE19A71A53004F1E71 /* usocket.c in Sources */,
 				155C7DED19A71BF400F08B25 /* lua_cocos2dx_cocosdenshion_auto.cpp in Sources */,
+				39B47D1A2D84176D0063DD63 /* fpconv.c in Sources */,
+				39B47D1B2D84176D0063DD63 /* lua_cjson.c in Sources */,
+				39B47D1C2D84176D0063DD63 /* strbuf.c in Sources */,
 				15EFA628198B31FB000C57D3 /* lua_cocos2dx_manual.cpp in Sources */,
 				155C7E0F19A71C9800F08B25 /* lua_extensions.c in Sources */,
-				39323D24210EC0A300944FEE /* lua_cjson.c in Sources */,
 				BA0CBB5F1BB0756F00003364 /* CCComponentLua.cpp in Sources */,
 				15415AD619A71A53004F1E71 /* udp.c in Sources */,
 				15415ABA19A71A53004F1E71 /* luasocket.c in Sources */,
@@ -1496,13 +1558,13 @@
 				155C7DF119A71C2300F08B25 /* lua_cocos2dx_studio_auto.cpp in Sources */,
 				3E2BDB0519C5E5FE0055CDCD /* lua_cocos2dx_audioengine_auto.cpp in Sources */,
 				155C7E0B19A71C8D00F08B25 /* lua_cocos2dx_network_manual.cpp in Sources */,
+				398FC1B22E58696C001577D6 /* lua_spSkeletonData.cpp in Sources */,
 				15415AAE19A71A53004F1E71 /* except.c in Sources */,
 				15C9A10E1AE4972500C15443 /* lua_cocos2dx_experimental_webview_auto.cpp in Sources */,
 				15415AAA19A71A53004F1E71 /* buffer.c in Sources */,
 				155C7E2319A71CD500F08B25 /* lua_cocos2dx_experimental_video_manual.cpp in Sources */,
 				150983D81B1C3F3E007F3818 /* lua_cocos2dx_navmesh_manual.cpp in Sources */,
 				155C7DFB19A71C4E00F08B25 /* lua_cocos2dx_coco_studio_manual.cpp in Sources */,
-				39323D22210EC0A300944FEE /* fpconv.c in Sources */,
 				155C7E2719A71CDE00F08B25 /* lua_cocos2dx_ui_manual.cpp in Sources */,
 				15415AB619A71A53004F1E71 /* io.c in Sources */,
 				155C7DF719A71C4000F08B25 /* lua_cocos2dx_cocosdenshion_manual.cpp in Sources */,
@@ -1534,6 +1596,7 @@
 				507B42C31C31FA0C0067B53E /* lua-cocos-studio-conversions.cpp in Sources */,
 				507B42C41C31FA0C0067B53E /* tolua_is.c in Sources */,
 				507B42C51C31FA0C0067B53E /* tolua_map.c in Sources */,
+				3931CA4C2DD5C07400F84372 /* lua_fairygui.cpp in Sources */,
 				507B42C61C31FA0C0067B53E /* tolua_push.c in Sources */,
 				507B42C71C31FA0C0067B53E /* tolua_to.c in Sources */,
 				507B42C81C31FA0C0067B53E /* options.c in Sources */,
@@ -1569,6 +1632,9 @@
 				507B42E61C31FA0C0067B53E /* lua_cocos2dx_3d_manual.cpp in Sources */,
 				507B42E71C31FA0C0067B53E /* usocket.c in Sources */,
 				507B42E81C31FA0C0067B53E /* lua_cocos2dx_cocosdenshion_auto.cpp in Sources */,
+				39B47D142D84176D0063DD63 /* fpconv.c in Sources */,
+				39B47D152D84176D0063DD63 /* lua_cjson.c in Sources */,
+				39B47D162D84176D0063DD63 /* strbuf.c in Sources */,
 				507B42E91C31FA0C0067B53E /* lua_cocos2dx_manual.cpp in Sources */,
 				507B42EA1C31FA0C0067B53E /* lua_extensions.c in Sources */,
 				507B42EB1C31FA0C0067B53E /* CCComponentLua.cpp in Sources */,
@@ -1581,6 +1647,7 @@
 				507B42F21C31FA0C0067B53E /* lua_cocos2dx_studio_auto.cpp in Sources */,
 				507B42F31C31FA0C0067B53E /* lua_cocos2dx_audioengine_auto.cpp in Sources */,
 				507B42F41C31FA0C0067B53E /* lua_cocos2dx_network_manual.cpp in Sources */,
+				398FC1AF2E58696C001577D6 /* lua_spSkeletonData.cpp in Sources */,
 				507B42F51C31FA0C0067B53E /* except.c in Sources */,
 				507B42F61C31FA0C0067B53E /* lua_cocos2dx_experimental_webview_auto.cpp in Sources */,
 				507B42F71C31FA0C0067B53E /* buffer.c in Sources */,
@@ -1640,7 +1707,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../.. $(SRCROOT)/../../.. $(SRCROOT)/../../../base $(SRCROOT)/../../../3d $(SRCROOT)/../../../2d $(SRCROOT)/../../../deprecated $(SRCROOT)/../../../physics $(SRCROOT)/../../../2d/platform $(SRCROOT)/../../../audio/include $(SRCROOT)/../../../editor-support $(SRCROOT)/../../../editor-support/spine $(SRCROOT)/../../../editor-support/cocostudio $(SRCROOT)/../../../editor-support/cocosbuilder $(SRCROOT)/../../../ui $(SRCROOT)/../../../storage $(SRCROOT)/../../../../extensions $(SRCROOT)/../../../../external $(SRCROOT)/../../../../external/chipmunk/include $(SRCROOT)/../../../../external/lua $(SRCROOT)/../../../../external/lua/luajit/include $(SRCROOT)/../../../../external/lua/tolua $(SRCROOT)/../../../editor-support/cocostudio/ActionTimeline $(SRCROOT)/../../../physics3d $(SRCROOT)/../../../navmesh $(SRCROOT)/../../../../external/bullet/include/bullet $(SRCROOT)/../../../../external/bullet/include";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../.. $(SRCROOT)/../../.. $(SRCROOT)/../../../base $(SRCROOT)/../../../3d $(SRCROOT)/../../../2d $(SRCROOT)/../../../deprecated $(SRCROOT)/../../../physics $(SRCROOT)/../../../2d/platform $(SRCROOT)/../../../audio/include $(SRCROOT)/../../../editor-support $(SRCROOT)/../../../editor-support/cocostudio $(SRCROOT)/../../../editor-support/cocosbuilder $(SRCROOT)/../../../ui $(SRCROOT)/../../../storage $(SRCROOT)/../../../../extensions $(SRCROOT)/../../../../external $(SRCROOT)/../../../../external/chipmunk/include $(SRCROOT)/../../../../external/lua $(SRCROOT)/../../../../external/lua/luajit/include $(SRCROOT)/../../../../external/lua/tolua $(SRCROOT)/../../../editor-support/cocostudio/ActionTimeline $(SRCROOT)/../../../physics3d $(SRCROOT)/../../../navmesh $(SRCROOT)/../../../../external/bullet/include/bullet $(SRCROOT)/../../../../external/bullet/include";
 			};
 			name = Debug;
 		};
@@ -1672,7 +1739,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../.. $(SRCROOT)/../../.. $(SRCROOT)/../../../base $(SRCROOT)/../../../3d $(SRCROOT)/../../../2d $(SRCROOT)/../../../deprecated $(SRCROOT)/../../../physics $(SRCROOT)/../../../2d/platform $(SRCROOT)/../../../audio/include $(SRCROOT)/../../../editor-support $(SRCROOT)/../../../editor-support/spine $(SRCROOT)/../../../editor-support/cocostudio $(SRCROOT)/../../../editor-support/cocosbuilder $(SRCROOT)/../../../ui $(SRCROOT)/../../../storage $(SRCROOT)/../../../../extensions $(SRCROOT)/../../../../external $(SRCROOT)/../../../../external/chipmunk/include $(SRCROOT)/../../../../external/lua $(SRCROOT)/../../../../external/lua/luajit/include $(SRCROOT)/../../../../external/lua/tolua $(SRCROOT)/../../../editor-support/cocostudio/ActionTimeline $(SRCROOT)/../../../physics3d $(SRCROOT)/../../../navmesh $(SRCROOT)/../../../../external/bullet/include/bullet $(SRCROOT)/../../../../external/bullet/include";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../.. $(SRCROOT)/../../.. $(SRCROOT)/../../../base $(SRCROOT)/../../../3d $(SRCROOT)/../../../2d $(SRCROOT)/../../../deprecated $(SRCROOT)/../../../physics $(SRCROOT)/../../../2d/platform $(SRCROOT)/../../../audio/include $(SRCROOT)/../../../editor-support $(SRCROOT)/../../../editor-support/cocostudio $(SRCROOT)/../../../editor-support/cocosbuilder $(SRCROOT)/../../../ui $(SRCROOT)/../../../storage $(SRCROOT)/../../../../extensions $(SRCROOT)/../../../../external $(SRCROOT)/../../../../external/chipmunk/include $(SRCROOT)/../../../../external/lua $(SRCROOT)/../../../../external/lua/luajit/include $(SRCROOT)/../../../../external/lua/tolua $(SRCROOT)/../../../editor-support/cocostudio/ActionTimeline $(SRCROOT)/../../../physics3d $(SRCROOT)/../../../navmesh $(SRCROOT)/../../../../external/bullet/include/bullet $(SRCROOT)/../../../../external/bullet/include";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1741,13 +1808,14 @@
 					"$(inherited)",
 					CC_TARGET_OS_IPHONE,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../cocos/editor-support";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../../external/lua/luajit/prebuilt/ios";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "libluacocos2d iOS";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../platform/ios $(SRCROOT)/../../../../external/curl/include/ios";
+				USER_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../platform/ios $(SRCROOT)/../../../../external/curl/include/ios $(SRCROOT)/../../../../cocos/editor-support $(SRCROOT)/../../../../cocos/editor-support/fairygui/Classes";
 			};
 			name = Debug;
 		};
@@ -1765,12 +1833,13 @@
 					"$(inherited)",
 					CC_TARGET_OS_IPHONE,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../cocos/editor-support";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../../external/lua/luajit/prebuilt/ios";
 				PRODUCT_NAME = "libluacocos2d iOS";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../platform/ios $(SRCROOT)/../../../../external/curl/include/ios";
+				USER_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../platform/ios $(SRCROOT)/../../../../external/curl/include/ios $(SRCROOT)/../../../../cocos/editor-support $(SRCROOT)/../../../../cocos/editor-support/fairygui/Classes";
 			};
 			name = Release;
 		};
