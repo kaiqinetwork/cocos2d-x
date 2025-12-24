@@ -992,6 +992,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = "";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../../cocos",
+					"$(SRCROOT)/../../../../cocos/audio/include",
+					"$(SRCROOT)/../../../../external",
+					"$(SRCROOT)/../../../../extensions",
+					"$(SRCROOT)/../../../../external/chipmunk/include/chipmunk",
+					"$(SRCROOT)/../../../../external/glfw3/include/mac",
+					"$(SRCROOT)/../Classes",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "libfairygui iOS";
 				SKIP_INSTALL = YES;
@@ -1002,6 +1011,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = "";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../../cocos",
+					"$(SRCROOT)/../../../../cocos/audio/include",
+					"$(SRCROOT)/../../../../external",
+					"$(SRCROOT)/../../../../extensions",
+					"$(SRCROOT)/../../../../external/chipmunk/include/chipmunk",
+					"$(SRCROOT)/../../../../external/glfw3/include/mac",
+					"$(SRCROOT)/../Classes",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "libfairygui iOS";
 				SKIP_INSTALL = YES;
