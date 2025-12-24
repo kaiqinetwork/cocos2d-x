@@ -84,7 +84,9 @@ void FUILabel::applyTextFormat()
 
     if (_currentLabelType != LabelType::BMFONT || _bmFontCanTint)
     {
-        //setTextColor((Color4B)(_grayed ? toGrayed(_textFormat->color) : _textFormat->color));
+        setTextColor((Color4B)(_grayed ? toGrayed(_textFormat->color) : _textFormat->color));
+    }
+    else if(_bmFontCanTint){
         setColor(_grayed ? toGrayed(_textFormat->color) : _textFormat->color);
     }
 
