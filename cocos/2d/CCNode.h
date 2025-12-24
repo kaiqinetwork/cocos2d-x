@@ -1983,6 +1983,7 @@ protected:
     EventDispatcher* _eventDispatcher;  ///< event dispatcher used to dispatch all kinds of events
 
     bool _running;                  ///< is running
+    bool _needClean;                  ///< need cleanup
 
     bool _visible;                  ///< is this node visible
 

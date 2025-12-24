@@ -134,6 +134,7 @@ Node::Node()
     _scriptType = engine != nullptr ? engine->getScriptType() : kScriptTypeNone;
 #endif
     _transform = _inverse = Mat4::IDENTITY;
+    _needClean = false;
 }
 
 Node * Node::create()
@@ -153,6 +154,9 @@ Node * Node::create()
 Node::~Node()
 {
     CCLOGINFO( "deallocing Node: %p - tag: %i", this, _tag );
+    if (_needClean) {
+        cleanup();
+    }
     
 #if CC_ENABLE_SCRIPT_BINDING
     if (_updateScriptHandler)
@@ -212,7 +216,7 @@ void Node::cleanup()
         ScriptEngineManager::sendNodeEventToLua(this, kNodeOnCleanup);
     }
 #endif // #if CC_ENABLE_SCRIPT_BINDING
-    
+    _needClean = false;
     // actions
     this->stopAllActions();
     // timers
@@ -1340,6 +1344,7 @@ void Node::onEnter()
     this->resume();
     
     _running = true;
+    _needClean = true;
     
 #if CC_ENABLE_SCRIPT_BINDING
     if (_scriptType == kScriptTypeLua)

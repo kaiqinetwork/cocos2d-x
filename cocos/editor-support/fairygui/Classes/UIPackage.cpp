@@ -382,7 +382,7 @@ bool UIPackage::loadPackage(ByteBuffer* buffer)
 
     PackageItem* pi;
     string path = _assetPath;
-    size_t pos = path.find('/');
+    size_t pos = path.find_last_of('/');
     string shortPath = pos == -1 ? STD_STRING_EMPTY : path.substr(0, pos + 1);
     path += "_";
 
@@ -623,6 +623,9 @@ void UIPackage::loadAtlas(PackageItem* item)
     Texture2D* tex = new Texture2D();
     tex->initWithImage(image);
     item->texture = tex;
+#if CC_ENABLE_CACHE_TEXTURE_DATA
+    VolatileTextureMgr::addImageTexture(tex, item->file);
+#endif
     delete image;
 
     string alphaFilePath;
@@ -650,6 +653,9 @@ void UIPackage::loadAtlas(PackageItem* item)
         tex = new Texture2D();
         tex->initWithImage(image);
         item->texture->setAlphaTexture(tex);
+#if CC_ENABLE_CACHE_TEXTURE_DATA
+        VolatileTextureMgr::addImageTexture(tex, item->file);
+#endif
         tex->release();
 #endif
         delete image;
